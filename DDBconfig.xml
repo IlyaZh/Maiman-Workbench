@@ -1,0 +1,726 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Config>
+  <BaudRate value="9600"/>
+  <BaudRate value="57600"/>
+  <BaudRate value="115200"/>
+  <!-- Список устройств с одинаковым айди -->
+  <CommonIDDevices>
+  	<CIDD id="14">SF6015 v2</CIDD>
+	<CIDD id="15">SF6030 v2</CIDD>
+	<CIDD id="16">SF6040</CIDD>
+	<CIDD id="17">SF6090</CIDD>
+	<CIDD id="13">SF6100 v2</CIDD>
+	<CIDD id="11">SF6015 v1</CIDD>
+	<CIDD id="12">SF6030 v1</CIDD>
+    <CIDD id="10">SF6100 v1</CIDD>
+  </CommonIDDevices>
+
+
+  <Device id="10" name="SF6100 v1" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <content>
+      <image>SF6100-1.jpg</image>
+      <description>Input Voltage Range (Vin): 12-55 Volts
+Output Current Range (I): 0-20 Аmps
+Output Voltage (0.73*Vin max) (V): 5-40 Volts
+Minimum Current Set-Point Step Size: 0.1 Amps
+Rise Time: less then 800μs
+Fall Time: less then 200μs
+Current Stability: less then 0.2%
+Current Setpoint Absolute Accuracy: less then 1%</description>
+      <link>https://www.maimanelectronics.com/archive</link>
+    </content>
+    <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
+    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <command code="0100" divider="10"/>
+      <command code="0101" divider="10" interval="100"/>
+      <command code="0102" divider="10" interval="100"/>
+      <command code="0200" divider="10"/>
+      <command code="0201" divider="10"/>
+      <command code="0202" divider="10"/>
+      <command code="0300" divider="10"/>
+      <command code="0301" divider="10" interval="100"/>
+      <command code="0302" divider="10" interval="100"/>
+      <command code="0307" divider="10"/>
+      <command code="0407" divider="10"/>
+      <command code="0700"/>
+      <command code="0701" interval="100"/>
+      <command code="0704" interval="10"/>
+      <command code="0800"/>
+    </commands>
+    <!-- доступные для регулирования пределы -->
+    <limits>
+    <!--  <limit absMin="0" min="0201" minValue="2" max="0203" absMax="1500" maxValue="1500" divider="10" unit="ms">Max. Duration</limit>
+      <limit absMax="0306" max="0302" MinValue="5" divider="100" unit="А">Max. Current</limit>
+      <limit absMax="0406" max="0102" min="0101" absMin="0405" divider="10" unit="V">Max. Frequency</limit> -->
+    </limits>
+    <!--  калибровка -->
+    <calibrationKoefs>
+    </calibrationKoefs> <!-- Сделать бы так, чтобы при отсутствии параметра кнопка в меню не появлялась-->
+    <!-- список выводимых параметров.
+    регистр необходимо соблюдать
+    (deg) - в проге заменяется на символ градуса
+    Для температуры надо ставить флаг isTemperature="1", для остальных 0 или отсутствие флага
+    параметры без value (установленный параметр) - выводятся в текстовом виде в окне параметров и только там.
+    real - измеренный параметр
+    Параметры с value "участвуют" в hide controls.
+     -->
+    <paramControls>
+      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
+      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
+      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="10">Current</param>
+      <param unit=" " real="0701" divider="1">Serial Number</param>
+      <param unit="V" real="0407" divider="10">Voltage</param>
+    </paramControls>
+    <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
+    Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
+    хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
+    <specialParams>
+      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
+      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
+      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</specParam>
+    </specialParams>
+    <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
+    <buttons>
+      <button name="laser" mask="0002" code="0700" onCommand="0008" offCommand="0010"/>
+    </buttons>
+    <leds>
+      <led label="Laser">
+        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </led>
+      <led label="IntLock">
+        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+      </led>
+	  <led label="Error">
+        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+      </led>
+    </leds>
+  </Device>
+
+
+  <Device id="11" name="SF6015 v1" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <content>
+      <image>SF6015-1.jpg</image>
+      <description>Input Voltage Range (Vin): 10-14 Volts
+Output Current Range (I): 0-15 Аmps
+Output Voltage (0.75*Vin max) (V): 0.5-10 Volts
+Minimum Current Set-Point Step Size: 0.1 Amps
+Rise Time: less then 1,200μs
+Fall Time: less then 200μs
+Current Stability: less then 0.2%
+Current Setpoint Absolute Accuracy: less then 1%</description>
+      <link>https://www.maimanelectronics.com/archive</link>
+    </content>
+    <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
+    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <command code="0100" divider="10"/>
+      <command code="0101" divider="10" interval="100"/>
+      <command code="0102" divider="10" interval="100"/>
+      <command code="0200" divider="10"/>
+      <command code="0201" divider="10"/>
+      <command code="0202" divider="10"/>
+      <command code="0300" divider="10"/>
+      <command code="0301" divider="10" interval="100"/>
+      <command code="0302" divider="10" interval="100"/>
+      <command code="0307" divider="10"/>
+      <command code="0407" divider="10"/>
+      <command code="0700"/>
+      <command code="0701" interval="100"/>
+      <command code="0704" interval="10"/>
+      <command code="0800"/>
+    </commands>
+    <!-- доступные для регулирования пределы -->
+    <limits>
+    <!--  <limit absMin="0" min="0201" minValue="2" max="0203" absMax="1500" maxValue="1500" divider="10" unit="ms">Max. Duration</limit>
+      <limit absMax="0306" max="0302" MinValue="5" divider="100" unit="А">Max. Current</limit>
+      <limit absMax="0406" max="0102" min="0101" absMin="0405" divider="10" unit="V">Max. Frequency</limit> -->
+    </limits>
+    <!--  калибровка -->
+    <calibrationKoefs>
+    </calibrationKoefs> <!-- Сделать бы так, чтобы при отсутствии параметра кнопка в меню не появлялась-->
+    <!-- список выводимых параметров.
+    регистр необходимо соблюдать
+    (deg) - в проге заменяется на символ градуса
+    Для температуры надо ставить флаг isTemperature="1", для остальных 0 или отсутствие флага
+    параметры без value (установленный параметр) - выводятся в текстовом виде в окне параметров и только там.
+    real - измеренный параметр
+    Параметры с value "участвуют" в hide controls.
+     -->
+    <paramControls>
+      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
+      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
+      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="10">Current</param>
+      <param unit=" " real="0701" divider="1">Serial Number</param>
+      <param unit="V" real="0407" divider="10">Voltage</param>
+    </paramControls>
+    <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
+    Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
+    хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
+    <specialParams>
+      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
+      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
+      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</specParam>
+    </specialParams>
+    <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
+    <buttons>
+      <button name="laser" mask="0002" code="0700" onCommand="0008" offCommand="0010"/>
+    </buttons>
+    <leds>
+      <led label="Laser">
+        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </led>
+      <led label="IntLock">
+        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+      </led>
+	  <led label="Error">
+        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+      </led>
+    </leds>
+  </Device>
+
+
+  <Device id="12" name="SF6030 v1" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <content>
+      <image>SF6030-1.jpg</image>
+      <description>Input Voltage Range (Vin): 10-14 Volts
+Output Current Range (I): 0-30 Аmps
+Output Voltage (0.75*Vin max) (V): 0.5-10 Volts
+Minimum Current Set-Point Step Size: 0.1 Amps
+Rise Time: less then 1,200μs
+Fall Time: less then 200μs
+Current Stability: less then 0.2%
+Current Setpoint Absolute Accuracy: less then 1%</description>
+      <link>https://www.maimanelectronics.com/archive</link>
+    </content>
+    <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
+    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <command code="0100" divider="10"/>
+      <command code="0101" divider="10" interval="100"/>
+      <command code="0102" divider="10" interval="100"/>
+      <command code="0200" divider="10"/>
+      <command code="0201" divider="10"/>
+      <command code="0202" divider="10"/>
+      <command code="0300" divider="10"/>
+      <command code="0301" divider="10" interval="100"/>
+      <command code="0302" divider="10" interval="100"/>
+      <command code="0307" divider="10"/>
+      <command code="0407" divider="10"/>
+      <command code="0700"/>
+      <command code="0701" interval="100"/>
+      <command code="0704" interval="10"/>
+      <command code="0800"/>
+    </commands>
+    <!-- доступные для регулирования пределы -->
+    <limits>
+    <!--  <limit absMin="0" min="0201" minValue="2" max="0203" absMax="1500" maxValue="1500" divider="10" unit="ms">Max. Duration</limit>
+      <limit absMax="0306" max="0302" MinValue="5" divider="100" unit="А">Max. Current</limit>
+      <limit absMax="0406" max="0102" min="0101" absMin="0405" divider="10" unit="V">Max. Frequency</limit> -->
+    </limits>
+    <!--  калибровка -->
+    <calibrationKoefs>
+    </calibrationKoefs> <!-- Сделать бы так, чтобы при отсутствии параметра кнопка в меню не появлялась-->
+    <!-- список выводимых параметров.
+    регистр необходимо соблюдать
+    (deg) - в проге заменяется на символ градуса
+    Для температуры надо ставить флаг isTemperature="1", для остальных 0 или отсутствие флага
+    параметры без value (установленный параметр) - выводятся в текстовом виде в окне параметров и только там.
+    real - измеренный параметр
+    Параметры с value "участвуют" в hide controls.
+     -->
+    <paramControls>
+      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
+      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
+      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="10">Current</param>
+      <param unit=" " real="0701" divider="1">Serial Number</param>
+      <param unit="V" real="0407" divider="10">Voltage</param>
+    </paramControls>
+    <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
+    Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
+    хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
+    <specialParams>
+      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
+      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
+      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</specParam>
+    </specialParams>
+    <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
+    <buttons>
+      <button name="laser" mask="0002" code="0700" onCommand="0008" offCommand="0010"/>
+    </buttons>
+    <leds>
+      <led label="Laser">
+        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </led>
+      <led label="IntLock">
+        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+      </led>
+	  <led label="Error">
+        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+      </led>
+    </leds>
+  </Device>
+
+
+  <Device id="13" name="SF6100 v2" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <content>
+      <image>SF6100-2.jpg</image>
+      <description>Input Voltage Range (Vin): 12-55 Volts
+Output Current Range (I): 0-25 Аmps
+Output Voltage (0.73*Vin max) (V): 1-40 Volts
+Minimum Current Set-Point Step Size: 0.01 Amps
+Rise Time: less then 300μs
+Fall Time: less then 50μs
+Current Stability: less then 0.2%
+Current Setpoint Absolute Accuracy: less then 1%</description>
+      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-20a-40v-sf6100</link>
+    </content>
+    <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
+    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <command code="0100" divider="10"/>
+      <command code="0101" divider="10" interval="100"/>
+      <command code="0102" divider="10" interval="100"/>
+      <command code="0200" divider="10"/>
+      <command code="0201" divider="10"/>
+      <command code="0202" divider="10"/>
+      <command code="0300" divider="100"/>
+      <command code="0301" divider="100" interval="100"/>
+      <command code="0302" divider="100" interval="100"/>
+      <command code="0307" divider="10"/>
+      <command code="030E" divider="100" interval="10"/>
+      <command code="0407" divider="10"/>
+      <command code="0700"/>
+      <command code="0701" interval="100"/>
+      <command code="0702" interval="100"/>
+      <command code="0800"/>
+      <command code="0A05" divider="10" interval="100"/>
+      <command code="0A06" divider="10" interval="100"/>
+      <command code="0AE4" divider="10" interval="10"/>
+      <command code="0B0E" divider="1" interval="100"/>
+      <command code="0AF4" divider="10" interval="10"/>
+    </commands>
+    <!-- доступные для регулирования пределы -->
+    <limits>
+    <!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
+      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
+      <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
+    </limits>
+    <!--  калибровка -->
+    <calibrationKoefs>
+      <calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</calibrate>
+    </calibrationKoefs>
+    <!-- список выводимых параметров.
+    регистр необходимо соблюдать
+    (deg) - в проге заменяется на символ градуса
+    Для температуры надо ставить флаг isTemperature="1", для остальных 0 или отсутствие флага
+    параметры без value (установленный параметр) - выводятся в текстовом виде в окне параметров и только там.
+    real - измеренный параметр
+    Параметры с value "участвуют" в hide controls.
+     -->
+    <paramControls>
+      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
+      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
+      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</param>
+      <param unit=" " real="0701" divider="1">Serial Number</param>
+      <param unit="V" real="0407" divider="10">Voltage</param>
+	  <param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</param>
+	  <param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</param>
+    </paramControls>
+    <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
+    Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
+    хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
+    <specialParams>
+      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
+      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
+      <specParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</specParam>
+      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</specParam>
+    </specialParams>
+    <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
+    <buttons>
+      <button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
+    </buttons>
+    <leds>
+      <led label="Laser">
+        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </led>
+      <led label="IntLock">
+        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
+      </led>
+	  <led label="Error">
+        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+      </led>
+    </leds>
+  </Device>
+
+
+  <Device id="14" name="SF6015 v2" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <content>
+      <image>SF6015-2.jpg</image>
+      <description>Input Voltage Range (Vin): 10-14 Volts
+Output Current Range (I): 0-15 Аmps
+Output Voltage (0.75*Vin max) (V): 1-10 Volts
+Minimum Current Set-Point Step Size: 0.01 Amps
+Rise Time: less then 500μs
+Fall Time: less then 1,200μs
+Current Stability: less then 0.2%
+Current Setpoint Absolute Accuracy: less then 1%</description>
+      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-15a-10v-sf6015</link>
+    </content>
+    <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
+    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <command code="0100" divider="10"/>
+      <command code="0101" divider="10" interval="100"/>
+      <command code="0102" divider="10" interval="100"/>
+      <command code="0200" divider="10"/>
+      <command code="0201" divider="10"/>
+      <command code="0202" divider="10"/>
+      <command code="0300" divider="100"/>
+      <command code="0301" divider="100" interval="100"/>
+      <command code="0302" divider="100" interval="100"/>
+      <command code="0307" divider="10"/>
+      <command code="030E" divider="100" interval="10"/>
+      <command code="0407" divider="10"/>
+      <command code="0700"/>
+      <command code="0701" interval="100"/>
+      <command code="0702" interval="100"/>
+      <command code="0800"/>
+      <command code="0A05" divider="10" interval="100"/>
+      <command code="0A06" divider="10" interval="100"/>
+      <command code="0AE4" divider="10" interval="10"/>
+      <command code="0B0E" divider="1" interval="100"/>
+      <command code="0AF4" divider="10" interval="10"/>
+    </commands>
+    <!-- доступные для регулирования пределы -->
+    <limits>
+    <!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
+      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
+      <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
+    </limits>
+    <!--  калибровка -->
+    <calibrationKoefs>
+      <calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</calibrate>
+    </calibrationKoefs>
+    <!-- список выводимых параметров.
+    регистр необходимо соблюдать
+    (deg) - в проге заменяется на символ градуса
+    Для температуры надо ставить флаг isTemperature="1", для остальных 0 или отсутствие флага
+    параметры без value (установленный параметр) - выводятся в текстовом виде в окне параметров и только там.
+    real - измеренный параметр
+    Параметры с value "участвуют" в hide controls.
+     -->
+    <paramControls>
+      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
+      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
+      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</param>
+      <param unit=" " real="0701" divider="1">Serial Number</param>
+      <param unit="V" real="0407" divider="10">Voltage</param>
+	  <param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</param>
+	  <param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</param>
+    </paramControls>
+    <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
+    Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
+    хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
+    <specialParams>
+      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
+      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
+      <specParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</specParam>
+      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</specParam>
+    </specialParams>
+    <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
+    <buttons>
+      <button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
+    </buttons>
+    <leds>
+      <led label="Laser">
+        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </led>
+      <led label="IntLock">
+        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
+      </led>
+	  <led label="Error">
+        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+      </led>
+    </leds>
+  </Device>
+
+
+  <Device id="15" name="SF6030 v2" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <content>
+      <image>SF6030-2.jpg</image>
+      <description>Input Voltage Range (Vin): 10-14 Volts
+Output Current Range (I): 0-30 Аmps
+Output Voltage (0.75*Vin max) (V): 1-10 Volts
+Minimum Current Set-Point Step Size: 0.01 Amps
+Rise Time: less then 700μs
+Fall Time: less then 1,500μs
+Current Stability: less then 0.2%
+Current Setpoint Absolute Accuracy: less then 1%</description>
+      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-30a-10v-sf6030</link>
+    </content>
+    <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
+    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <command code="0100" divider="10"/>
+      <command code="0101" divider="10" interval="100"/>
+      <command code="0102" divider="10" interval="100"/>
+      <command code="0200" divider="10"/>
+      <command code="0201" divider="10"/>
+      <command code="0202" divider="10"/>
+      <command code="0300" divider="100"/>
+      <command code="0301" divider="100" interval="100"/>
+      <command code="0302" divider="100" interval="100"/>
+      <command code="0307" divider="10"/>
+      <command code="030E" divider="100" interval="10"/>
+      <command code="0407" divider="10"/>
+      <command code="0700"/>
+      <command code="0701" interval="100"/>
+      <command code="0702" interval="100"/>
+      <command code="0800"/>
+      <command code="0A05" divider="10" interval="100"/>
+      <command code="0A06" divider="10" interval="100"/>
+      <command code="0AE4" divider="10" interval="10"/>
+      <command code="0B0E" divider="1" interval="100"/>
+      <command code="0AF4" divider="10" interval="10"/>
+    </commands>
+    <!-- доступные для регулирования пределы -->
+    <limits>
+    <!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
+      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
+      <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
+    </limits>
+    <!--  калибровка -->
+    <calibrationKoefs>
+      <calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</calibrate>
+    </calibrationKoefs>
+    <!-- список выводимых параметров.
+    регистр необходимо соблюдать
+    (deg) - в проге заменяется на символ градуса
+    Для температуры надо ставить флаг isTemperature="1", для остальных 0 или отсутствие флага
+    параметры без value (установленный параметр) - выводятся в текстовом виде в окне параметров и только там.
+    real - измеренный параметр
+    Параметры с value "участвуют" в hide controls.
+     -->
+    <paramControls>
+      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
+      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
+      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</param>
+      <param unit=" " real="0701" divider="1">Serial Number</param>
+      <param unit="V" real="0407" divider="10">Voltage</param>
+	  <param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</param>
+	  <param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</param>
+    </paramControls>
+    <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
+    Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
+    хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
+    <specialParams>
+      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
+      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
+      <specParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</specParam>
+      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</specParam>
+    </specialParams>
+    <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
+    <buttons>
+      <button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
+    </buttons>
+    <leds>
+      <led label="Laser">
+        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </led>
+      <led label="IntLock">
+        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
+      </led>
+	  <led label="Error">
+        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+     </led>
+    </leds>
+  </Device>
+
+
+	<Device id="16" name="SF6040" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <content>
+      <image>SF6040.jpg</image>
+      <description>Input Voltage Range (Vin): 12-55 Volts
+Output Current Range (I): 0-10 Аmps
+Output Voltage (0.73*Vin max) (V): 5-40 Volts
+Minimum Current Set-Point Step Size: 0.01 Amps
+Rise Time: less then 100μs
+Fall Time: less then 80μs
+Current Stability: less then 0.2%
+Current Setpoint Absolute Accuracy: less then 1%</description>
+      <link>https://www.maimanelectronics.com/product-page/high-power-laser-diode-driver-oem-cw-10a-40v-sf6040</link>
+    </content>
+    <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
+    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <command code="0100" divider="10"/>
+      <command code="0101" divider="10" interval="100"/>
+      <command code="0102" divider="10" interval="100"/>
+      <command code="0200" divider="10"/>
+      <command code="0201" divider="10"/>
+      <command code="0202" divider="10"/>
+      <command code="0300" divider="100"/>
+      <command code="0301" divider="100" interval="100"/>
+      <command code="0302" divider="100" interval="100"/>
+      <command code="0307" divider="10"/>
+      <command code="030E" divider="100" interval="10"/>
+      <command code="0407" divider="10"/>
+      <command code="0700"/>
+      <command code="0701" interval="100"/>
+      <command code="0702" interval="100"/>
+      <command code="0800"/>
+      <command code="0A05" divider="10" interval="100"/>
+      <command code="0A06" divider="10" interval="100"/>
+      <command code="0AE4" divider="10" interval="10"/>
+      <command code="0B0E" divider="1" interval="100"/>
+      <command code="0AF4" divider="10" interval="10"/>
+    </commands>
+    <!-- доступные для регулирования пределы -->
+    <limits>
+    <!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
+      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
+      <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
+    </limits>
+    <!--  калибровка -->
+    <calibrationKoefs>
+      <calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</calibrate>
+    </calibrationKoefs>
+    <!-- список выводимых параметров.
+    регистр необходимо соблюдать
+    (deg) - в проге заменяется на символ градуса
+    Для температуры надо ставить флаг isTemperature="1", для остальных 0 или отсутствие флага
+    параметры без value (установленный параметр) - выводятся в текстовом виде в окне параметров и только там.
+    real - измеренный параметр
+    Параметры с value "участвуют" в hide controls.
+     -->
+    <paramControls>
+      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
+      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
+      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</param>
+      <param unit=" " real="0701" divider="1">Serial Number</param>
+      <param unit="V" real="0407" divider="10">Voltage</param>
+	  <param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</param>
+	  <param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</param>
+    </paramControls>
+    <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
+    Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
+    хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
+    <specialParams>
+      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
+      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
+      <specParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</specParam>
+      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</specParam>
+    </specialParams>
+    <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
+    <buttons>
+      <button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
+    </buttons>
+    <leds>
+      <led label="Laser">
+        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </led>
+      <led label="IntLock">
+        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
+      </led>
+	  <led label="Error">
+        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+      </led>
+    </leds>
+  </Device>
+
+
+  <Device id="17" name="SF6090" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <content>
+      <image>SF6090.jpg</image>
+      <description>Input Voltage Range (Vin): 10-14 Volts
+Output Current Range (I): 0-100 Аmps
+Output Voltage (0.75*Vin max) (V): 1-10 Volts
+Minimum Current Set-Point Step Size: 0.03 Amps
+Rise Time: less then 1,200μs
+Fall Time: less then 1,800μs
+Current Stability: less then 0.2%
+Current Setpoint Absolute Accuracy: less then 1%</description>
+      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-100a-10v-sf6090</link>
+    </content>
+    <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
+    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <command code="0100" divider="10"/>
+      <command code="0101" divider="10" interval="100"/>
+      <command code="0102" divider="10" interval="100"/>
+      <command code="0200" divider="10"/>
+      <command code="0201" divider="10"/>
+      <command code="0202" divider="10"/>
+      <command code="0300" divider="100"/>
+      <command code="0301" divider="100" interval="100"/>
+      <command code="0302" divider="100" interval="100"/>
+      <command code="0307" divider="10"/>
+      <command code="030E" divider="100" interval="10"/>
+      <command code="0407" divider="10"/>
+      <command code="0700"/>
+      <command code="0701" interval="100"/>
+      <command code="0702" interval="100"/>
+      <command code="0800"/>
+      <command code="0A05" divider="10" interval="100"/>
+      <command code="0A06" divider="10" interval="100"/>
+      <command code="0AE4" divider="10" interval="10"/>
+      <command code="0B0E" divider="1" interval="100"/>
+      <command code="0AF4" divider="10" interval="10"/>
+    </commands>
+    <!-- доступные для регулирования пределы -->
+    <limits>
+    <!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
+      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
+      <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
+    </limits>
+    <!--  калибровка -->
+    <calibrationKoefs>
+      <calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</calibrate>
+    </calibrationKoefs>
+    <!-- список выводимых параметров.
+    регистр необходимо соблюдать
+    (deg) - в проге заменяется на символ градуса
+    Для температуры надо ставить флаг isTemperature="1", для остальных 0 или отсутствие флага
+    параметры без value (установленный параметр) - выводятся в текстовом виде в окне параметров и только там.
+    real - измеренный параметр
+    Параметры с value "участвуют" в hide controls.
+     -->
+    <paramControls>
+      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
+      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
+      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</param>
+      <param unit=" " real="0701" divider="1">Serial Number</param>
+      <param unit="V" real="0407" divider="10">Voltage</param>
+      <param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</param>
+    </paramControls>
+    <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
+    Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
+    хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
+    <specialParams>
+      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
+      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
+      <specParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</specParam>
+      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</specParam>
+    </specialParams>
+    <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
+    <buttons>
+      <button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
+    </buttons>
+    <leds>
+      <led label="Laser">
+        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </led>
+      <led label="IntLock">
+        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
+      </led>
+	  <led label="Error">
+        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+      </led>
+    </leds>
+  </Device>
+</Config>
