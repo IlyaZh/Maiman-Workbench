@@ -1,6 +1,3 @@
-#ifndef COMMONDEFINES_H
-#define COMMONDEFINES_H
-
 #include <QDebug>
 #include <QString>
 #include <QStringList>
@@ -10,14 +7,16 @@
 #include <QSerialPortInfo>
 #include <QPointer>
 #include <QFont>
-#include "appsettings.h"
+#include <QPoint>
+//#include "appsettings.h"
 
-//#define DEBUG_MODE
+#ifndef COMMONDEFINES_H
+#define COMMONDEFINES_H
 
 // Название организации
-const QString ORG_NAME = "MaimanElectronics"; // CHANGE
+const QString ORG_NAME = "MaimanElectronics";
 // Название (заголовок) ПО для служебных путей (без пробелов)
-const QString APP_NAME = "BenchSoft"; // CHANGE
+const QString APP_NAME = "BenchSoft";
 // Человекопонятное название (заголовок_ ПО
 const QString APP_NAME_TITLE = "Maiman BenchSoft";
 const QPoint WINDOW_DEFAULT_POSITION = QPoint(-1, -1);
@@ -25,8 +24,9 @@ const QPoint WINDOW_DEFAULT_POSITION = QPoint(-1, -1);
 
 const QString DEVICE_STATUS_COMMAND = "0700";
 
-const quint16 MAJOR_VERSION = 1;
-const quint16 MINOR_VERSION = 01;
+const quint8 MAJOR_VERSION = 1;
+const quint8 MINOR_VERSION = 0;
+const quint8 PATCH_VERSION = 0;
 
 const QString SECRET_CODE_COMBINATION = "3.1415926";
 
