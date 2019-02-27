@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = LaserDriverSoft
 TEMPLATE = app
+VERSION = 1.0.0
 
 
 SOURCES += main.cpp\

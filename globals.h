@@ -9,24 +9,6 @@
 #include "parameterform.h"
 #include "parameter_t.h"
 
-/*typedef struct {
-    QString Title;
-    QString Name;
-    quint8 Action;
-} paramBit_t;*/
-
-/*typedef struct {
-    QString Code;
-    quint8 Action;
-    int Divider;
-    bool isTemperature;
-    union {
-        double dValue;
-        uint16_t iValue;
-    };
-} parameter_t;*/
-
-
 typedef struct {
     QString code;
     QString onCommand;
@@ -42,10 +24,6 @@ typedef struct {
     QString maxCode;
     QString title;
     double defaulValue;
-//    double absMinValue;
-//    double absMaxValue;
-//    double minValue;
-//    double maxValue;
     double divider;
     QString unit;
 } limits_t;
@@ -67,17 +45,6 @@ typedef struct {
     uint mask;
     QCheckBox* cbPtr;
 } specParams_t;
-
-/*typedef struct {
-    QString unit;
-    QString minComm;
-    QString maxComm;
-    QString valueComm;
-    QString realComm;
-    double divider;
-    bool isTemperatureFlag;
-    QString title;
-} parameterTemp_t;*/
 
 typedef struct {
     QString command;
@@ -102,7 +69,6 @@ typedef struct {
     QList<limits_t> limits;
     QList<calibration_t> calibrate;
     QList<ParameterForm*> paramWidgets;
-    //QMap<QString, QString> showInWindowParameters;
     QList<specParams_t> specialParameters;
     QMap<QString, doubleMaskCommand_t> stateButtons;
     QList<leds_t> leds;
@@ -118,7 +84,5 @@ typedef struct {
     QString name;
     quint16 id;
 } availableDev_t;
-
-//extern QList<device_t> availableDevices;
 
 #endif // GLOBALS_H
