@@ -12,6 +12,7 @@
 #include <QQueue>
 #include <QStringList>
 
+#include "appsettings.h"
 #include "globals.h"
 extern AppSettings settings;
 

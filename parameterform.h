@@ -4,6 +4,7 @@
 #include "commondefines.h"
 //#include "globals.h"
 
+#include "appsettings.h"
 extern AppSettings settings;
 
 #include <QWidget>
@@ -28,7 +29,7 @@ class ParameterForm : public QWidget
 
 public:
     //explicit ParameterForm(const paramControls_t &inParam, QWidget *parent = 0);
-    explicit ParameterForm(QWidget *parent = 0);
+    explicit ParameterForm(QWidget *parent = nullptr);
     ~ParameterForm();
     //~ParameterForm();
     bool getPinState();

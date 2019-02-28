@@ -69,7 +69,8 @@ void xmlReader::readProgramConfig() {
                     availableListPtr->append(devStruct);
                 }
 
-            } else if(xname == "BaudRate") {
+            }
+            else if(xname == "BaudRate") {
                 attrib = xml.attributes();
                 if(attrib.hasAttribute("value")) {
                     uint value = attrib.value("value").toUInt();

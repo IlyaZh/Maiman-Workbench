@@ -724,7 +724,7 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
       </led>
     </leds>
   </Device>
-  
+
   <Device id="18" name="SF6250" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
     <content>
       <image>SF6090.jpg</image>

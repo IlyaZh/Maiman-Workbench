@@ -32,7 +32,8 @@ const QString SECRET_CODE_COMBINATION = "3.1415926";
 
 const QFont APPLICATION_DEFAULT_FONT(":/fonts/ShareTechMono.ttf", 9);
 
-const QString CONFIG_FILE = QDir::currentPath()+"/DDBconfig.xml";
+//const QString CONFIG_FILE = QDir::currentPath()+"/DDBconfig.xml";
+const QString CONFIG_FILE = QDir::currentPath()+"/../../Sources/DDBconfig.xml";
 const QString LOG_TIMESTAMP_DEFAULT_FORMAT = "dd.MM.yyyy HH:mm:ss";
 const int LOG_MAX_QUEUE_SIZE = 10;
 const unsigned int CONSOLE_MAX_LINES_TO_SHOW = 1000;
