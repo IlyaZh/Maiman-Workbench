@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    settings.setLastSelectedDeviceId(0);
     delete ui;
 }
 
@@ -745,6 +746,7 @@ void MainWindow::getPortNewState(bool state) {
             ui->comPortConnectButton->setText(tr("Disconnected"));
 //            if(devID == COMMON_OLD_DEVICES_VALUE) isDeviceLoaded = false;
             devID = 0;
+            settings.setLastSelectedDeviceId(0);
             setLink(false);
             setRegulatorsEnable(false);
 //            ui->menuLimits->setEnabled(false);
@@ -814,8 +816,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
         this->writeToConsole("<- "+str, CONSOLE_RECEIVE_COLOR);
         if(command == IDENTIFY_DEVICE_COMMAND) {
             if(value == COMMON_OLD_DEVICES_VALUE) {
-                // Don't save last selected ID. Ask everytime for common ID devices
-                devID = 0; // settings.getLastSelectedDeviceId();
+                devID = settings.getLastSelectedDeviceId();
                 bool isCommonDevice = false;
                 foreach(availableDev_t devStruct, availableDevices) {
                     if(devStruct.id == devID) {
@@ -997,7 +998,7 @@ void MainWindow::setLedState(QString commandStr, quint16 value) {
 
 void MainWindow::reselectDevice() {
     QStringList avDevs;
-    int currSelectedItem = 0;
+    int currSelectedItem = -1;
     int i = 0;
     foreach(availableDev_t devStruct, availableDevices) {
         avDevs.append(devStruct.name);
@@ -1024,8 +1025,6 @@ void MainWindow::selectedDeviceSlot(QString userSelectedDevice) {
                 }
                 devID = devStruct.id;
                 settings.setLastSelectedDeviceId(devID);
-//                availableDevices.clear();
-//                loadConfig(devID);
                 isDeviceLoaded = true;
 
                 if(state) serialPort->setPortState(true);
