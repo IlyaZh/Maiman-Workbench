@@ -814,7 +814,8 @@ void MainWindow::readComData_Slot(QByteArray str) {
         this->writeToConsole("<- "+str, CONSOLE_RECEIVE_COLOR);
         if(command == IDENTIFY_DEVICE_COMMAND) {
             if(value == COMMON_OLD_DEVICES_VALUE) {
-                devID = settings.getLastSelectedDeviceId();
+                // Don't save last selected ID. Ask everytime for common ID devices
+                devID = 0; // settings.getLastSelectedDeviceId();
                 bool isCommonDevice = false;
                 foreach(availableDev_t devStruct, availableDevices) {
                     if(devStruct.id == devID) {
