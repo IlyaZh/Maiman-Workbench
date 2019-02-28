@@ -7,7 +7,8 @@
 #include <QSerialPortInfo>
 #include <QPointer>
 #include <QFont>
-#include "appsettings.h"
+#include <QPoint>
+//#include "appsettings.h"
 
 #ifndef COMMONDEFINES_H
 #define COMMONDEFINES_H
