@@ -11,7 +11,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
     ui->updateButton->hide();
     connect(ui->updateButton, SIGNAL(clicked(bool)), this, SLOT(updateButtonPressed()));
 
-    QString str = "Version: " + QString::number(MAJOR_VERSION) + "." + QString::number(MINOR_VERSION);
+    QString str = "Version: " + QString::number(MAJOR_VERSION) + "." + QString::number(MINOR_VERSION) + "." + QString::number(PATCH_VERSION);
     if (!updateUrl.isEmpty()) {
         str.append("<br><b>Update is available!</b>");
         ui->updateButton->show();

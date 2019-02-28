@@ -1195,8 +1195,8 @@ void MainWindow::updateRepDownloadedSlot() {
     QStringList strList = data.split(";");
     QStringList version = strList.at(0).split(".");
     QString url = strList.at(1);
-    uint32_t newVer = 100*version.at(0).toUInt() + version.at(1).toUInt();
-    uint32_t currVer = MAJOR_VERSION*100+MINOR_VERSION;
+    uint32_t newVer = 255*255*version.at(0).toUInt() + 255*version.at(1).toUInt() + version.at(2).toUInt();
+    uint32_t currVer = MAJOR_VERSION*255*255+MINOR_VERSION*255+PATCH_VERSION;
 
     if (url.isEmpty()) return;
 
