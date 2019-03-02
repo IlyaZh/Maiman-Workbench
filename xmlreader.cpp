@@ -110,7 +110,6 @@ void xmlReader::startLoading() {
             }
             if(!isDeviceFound) continue;
 
-
             if (xname == "content") {
                 parseContent();
 //                currDevIndex++;
@@ -135,7 +134,7 @@ void xmlReader::startLoading() {
                 // игнорируем
             }
         } else if(token == QXmlStreamReader::EndElement) {
-            //if(xml.name() == "Device") break;
+//            if(xml.name() == "Device") break;
         }
     }
 
@@ -338,61 +337,50 @@ void xmlReader::parseParam() {
 void xmlReader::parseLimit() {
 //    if(!currDeviceFound) return;
     QXmlStreamAttributes attrib = xml.attributes();
-    limits_t tmpStruct;
-    tmpStruct.absMaxCode.clear();
-    tmpStruct.absMinCode.clear();
-    tmpStruct.maxCode.clear();
-    tmpStruct.minCode.clear();
-    tmpStruct.title.clear();
-    tmpStruct.divider = 1;
-//    tmpStruct.absMinValue = -100000;
-//    tmpStruct.absMaxValue = -100000;
-//    tmpStruct.absMinValue = -100000;
-//    tmpStruct.absMaxValue = -100000;
+    // If there is no both codes (min and max) then it is a wrong configuration of limit
+    if(!(attrib.hasAttribute("minCode") || attrib.hasAttribute("maxCode"))) return;
 
-//    if(attrib.hasAttribute("absMinValue")) {
-//        tmpStruct.absMinValue = attrib.value("absMinValue").toDouble();
-//    }
+    bool showMin = false;
+    bool showMax = false;
 
-//    if(attrib.hasAttribute("absMaxValue")) {
-//        tmpStruct.absMaxValue = attrib.value("absMaxValue").toDouble();
-//    }
-
-//    if(attrib.hasAttribute("maxValue")) {
-//        tmpStruct.maxValue = attrib.value("maxValue").toDouble();
-//    }
-
-//    if(attrib.hasAttribute("minValue")) {
-//        tmpStruct.minValue = attrib.value("minValue").toDouble();
-//    }
-
-    if(attrib.hasAttribute("absMinCode")) {
-        tmpStruct.absMinCode = attrib.value("absMinCode").toString();
+    if(attrib.hasAttribute("show")) {
+        QString showValue = attrib.value("show").toString();
+        if(showValue.compare("min", Qt::CaseInsensitive) == 0) {
+            showMin = true;
+        } else if(showValue.compare("max", Qt::CaseInsensitive) == 0) {
+            showMax = true;
+        } else if(showValue.compare("both", Qt::CaseInsensitive) == 0) {
+            showMax = showMin = true;
+        }
     }
 
-    if(attrib.hasAttribute("minCode")) {
-        tmpStruct.minCode = attrib.value("minCode").toString();
+    DeviceLimit* devLimit = new DeviceLimit(xml.readElementText(),
+                                 attrib.hasAttribute("unit") ? attrib.value("unit").toString() : "",
+                                 attrib.hasAttribute("bottomCode") ? attrib.value("bottomCode").toString() : "",
+                                 attrib.hasAttribute("upperCode") ? attrib.value("upperCode").toString() : "",
+                                 attrib.hasAttribute("minCode") ? attrib.value("minCode").toString() : "",
+                                 attrib.hasAttribute("maxCode") ? attrib.value("maxCode").toString() : "",
+                                 attrib.hasAttribute("divider") ? attrib.value("divider").toDouble() : 1,
+                                 showMin, showMax);
+
+
+    if(attrib.hasAttribute("min")) {
+        devLimit->setMinValue(attrib.value("min").toDouble());
     }
 
-    if(attrib.hasAttribute("absMaxCode")) {
-        tmpStruct.absMaxCode = attrib.value("absMaxCode").toString();
+    if(attrib.hasAttribute("max")) {
+        devLimit->setMaxValue(attrib.value("max").toDouble());
     }
 
-    if(attrib.hasAttribute("maxCode")) {
-        tmpStruct.maxCode = attrib.value("maxCode").toString();
+    if(attrib.hasAttribute("upper")) {
+        devLimit->setUpperValue(attrib.value("upper").toDouble());
     }
 
-    if(attrib.hasAttribute("divider")) {
-        tmpStruct.divider = attrib.value("divider").toDouble();
+    if(attrib.hasAttribute("bottom")) {
+        devLimit->setBottomValue(attrib.value("bottom").toDouble());
     }
 
-    if(attrib.hasAttribute("unit")) {
-        tmpStruct.unit = attrib.value("unit").toString();
-    }
-
-    tmpStruct.title = xml.readElementText();
-
-    dev->limits.append(tmpStruct);
+    dev->limits.append(devLimit);
 }
 
 void xmlReader::parseCalibration() {

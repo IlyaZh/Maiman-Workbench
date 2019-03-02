@@ -49,9 +49,9 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     </commands>
     <!-- доступные для регулирования пределы -->
     <limits>
-    <!--  <limit absMin="0" min="0201" minValue="2" max="0203" absMax="1500" maxValue="1500" divider="10" unit="ms">Max. Duration</limit>
-      <limit absMax="0306" max="0302" MinValue="5" divider="100" unit="А">Max. Current</limit>
-      <limit absMax="0406" max="0102" min="0101" absMin="0405" divider="10" unit="V">Max. Frequency</limit> -->
+    <!--  <limit bottomCode="0" minCode="0201" min="2" maxCode="0203" upperCode="1500" max="1500" divider="10" unit="ms" show="both">Max. Duration</limit>
+      <limit upperCode="0306" maxCode="0302" min="5" divider="100" unit="А" show="max">Max. Current</limit>
+      <limit upperCode="0406" max="0102" min="0101" bottomCode="0405" divider="10" unit="V" show="max">Max. Frequency</limit> -->
     </limits>
     <!--  калибровка -->
     <calibrationKoefs>
@@ -131,9 +131,9 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     </commands>
     <!-- доступные для регулирования пределы -->
     <limits>
-    <!--  <limit absMin="0" min="0201" minValue="2" max="0203" absMax="1500" maxValue="1500" divider="10" unit="ms">Max. Duration</limit>
-      <limit absMax="0306" max="0302" MinValue="5" divider="100" unit="А">Max. Current</limit>
-      <limit absMax="0406" max="0102" min="0101" absMin="0405" divider="10" unit="V">Max. Frequency</limit> -->
+      <limit bottomCode="0" minCode="0201" min="2" maxCode="0203" upperCode="1500" max="1500" divider="10" unit="ms" show="max">Max. Duration</limit>
+      <limit upperCode="0306" maxCode="0302" min="5" divider="100" unit="А" show="max">Max. Current</limit>
+      <limit upperCode="0406" maxCode="0102" minCode="0101" bottomCode="0405" divider="10" unit="V" show="max">Max. Frequency</limit>
     </limits>
     <!--  калибровка -->
     <calibrationKoefs>
@@ -213,9 +213,9 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     </commands>
     <!-- доступные для регулирования пределы -->
     <limits>
-    <!--  <limit absMin="0" min="0201" minValue="2" max="0203" absMax="1500" maxValue="1500" divider="10" unit="ms">Max. Duration</limit>
-      <limit absMax="0306" max="0302" MinValue="5" divider="100" unit="А">Max. Current</limit>
-      <limit absMax="0406" max="0102" min="0101" absMin="0405" divider="10" unit="V">Max. Frequency</limit> -->
+    <!--  <limit bottom="0" minCode="0201" min="2" maxCode="0203" upper="1500" max="1500" divider="10" unit="ms" show="max">Max. Duration</limit>
+      <limit upperCode="0306" maxCode="0302" min="5" divider="100" unit="А" show="max">Max. Current</limit>
+      <limit upperCode="0406" maxCode="0102" minCode="0101" bottomCode="0405" divider="10" unit="V" show="max">Max. Frequency</limit> -->
     </limits>
     <!--  калибровка -->
     <calibrationKoefs>
@@ -301,9 +301,9 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     </commands>
     <!-- доступные для регулирования пределы -->
     <limits>
-    <!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
-      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
-      <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
+    <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max duration</limit>
+      <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
+      <limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</limit> -->
     </limits>
     <!--  калибровка -->
     <calibrationKoefs>
@@ -379,6 +379,7 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
       <command code="0300" divider="100"/>
       <command code="0301" divider="100" interval="100"/>
       <command code="0302" divider="100" interval="100"/>
+      <command code="0306" divider="100" interval="100"/>
       <command code="0307" divider="10"/>
       <command code="030E" divider="100" interval="10"/>
       <command code="0407" divider="10"/>
@@ -394,9 +395,9 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     </commands>
     <!-- доступные для регулирования пределы -->
     <limits>
-    <!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
-      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
-      <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
+       <limit minCode="0201" upper="1500" divider="10" unit="мс" show="max">Max duration</limit>
+      <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
+      <limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</limit>
     </limits>
     <!--  калибровка -->
     <calibrationKoefs>
@@ -487,9 +488,9 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     </commands>
     <!-- доступные для регулирования пределы -->
     <limits>
-    <!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
-      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
-      <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
+    <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max>Max duration</limit>
+      <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
+      <limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</limit> -->
     </limits>
     <!--  калибровка -->
     <calibrationKoefs>
@@ -580,9 +581,9 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     </commands>
     <!-- доступные для регулирования пределы -->
     <limits>
-    <!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
-      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
-      <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
+    <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max. duration</limit>
+      <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
+      <limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</limit> -->
     </limits>
     <!--  калибровка -->
     <calibrationKoefs>
@@ -673,9 +674,9 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     </commands>
     <!-- доступные для регулирования пределы -->
     <limits>
-    <!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
-      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
-      <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
+    <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max duration</limit>
+      <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
+      <limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</limit> -->
     </limits>
     <!--  калибровка -->
     <calibrationKoefs>
@@ -764,9 +765,9 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     </commands>
     <!-- доступные для регулирования пределы -->
     <limits>
-    <!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
-      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
-      <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
+    <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max duration</limit>
+      <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
+      <limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</limit> -->
     </limits>
     <!--  калибровка -->
     <calibrationKoefs>

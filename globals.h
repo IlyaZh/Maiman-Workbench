@@ -8,6 +8,7 @@
 #include <QWidget>
 #include "parameterform.h"
 #include "parameter_t.h"
+#include "devicelimit.h"
 
 typedef struct {
     QString code;
@@ -17,16 +18,16 @@ typedef struct {
     QPointer<QPushButton> btnPtr;
 } doubleMaskCommand_t;
 
-typedef struct {
-    QString absMinCode;
-    QString minCode;
-    QString absMaxCode;
-    QString maxCode;
-    QString title;
-    double defaulValue;
-    double divider;
-    QString unit;
-} limits_t;
+//typedef struct {
+//    QString absMinCode;
+//    QString minCode;
+//    QString absMaxCode;
+//    QString maxCode;
+//    QString title;
+//    double defaulValue;
+//    double divider;
+//    QString unit;
+//} limits_t;
 
 typedef struct {
     QString title;
@@ -66,7 +67,7 @@ typedef struct {
     QString link;
     quint16 deviceID;
     QList<parameter_t*> commands;
-    QList<limits_t> limits;
+    QList<DeviceLimit*> limits;
     QList<calibration_t> calibrate;
     QList<ParameterForm*> paramWidgets;
     QList<specParams_t> specialParameters;

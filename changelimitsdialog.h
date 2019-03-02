@@ -5,6 +5,7 @@
 #include "commondefines.h"
 #include "globals.h"
 #include <QString>
+#include "devicelimit.h"
 
 namespace Ui {
 class ChangeLimitsDialog;
@@ -21,10 +22,10 @@ public:
 private:
     Ui::ChangeLimitsDialog *ui;
     double min, max, absMin, absMax;
-    const limits_t *commands;
+    DeviceLimit *limit;
 
 public slots:
-    void setStruct(const limits_t&);
+    void setData(DeviceLimit&);
     void setAbsMax(double val);
     void setMax(double val);
     void setMax(int val);

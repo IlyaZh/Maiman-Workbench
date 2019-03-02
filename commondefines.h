@@ -26,7 +26,7 @@ const QString DEVICE_STATUS_COMMAND = "0700";
 
 const quint8 MAJOR_VERSION = 1;
 const quint8 MINOR_VERSION = 0;
-const quint8 PATCH_VERSION = 0;
+const quint8 PATCH_VERSION = 1;
 
 const QString SECRET_CODE_COMBINATION = "3.1415926";
 

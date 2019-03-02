@@ -370,12 +370,12 @@ void MainWindow::refreshMenuLimits() {
 
     ui->menuLimits->setEnabled(true);
 
-    foreach(limits_t item, devConfig.limits) {
+    foreach(DeviceLimit* limit, devConfig.limits) {
         QAction *newAction = new QAction();
-        newAction->setText(item.title);
+        newAction->setText(limit->getTitle());
         ui->menuLimits->addAction(newAction);
         menuLimitsActions.append(newAction);
-        signalMapper->setMapping(newAction, item.title);
+        signalMapper->setMapping(newAction, limit->getTitle());
         connect(newAction, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
     }
     connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(openLimitsWindow(QString)));
@@ -383,17 +383,17 @@ void MainWindow::refreshMenuLimits() {
 
 void MainWindow::openLimitsWindow(QString name) {
     for(uint8_t i = 0; i < devConfig.limits.size(); i++) {
-        const limits_t& item = devConfig.limits.at(i);
-        if(item.title == name) {
-            changeLimitsDialog->setStruct(item);
+        DeviceLimit* limit = devConfig.limits.at(i);
+        if(limit->getTitle() == name) {
+            changeLimitsDialog->setData(*limit);
             foreach(parameter_t* param, devConfig.commands) {
-                if(param->getCode() == item.absMaxCode) {
+                if(param->getCode().compare(limit->getUpperLimitCode()) == 0) {
                     changeLimitsDialog->setAbsMax(param->getConvertedValue());
-                } else if(param->getCode() == item.absMinCode) {
+                } else if(param->getCode().compare(limit->getBottomLimitCode()) == 0) {
                     changeLimitsDialog->setAbsMin(param->getConvertedValue());
-                } else if(param->getCode() == item.maxCode) {
+                } else if(param->getCode().compare(limit->getMaxCode()) == 0) {
                     changeLimitsDialog->setMax(param->getConvertedValue());
-                } else if(param->getCode() == item.minCode) {
+                } else if(param->getCode().compare(limit->getMinCode()) == 0) {
                     changeLimitsDialog->setMin(param->getConvertedValue());
                 }
             }
@@ -1067,6 +1067,7 @@ void MainWindow::loadConfigFinished(bool isDeviceFound) {
         writeToConsole(tr("CONFIG: Config is loaded successful!"));
 
         setRegulatorsEnable(true);
+        prepareToSendNextCommand();
     } else {
         emit writeToConsoleError(tr("CONFIG: The device hasn't found!"));
     }
@@ -1195,8 +1196,8 @@ void MainWindow::updateRepDownloadedSlot() {
     QStringList strList = data.split(";");
     QStringList version = strList.at(0).split(".");
     QString url = strList.at(1);
-    uint32_t newVer = 100*version.at(0).toUInt() + version.at(1).toUInt();
-    uint32_t currVer = MAJOR_VERSION*100+MINOR_VERSION;
+    uint32_t newVer = 255*255*version.at(0).toUInt() + 255*version.at(1).toUInt() + version.at(2).toUInt();
+    uint32_t currVer = MAJOR_VERSION*255*255+MINOR_VERSION*255+PATCH_VERSION;
 
     if (url.isEmpty()) return;
 
