@@ -140,6 +140,13 @@ QPushButton {
        <family>Share Tech Mono</family>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">QDoubleSpinBox {
+	background: rgb(51,51,51);
+	color: #fff;
+}
+</string>
+     </property>
     </widget>
    </item>
   </layout>

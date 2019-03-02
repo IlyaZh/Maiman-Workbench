@@ -20,78 +20,83 @@ ChangeLimitsDialog::~ChangeLimitsDialog()
     delete ui;
 }
 
-void ChangeLimitsDialog::setStruct(const limits_t &item) {
-    commands = &item;
+void ChangeLimitsDialog::setData(DeviceLimit &devLimit) {
+    limit = &devLimit;
 
-    ui->maxValueSpinBox->setDecimals(qRound(log10(commands->divider)));
-    ui->maxValueSpinBox->setSingleStep(1/commands->divider);
-    ui->minValueSpinBox->setDecimals(qRound(log10(commands->divider)));
-    ui->minValueSpinBox->setSingleStep(1/commands->divider);
+    ui->maxValueSpinBox->setDecimals(qRound(log10(limit->getDivider())));
+    ui->maxValueSpinBox->setSingleStep(1/limit->getDivider());
+    ui->minValueSpinBox->setDecimals(qRound(log10(limit->getDivider())));
+    ui->minValueSpinBox->setSingleStep(1/limit->getDivider());
 
-    ui->titleLabel->setText(commands->title + QString(", ") + commands->unit);
+    ui->titleLabel->setText(limit->getTitle() + QString(", ") + limit->getUnit());
 
-    ui->minSlider->setVisible(!item.absMinCode.isEmpty());
-    ui->minValueSpinBox->setVisible(!item.absMinCode.isEmpty());
-    ui->absMinLabel->setVisible(!item.absMinCode.isEmpty());
+    setAbsMin(limit->getBottomValue());
+    setAbsMax(limit->getUpperValue());
+    setMin(limit->getMinValue());
+    setMax(limit->getMaxValue());
 
-    ui->maxSlider->setVisible(!item.absMaxCode.isEmpty());
-    ui->maxValueSpinBox->setVisible(!item.absMaxCode.isEmpty());
-    ui->absMaxLabel->setVisible(!item.absMaxCode.isEmpty());
+    ui->minSlider->setVisible(limit->isShowMin());
+    ui->minValueSpinBox->setVisible(limit->isShowMin());
+    ui->absMinLabel->setVisible(limit->isShowMin());
 
-    ui->midValueLabel->setVisible(item.absMinCode.isEmpty() || item.absMaxCode.isEmpty());
+    ui->maxSlider->setVisible(limit->isShowMax());
+    ui->maxValueSpinBox->setVisible(limit->isShowMax());
+    ui->absMaxLabel->setVisible(limit->isShowMax());
+
+    ui->midValueLabel->setVisible(!(limit->isShowMin() && limit->isShowMax()));
 
 //    this->updateValues();
 }
 
 void ChangeLimitsDialog::setAbsMax(double val) {
     absMax = val;
-    QString formatedValue = QString::number(absMax, DOUBLE_FORMAT, log10(commands->divider)) + commands->unit;
+    QString formatedValue = QString::number(absMax, DOUBLE_FORMAT, qRound(log10(limit->getDivider()))) + limit->getUnit();
     ui->absMaxLabel->setText(formatedValue);
-    ui->maxSlider->setMaximum(qRound(absMax*commands->divider));
+    ui->maxSlider->setMaximum(qRound(absMax*limit->getDivider()));
     ui->maxValueSpinBox->setMaximum(absMax);
 }
 
 void ChangeLimitsDialog::setMax(double val) {
     max = val;
     ui->maxValueSpinBox->setValue(max);
-    ui->maxSlider->setValue(qRound(max*commands->divider));
+    ui->maxSlider->setValue(qRound(max*limit->getDivider()));
 
-    ui->minSlider->setMaximum(qRound(max*commands->divider));
+    ui->minSlider->setMaximum(qRound(max*limit->getDivider()));
     ui->minValueSpinBox->setMaximum(max);
 
-    if(commands->absMaxCode.isEmpty()) {
-        ui->midValueLabel->setText(QString::number(max, DOUBLE_FORMAT, log10(commands->divider)) + commands->unit);
+    if(!limit->isShowMax()) {
+        ui->midValueLabel->setText(QString::number(max, DOUBLE_FORMAT, qRound(log10(limit->getDivider()))) + limit->getUnit());
     }
 }
 
 void ChangeLimitsDialog::setMax(int val) {
-    max = (double)val/commands->divider;
+    max = static_cast<double> (val)/limit->getDivider();
     this->setMax(max);
 }
 
 void ChangeLimitsDialog::setAbsMin(double val) {
     absMin = val;
-    QString formatedValue = QString::number(absMin, DOUBLE_FORMAT, log10(commands->divider)) + commands->unit;
+    QString formatedValue = QString::number(absMin, DOUBLE_FORMAT, qRound(log10(limit->getDivider()))) + limit->getUnit();
     ui->absMinLabel->setText(formatedValue);
-    ui->minSlider->setMinimum(qRound(absMin*commands->divider));
+    ui->minSlider->setMinimum(qRound(absMin*limit->getDivider()));
     ui->minValueSpinBox->setMinimum(absMin);
 }
 
 void ChangeLimitsDialog::setMin(double val) {
     min = val;
     ui->minValueSpinBox->setValue(min);
-    ui->minSlider->setValue(qRound(min*commands->divider));
+    ui->minSlider->setValue(qRound(min*limit->getDivider()));
 
-    ui->maxSlider->setMinimum(qRound(min*commands->divider));
+    ui->maxSlider->setMinimum(qRound(min*limit->getDivider()));
     ui->maxValueSpinBox->setMinimum(min);
 
-    if(commands->absMinCode.isEmpty()) {
-        ui->midValueLabel->setText(QString::number(min, DOUBLE_FORMAT, log10(commands->divider)) + commands->unit);
+    if(!limit->isShowMin()) {
+        ui->midValueLabel->setText(QString::number(min, DOUBLE_FORMAT, qRound(log10(limit->getDivider()))) + limit->getUnit());
     }
 }
 
 void ChangeLimitsDialog::setMin(int val) {
-    min = (double)val/commands->divider;
+    min = static_cast<double> (val)/limit->getDivider();
     this->setMin(min);
 }
 
@@ -103,15 +108,15 @@ void ChangeLimitsDialog::setMin(int val) {
 //}
 
 void ChangeLimitsDialog::saveResult() {
-    if(!commands->absMinCode.isEmpty()) {
+    if(limit->isShowMin() && !limit->getMinCode().isEmpty()) {
         int value = ui->minSlider->value();
-        QString strToSend = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(commands->minCode).arg(value, 4, 16, QChar('0')).toUpper();
+        QString strToSend = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(limit->getMinCode()).arg(value, 4, 16, QChar('0')).toUpper();
         emit sendData(strToSend);
     }
 
-    if(!commands->absMaxCode.isEmpty()) {
+    if(limit->isShowMax() && !limit->getMaxCode().isEmpty()) {
         int value = ui->maxSlider->value();
-        QString strToSend = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(commands->maxCode).arg(value, 4, 16, QChar('0')).toUpper();
+        QString strToSend = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(limit->getMaxCode()).arg(value, 4, 16, QChar('0')).toUpper();
         emit sendData(strToSend);
     }
     this->hide();

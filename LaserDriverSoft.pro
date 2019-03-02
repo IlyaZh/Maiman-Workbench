@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     aboutdevicedialog.cpp \
     appsettings.cpp \
     calibratedialog.cpp \
-    selectdevicedialog.cpp
+    selectdevicedialog.cpp \
+    devicelimit.cpp
 
 HEADERS  += mainwindow.h \
     commondefines.h \
@@ -44,7 +45,8 @@ HEADERS  += mainwindow.h \
     aboutdevicedialog.h \
     appsettings.h \
     calibratedialog.h \
-    selectdevicedialog.h
+    selectdevicedialog.h \
+    devicelimit.h
 
 FORMS    += mainwindow.ui \
     aboutdialog.ui \
