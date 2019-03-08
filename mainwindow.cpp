@@ -96,10 +96,6 @@ void MainWindow::setConnections() {
     QObject::connect(serialPort, SIGNAL(dataIsSentSignal()), this, SLOT(prepareToSendNextCommand()));
     // Установка флага состояния порта в главном окне, при изменении состояния порта
     QObject::connect(serialPort, SIGNAL(portNewState(bool)), this, SLOT(getPortNewState(bool)));
-    // Изменение состояние COM-порта при нажатии кнопки connect\disconnect
-//    QObject::connect(this, SIGNAL(setPortNewState(bool)), serialPort, SLOT(setPortState(bool)));
-    // Отправка данных в ком порт из главного окна программы
-//    QObject::connect(this, SIGNAL(sendToPort(QString)), serialPort, SLOT(sendData(QString)));
     // Если произошел таймаут СОМ-порта - сообщаем в главное окно
     QObject::connect(serialPort, SIGNAL(portTimeroutOccure()), this, SLOT(comPortTimeout()));
     // Произошла ошибка COM-порта - пишем в лог и консоль
@@ -201,9 +197,7 @@ void MainWindow::setupWindow() {
 
     comPortIntervalCounter = 1;
 
-#ifndef DEBUG_MODE
-    showConsoleSlot(false);
-#endif
+//    showConsoleSlot(false); debug
 }
 
 //void MainWindow::setupIndicators() {
@@ -735,7 +729,6 @@ void MainWindow::getPortNewState(bool state) {
     if (state != portIsOpen) {
         if(state) { // Port is openned now
             this->writeToConsole(settings.getComPort() + tr(" is open!\n"), CONSOLE_INFO_COLOR);
-            //emit writeToLogSignal(tr("COM: ") + COM_CURRENT_PORT + " (" + QString::number(COM_CURRENT_BAUDRATE) + "bps)" + tr(" is open!\n"));
             ui->comPortConnectButton->setText(settings.getComPort() + QString("   ") + QString::number(settings.getComBaudrate()) + "bps");
             startDeviceIdent();
             setLink(true);
@@ -744,12 +737,11 @@ void MainWindow::getPortNewState(bool state) {
             this->writeToConsole(settings.getComPort() + tr(" is close!\n"), CONSOLE_INFO_COLOR);
             //emit writeToLogSignal(tr("COM: ") + COM_CURRENT_PORT + tr(" is close!\n"));
             ui->comPortConnectButton->setText(tr("Disconnected"));
-//            if(devID == COMMON_OLD_DEVICES_VALUE) isDeviceLoaded = false;
             devID = 0;
+            isDeviceLoaded = false;
             settings.setLastSelectedDeviceId(0);
             setLink(false);
             setRegulatorsEnable(false);
-//            ui->menuLimits->setEnabled(false);
         }
         ui->consoleStartStopButton->setEnabled(state);
         ui->consoleStartStopButton->setChecked(!autoSendNextCommand);
