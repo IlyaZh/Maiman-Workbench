@@ -1,7 +1,7 @@
-#include "parameterform.h"
+#include "parametercontroller.h"
 
 //ParameterForm::ParameterForm(const paramControls_t &inParam, QWidget *parent) :
-ParameterForm::ParameterForm(QWidget *parent) : QWidget(parent)
+ParameterController::ParameterController(QWidget *parent) : QWidget(parent)
 {
     QUiLoader loader;
     QFile file(":/forms/parambigwidget.ui");
@@ -104,32 +104,25 @@ ParameterForm::ParameterForm(QWidget *parent) : QWidget(parent)
     setEditLineDefaultState();
 }
 
-ParameterForm::~ParameterForm() {
+ParameterController::~ParameterController() {
     if(compactWidget) delete compactWidget;
     if(bigWidget) delete bigWidget;
     if(textWidget) delete textWidget;
 }
 
-QWidget* ParameterForm::loadWidget() {
+QWidget* ParameterController::loadWidget() {
     return bigWidget;
 }
 
-QWidget* ParameterForm::loadCompactWidget() {
+QWidget* ParameterController::loadCompactWidget() {
     return compactWidget;
 }
 
-QWidget* ParameterForm::loadTextWidget() {
+QWidget* ParameterController::loadTextWidget() {
     return textWidget;
 }
 
-//void ParameterForm::updateWidget() {}
-
-//void ParameterForm::deleteWidget() {
-//    if(compactWidget != 0) compactWidget->deleteLater();
-//    if(bigWidget != 0) bigWidget->deleteLater();
-//}
-
-void ParameterForm::setDivider(double val) {
+void ParameterController::setDivider(double val) {
     divider = val;
     QDoubleValidator *validator = new QDoubleValidator();
     validator->setDecimals(qRound(log10(divider)));
@@ -137,11 +130,11 @@ void ParameterForm::setDivider(double val) {
     ui_currValueCompactLine->setValidator(validator);
 }
 
-void ParameterForm::setIsTemperatureFlag(bool state) {
+void ParameterController::setIsTemperatureFlag(bool state) {
     isTemperatureFlag = state;
 }
 
-void ParameterForm::hideRealValue(bool state) {
+void ParameterController::hideRealValue(bool state) {
     hideReal = state;
     if(hideReal) {
         // только установленное значение
@@ -187,7 +180,7 @@ void ParameterForm::hideRealValue(bool state) {
 
 }
 
-void ParameterForm::setTitle(QString str) {
+void ParameterController::setTitle(QString str) {
     title = str;
     ui_titleLabel->setText(str);
     ui_titleCompactLabel->setText(str);
@@ -195,7 +188,7 @@ void ParameterForm::setTitle(QString str) {
     titleLabel->setText(str);
 }
 
-void ParameterForm::setUnit(QString str) {
+void ParameterController::setUnit(QString str) {
     unit = str;
     if(isTemperature()) {
         unit += settings.getTemperatureSymbol();
@@ -216,9 +209,8 @@ void ParameterForm::setUnit(QString str) {
     }
 }
 
-void ParameterForm::setMax(double val) {
+void ParameterController::setMax(double val) {
     max = val;
-    isUserEdited = false;
 
     ui_maxLabel->setText("max=" + wlocale.toString(max, DOUBLE_FORMAT, log10(divider)) + unit);
     ui_maxCompactLabel->setText("max=" + wlocale.toString(max, DOUBLE_FORMAT, log10(divider)) + unit);
@@ -237,9 +229,8 @@ void ParameterForm::setMax(double val) {
 //    ui_currValueCompactLine->setValidator(validator);
 }
 
-void ParameterForm::setMin(double val) {
+void ParameterController::setMin(double val) {
      min = val;
-    isUserEdited = false;
 
     ui_minLabel->setText("min=" + wlocale.toString(min, DOUBLE_FORMAT, log10(divider)) + unit);
     ui_minCompactLabel->setText("min=" + wlocale.toString(min, DOUBLE_FORMAT, log10(divider)) + unit);
@@ -258,23 +249,23 @@ void ParameterForm::setMin(double val) {
 //    ui_currValueCompactLine->setValidator(validator);
 }
 
-void ParameterForm::setPinState(bool val) {
+void ParameterController::setPinState(bool val) {
     pinState = val;
 }
 
-bool ParameterForm::getPinState() {
+bool ParameterController::getPinState() {
     return pinState;
 }
 
-bool ParameterForm::getEnableState() {
+bool ParameterController::getEnableState() {
     return ui_currValueLine->isEnabled();
 }
 
-void ParameterForm::setType(QString str) {
+void ParameterController::setType(QString str) {
     type = str;
 }
 
-void ParameterForm::setRealValue(double value) {
+void ParameterController::setRealValue(double value) {
     realValue = value;
     ui_readedValueBar->setValue(qRound(realValue*divider));
     ui_readedValueBar->setStyleSheet(" QProgressBar { \
@@ -294,19 +285,15 @@ void ParameterForm::setRealValue(double value) {
 
 }
 
-void ParameterForm::setSentValue(double value) {
+void ParameterController::setSentValue(double value) {
     if(!isUserEdited)
         ui_valueSlider->setValue((int) qRound(value*divider));
 }
 
-//void ParameterForm::setValueComm(QString str) {
-//    valueComm = str;
-//}
-
 // slots
 
 // Try to change this slot for sliderMoved() or sliderReleased()
-void ParameterForm::on_valueSlider_valueChanged(int value) {
+void ParameterController::on_valueSlider_valueChanged(int value) {
     currValue = (double)value/divider;
     ui_sendValueButton->hide();
     ui_sendValueCompactButton->hide();
@@ -328,7 +315,7 @@ void ParameterForm::on_valueSlider_valueChanged(int value) {
     }
 }
 
-void ParameterForm::on_valueSlider_sliderPressed() {
+void ParameterController::on_valueSlider_sliderPressed() {
     isUserEdited = true;
     /*
      * Делаем такой флаг, чтобы избежать отправки огромного количества комманд
@@ -337,7 +324,7 @@ void ParameterForm::on_valueSlider_sliderPressed() {
      */
 }
 
-void ParameterForm::on_valueSlider_sliderMoved(int value) {
+void ParameterController::on_valueSlider_sliderMoved(int value) {
     currValue = (double) value/divider;
     ui_sendValueButton->hide();
     ui_sendValueCompactButton->hide();
@@ -353,14 +340,14 @@ void ParameterForm::on_valueSlider_sliderMoved(int value) {
         ui_setValueLabel->setText("set=" + wlocale.toString(currValue, DOUBLE_FORMAT, log10(divider)) + unit);
 }
 
-void ParameterForm::on_valueSlider_sliderReleased() {
+void ParameterController::on_valueSlider_sliderReleased() {
     if(ui_currValueLine->hasFocus()) ui_currValueLine->clearFocus();
     preparedCommand = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(valueComm).arg(ui_valueSlider->value(), 4, 16, QChar('0'));
     emit changeValue(preparedCommand);
     isUserEdited = false;
 }
 
-void ParameterForm::on_minusButton_released() {
+void ParameterController::on_minusButton_released() {
     if(ui_currValueLine->hasFocus()) ui_currValueLine->clearFocus();
     quint16 tmp = ui_valueSlider->value();
     if(tmp > ui_valueSlider->minimum())
@@ -371,7 +358,7 @@ void ParameterForm::on_minusButton_released() {
 //    ui_sendValueCompactButton->hide();
 }
 
-void ParameterForm::on_plusButton_released() {
+void ParameterController::on_plusButton_released() {
     if(ui_currValueLine->hasFocus()) ui_currValueLine->clearFocus();
     quint16 tmp = ui_valueSlider->value();
     if(tmp < ui_valueSlider->maximum())
@@ -382,11 +369,11 @@ void ParameterForm::on_plusButton_released() {
 //    ui_sendValueCompactButton->hide();
 }
 
-void ParameterForm::on_pinButton_released() {
+void ParameterController::on_pinButton_released() {
     setPinState(!pinState);
 }
 
-void ParameterForm::on_currValueLine_returnPressed() {
+void ParameterController::on_currValueLine_returnPressed() {
     currValue = wlocale.toDouble(ui_currValueLine->text());
 
     if(currValue > max) {
@@ -407,12 +394,12 @@ void ParameterForm::on_currValueLine_returnPressed() {
     emit changeValue(preparedCommand);
 }
 
-void ParameterForm::on_currValueLine_textEdited() {
+void ParameterController::on_currValueLine_textEdited() {
     ui_sendValueButton->setChecked(false);
     ui_sendValueButton->show();
 }
 
-void ParameterForm::sendValueSlot() {
+void ParameterController::sendValueSlot() {
     if(ui_sendValueButton->isHidden()) return;
     currValue = wlocale.toDouble(ui_currValueLine->text());
     if(currValue > max) {
@@ -437,7 +424,7 @@ void ParameterForm::sendValueSlot() {
  * COMPACT MODE SLOTS AND SIGNLAS
  */
 
-void ParameterForm::on_currValueCompactLine_returnPressed() {
+void ParameterController::on_currValueCompactLine_returnPressed() {
     if(ui_currValueCompactLine->hasFocus()) ui_currValueCompactLine->clearFocus();
     currValue = wlocale.toDouble(ui_currValueCompactLine->text());
     if(currValue > max) {
@@ -456,12 +443,12 @@ void ParameterForm::on_currValueCompactLine_returnPressed() {
     emit changeValue(preparedCommand);
 }
 
-void ParameterForm::on_currValueCompactLine_textEdited() {
+void ParameterController::on_currValueCompactLine_textEdited() {
     ui_sendValueCompactButton->setChecked(false);
     ui_sendValueCompactButton->show();
 }
 
-void ParameterForm::on_minusCompactButton_released() {
+void ParameterController::on_minusCompactButton_released() {
     if(ui_currValueCompactLine->hasFocus()) ui_currValueCompactLine->clearFocus();
     currValue = wlocale.toDouble(ui_currValueCompactLine->text());
     if(currValue > min)
@@ -471,7 +458,7 @@ void ParameterForm::on_minusCompactButton_released() {
     ui_sendValueCompactButton->hide();
 }
 
-void ParameterForm::on_plusCompactButton_released() {
+void ParameterController::on_plusCompactButton_released() {
     if(ui_currValueCompactLine->hasFocus()) ui_currValueCompactLine->clearFocus();
     currValue = wlocale.toDouble(ui_currValueCompactLine->text());
     if(currValue < max)
@@ -481,7 +468,7 @@ void ParameterForm::on_plusCompactButton_released() {
     ui_sendValueCompactButton->hide();
 }
 
-void ParameterForm::sendValueCompactSlot() {
+void ParameterController::sendValueCompactSlot() {
     if(ui_sendValueCompactButton->isHidden()) return;
     if(ui_currValueCompactLine->hasFocus()) ui_currValueCompactLine->clearFocus();
     currValue = wlocale.toDouble(ui_currValueCompactLine->text());
@@ -501,11 +488,11 @@ void ParameterForm::sendValueCompactSlot() {
     emit changeValue(preparedCommand);
 }
 
-void ParameterForm::setEditLineRedColor() {
+void ParameterController::setEditLineRedColor() {
         ui_currValueLine->setStyleSheet("QLineEdit {\n	color: rgb(255, 255, 255);\n	background: rgb(230, 0, 0);\n	border-radius: 5px;\n	padding: 5px 0;\n}\n\nQLineEdit::disabled {\n	background: rgb(180, 180, 180);\n	color: rgb(76, 93, 100);\n}");
         ui_currValueCompactLine->setStyleSheet("QLineEdit {\n	color: rgb(255, 255, 255);\n	background: rgb(230, 0, 0);\n	border-radius: 5px;\n	padding: 5px 0;\n}\n\nQLineEdit::disabled {\n	background: rgb(180, 180, 180);\n	color: rgb(76, 93, 100);\n}");
 }
-void ParameterForm::setEditLineDefaultState() {
+void ParameterController::setEditLineDefaultState() {
         ui_currValueLine->setStyleSheet("QLineEdit {\n	color: rgb(16, 33, 40);\n	background: rgb(230, 230, 230);\n	border-radius: 5px;\n	padding: 5px 0;\n}\n\nQLineEdit::disabled {\n	background: rgb(180, 180, 180);\n	color: rgb(76, 93, 100);\n}");
         ui_currValueCompactLine->setStyleSheet("QLineEdit {\n	color: rgb(16, 33, 40);\n	background: rgb(230, 230, 230);\n	border-radius: 5px;\n	padding: 5px 0;\n}\n\nQLineEdit::disabled {\n	background: rgb(180, 180, 180);\n	color: rgb(76, 93, 100);\n}");
         ui_currValueCompactLine->setText(wlocale.toString(currValue, DOUBLE_FORMAT, log10(divider)));
@@ -517,7 +504,7 @@ void ParameterForm::setEditLineDefaultState() {
  * END OF COMPACT MODE SLOTS AND SIGNLAS
  */
 
-void ParameterForm::temperatureIsChanged(QString str) {
+void ParameterController::temperatureIsChanged(QString str) {
     if(str == "F" && isCelsius) {
         // Меняем цельсии на фаренгейты
         isCelsius = false;
@@ -538,7 +525,7 @@ void ParameterForm::temperatureIsChanged(QString str) {
 
 }
 
-void ParameterForm::setEnableState(bool state) {
+void ParameterController::setEnableState(bool state) {
     ui_valueSlider->setEnabled(state);
     ui_minusButton->setEnabled(state);
     ui_plusButton->setEnabled(state);
@@ -589,38 +576,38 @@ void ParameterForm::deleteLabels() {
 }*/
 
 
-QString ParameterForm::getMinComm() {
+QString ParameterController::getMinComm() {
     return minComm;
 }
 
-QString ParameterForm::getMaxComm() {
+QString ParameterController::getMaxComm() {
     return maxComm;
 }
 
-QString ParameterForm::getRealComm() {
+QString ParameterController::getRealComm() {
     return realComm;
 }
 
-QString ParameterForm::getValueComm() {
+QString ParameterController::getValueComm() {
     return valueComm;
 }
 
-void ParameterForm::setMinComm(QString str) {
+void ParameterController::setMinComm(QString str) {
     minComm = str;
 }
 
-void ParameterForm::setMaxComm(QString str) {
+void ParameterController::setMaxComm(QString str) {
     maxComm = str;
 }
 
-void ParameterForm::setRealComm(QString str) {
+void ParameterController::setRealComm(QString str) {
     realComm = str;
 }
 
-void ParameterForm::setValueComm(QString str) {
+void ParameterController::setValueComm(QString str) {
     valueComm = str;
 }
 
-bool ParameterForm::isTemperature() {
+bool ParameterController::isTemperature() {
     return isTemperatureFlag;
 }

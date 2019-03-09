@@ -27,7 +27,7 @@
 #include "comport.h"
 #include "consolelogger.h"
 #include "xmlreader.h"
-#include "parameterform.h"
+#include "parametercontroller.h"
 #include "aboutdialog.h"
 #include "filedownloader.h"
 #include "bitslayout.h"
@@ -133,7 +133,7 @@ private:
     QList<QAction*> menuLimitsActions;
     QList<QAction*> menuCalibrateActions;
     QPointer<FileDownloader> filedownloader;
-    QList<parameter_t*>::const_iterator currCommandItt;
+    QList<Command*>::const_iterator currCommandItt;
     quint16 oldDevID;
     bool link;
     QPointer<comPort> serialPort;
@@ -153,6 +153,7 @@ private:
     bool requestAllCommands;
     QFont systemFont;
     SelectDeviceDialog *selectDeviceDialog;
+    quint16 devID;
 
 signals:
 //    void writeToLogSignal(QString);

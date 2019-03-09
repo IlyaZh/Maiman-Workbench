@@ -100,20 +100,14 @@ void ChangeLimitsDialog::setMin(int val) {
     this->setMin(min);
 }
 
-//void ChangeLimitsDialog::updateValues() {
-//    setAbsMax(absMax);
-//    setAbsMin(absMin);
-//    setMin(min);
-//    setMax(max);
-//}
-
 void ChangeLimitsDialog::saveResult() {
+    qDebug() << limit->isShowMin() << limit->getMinCode();
     if(limit->isShowMin() && !limit->getMinCode().isEmpty()) {
         int value = ui->minSlider->value();
         QString strToSend = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(limit->getMinCode()).arg(value, 4, 16, QChar('0')).toUpper();
         emit sendData(strToSend);
     }
-
+    qDebug() << limit->isShowMax() << limit->getMaxCode();
     if(limit->isShowMax() && !limit->getMaxCode().isEmpty()) {
         int value = ui->maxSlider->value();
         QString strToSend = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(limit->getMaxCode()).arg(value, 4, 16, QChar('0')).toUpper();

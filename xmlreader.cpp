@@ -1,26 +1,20 @@
 #include "xmlreader.h"
+#include "command.h"
 
 xmlReader::xmlReader(QObject *parent) : QObject(parent)
 {
     file = nullptr;
 }
 
-xmlReader::~xmlReader() {
-//    if(file) delete file;
-}
-
-
-
 void xmlReader::setDeviceOptions(device_t &device, quint16 dev_id) {
-    dev = &device;
-    dev->hasLaser = false;
-    dev->hasTEC = false;
-    dev->startTECwithLaser = false;
+    this->device = &device;
+    device.hasLaser = false;
+    device.hasTEC = false;
+    device.startTECwithLaser = false;
     deviceId = dev_id;
-    dev->stopCommandDelay = STOP_COMMAND_DELAY_DEFAULT;
-    dev->minCommDelay = COM_COMMAND_MIN_SEND_DELAY;
-    dev->maxCommDelay = COM_COMMAND_MAX_SEND_DELAY;
-//    currDevIndex = 0;
+    device.stopCommandDelay = STOP_COMMAND_DELAY_DEFAULT;
+    device.minCommDelay = COM_COMMAND_MIN_SEND_DELAY;
+    device.maxCommDelay = COM_COMMAND_MAX_SEND_DELAY;
 }
 
 void xmlReader::setList(QList<availableDev_t>& listPtr) {
@@ -87,6 +81,7 @@ void xmlReader::readProgramConfig() {
     emit endOfLoadingProgramConfig(!xml.hasError());
 
     file->close();
+    file->deleteLater();
 }
 
 void xmlReader::startLoading() {
@@ -96,21 +91,18 @@ void xmlReader::startLoading() {
 
     xml.setDevice(file);
 
-
     while(!xml.atEnd() && !xml.hasError()) {
         QXmlStreamReader::TokenType token = xml.readNext();
         if(token == QXmlStreamReader::StartElement) {
             QStringRef xname = xml.name();
             if (xname == "Device") {
-                if(isDeviceFound) {
-                    emit endOfLoadingConfig(true);
-                    return;
-                }
+//                if(isDeviceFound) break;
                 isDeviceFound = parseDevice();
+                if(!isDeviceFound) xml.skipCurrentElement();
             }
-            if(!isDeviceFound) continue;
+//            if(!isDeviceFound) continue;
 
-            if (xname == "content") {
+            else if (xname == "content") {
                 parseContent();
 //                currDevIndex++;
             } else if (xname == "limit") {
@@ -125,16 +117,17 @@ void xmlReader::startLoading() {
                 parseLed();
             } else if (xname == "ledMask") {
                 parseLedMask();
-            } else if (xname == "specialParams") {
+            } else if (xname == "specParam") {
                 parseSpecialParam();
             } else if (xname == "button") {
                 parseButtons();
             } else {
-                // незивестный тэг.
-                // игнорируем
+//                xml.skipCurrentElement();
             }
         } else if(token == QXmlStreamReader::EndElement) {
-//            if(xml.name() == "Device") break;
+            if(xml.name() == "Device" && isDeviceFound) {
+                break;
+            }
         }
     }
 
@@ -142,12 +135,14 @@ void xmlReader::startLoading() {
     // (отсутствует)
 
     if(xml.hasError()) {
-        emit errorHandler("CONFIG: " + xml.errorString());
+        qDebug() << xml.errorString() << " at line " << xml.lineNumber() << xml.text() << xml.tokenString();
+        emit errorHandler("Error in config at line (" + QString::number(xml.lineNumber()) + "): " + xml.errorString());
     } else {
         emit endOfLoadingConfig(isDeviceFound);
     }
 
     file->close();
+    file->deleteLater();
 }
 
 bool xmlReader::parseDevice() {
@@ -155,18 +150,18 @@ bool xmlReader::parseDevice() {
     if(attrib.hasAttribute("id")) {
         quint16 currID = attrib.value("id").toUInt(nullptr, 16);
         if(currID != deviceId) return false;
-        dev->deviceID = currID;
-        if (attrib.hasAttribute("name")) dev->devName = attrib.value("name").toString();
+        device->deviceID = currID;
+        if (attrib.hasAttribute("name")) device->devName = attrib.value("name").toString();
         if(attrib.hasAttribute("minStopCommandDelayMs")) {
-            dev->minCommDelay = attrib.value("minStopCommandDelayMs").toUInt();
+            device->minCommDelay = attrib.value("minStopCommandDelayMs").toUInt();
         }
 
         if(attrib.hasAttribute("maxStopCommandDelayMs")) {
-            dev->maxCommDelay = attrib.value("maxStopCommandDelayMs").toUInt();
+            device->maxCommDelay = attrib.value("maxStopCommandDelayMs").toUInt();
         }
 
         if(attrib.hasAttribute("stopCommandDelayMs")) {
-            dev->stopCommandDelay = attrib.value("stopCommandDelayMs").toUInt();
+            device->stopCommandDelay = attrib.value("stopCommandDelayMs").toUInt();
         }
 
         return true;
@@ -175,75 +170,39 @@ bool xmlReader::parseDevice() {
 }
 
 void xmlReader::parseContent() {
-    while(xml.readNextStartElement()) {
+    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "content")) {
         if(xml.name() == "name") {
-//            availableDevices[currDevIndex].devName = xml.readElementText();
-            dev->devName = xml.readElementText();
+            device->devName = xml.readElementText();
         } else if(xml.name() == "image") {
-//            availableDevices[currDevIndex].image = xml.readElementText();
-            dev->image = xml.readElementText();
+            device->image = xml.readElementText();
         } else if(xml.name() == "description") {
-//            availableDevices[currDevIndex].description = xml.readElementText();
-            dev->description = xml.readElementText();
+            device->description = xml.readElementText();
         } else if(xml.name() == "link") {
-//            availableDevices[currDevIndex].link = xml.readElementText();
-            dev->link = xml.readElementText();
-        } else {
-            xml.skipCurrentElement();
+            device->link = xml.readElementText();
         }
+        xml.readNext();
     }
 }
 
 void xmlReader::parseCommand() {
-
-    parameter_t *tmpPar = new parameter_t();
-
     QXmlStreamAttributes attrib = xml.attributes();
 
-    if(attrib.hasAttribute("code")) {
-        tmpPar->setCode(attrib.value("code").toString());
-    }
+    QString code = (attrib.hasAttribute("code")) ? attrib.value("code").toString() : "";
 
-//    if(attrib.hasAttribute("action")) {
-//        QString tmpString = attrib.value("action").toString();
-//        if(tmpString == "R") tmpPar->setAction(READ);
-//        if(tmpString == "W") tmpPar->setAction(WRITE);
-//        if(tmpString == "RW") tmpPar->setAction(READ+WRITE);
-//    }
+    double divider = (attrib.hasAttribute("divider")) ? attrib.value("divider").toDouble() : 1;
 
-    if(attrib.hasAttribute("divider")) {
-        tmpPar->setDivider(attrib.value("divider").toDouble());
-    }
+    quint8 interval = (attrib.hasAttribute("interval")) ? attrib.value("interval").toUInt() : 1;
 
-    if(attrib.hasAttribute("defaultValue")) {
-        tmpPar->setRawValue(attrib.value("defaultValue").toUInt());
-    }
-
-    if(attrib.hasAttribute("interval")) {
-        tmpPar->setInterval(attrib.value("interval").toUInt());
-    }
-
-//    dev->commands.insert(tmpPar.getCode(), &tmpPar);
-    dev->commands.append(tmpPar);
-
+    device->commands.append(new Command(code, divider, interval));
 }
 
 void xmlReader::parseControls() {
-//    if(!currDeviceFound) return;
-    while(xml.readNextStartElement()) {
+    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "paramControls")) {
         if(xml.name() == "param")
             parseParam();
+        xml.readNext();
     }
 }
-
-//void xmlReader::parseLeds() {
-//    while(xml.readNextStartElement()) {
-//        if(xml.name() == "led")
-//            parseLed();
-//        else if (xml.name() == "ledMask")
-//            parseLedMask();
-//    }
-//}
 
 void xmlReader::parseLed() {
     leds_t led;
@@ -251,12 +210,12 @@ void xmlReader::parseLed() {
     if(attrib.hasAttribute("label")) {
         led.label = attrib.value("label").toString();
     }
-    dev->leds.append(led);
+    device->leds.append(led);
 //    lastLed = dev->leds.length()-1;
 }
 
 void xmlReader::parseLedMask() {
-    if(dev->leds.isEmpty()) return;
+    if(device->leds.isEmpty()) return;
 
     ledMask_t ledMask;
     ledMask.message.clear();
@@ -280,57 +239,55 @@ void xmlReader::parseLedMask() {
     if(!maskMsg.isEmpty())
         ledMask.message = maskMsg;
 
-    dev->leds.last().masks.append(ledMask);
+    device->leds.last().masks.append(ledMask);
 }
 
 void xmlReader::parseParam() {
     QXmlStreamAttributes attrib = xml.attributes();
 
-    ParameterForm* PFptr = new ParameterForm();
-//    parameterTemp_t paramTemp;
+    ParameterController* parameterController = new ParameterController();
 
     if(attrib.hasAttribute("isTemperature")) {
-        PFptr->setIsTemperatureFlag((attrib.value("isTemperature").toUInt() == 1) ? true : false);
-//        paramTemp.isTemperatureFlag = (attrib.value("isTemperature").toUInt() == 1) ? true : false;
+        parameterController->setIsTemperatureFlag((attrib.value("isTemperature").toUInt() == 1) ? true : false);
     } else {
-        PFptr->setIsTemperatureFlag(false);
+        parameterController->setIsTemperatureFlag(false);
     }
 
     if(attrib.hasAttribute("unit")) {
         QString tmpStr = attrib.value("unit").toString();
         tmpStr.replace("(deg)", QString::fromRawData(new QChar('\260'), 1));
-        PFptr->setUnit(tmpStr);
+        parameterController->setUnit(tmpStr);
 //        paramTemp.unit = tmpStr;
     }
 
     if(attrib.hasAttribute("min")) {
-        PFptr->setMinComm(attrib.value("min").toString());
+        parameterController->setMinComm(attrib.value("min").toString());
 //        paramTemp.minComm = attrib.value("min").toString();
     }
 
     if(attrib.hasAttribute("max")) {
-        PFptr->setMaxComm(attrib.value("max").toString());
+        parameterController->setMaxComm(attrib.value("max").toString());
 //        paramTemp.maxComm = attrib.value("max").toString();
     }
 
     if(attrib.hasAttribute("value")) {
-        PFptr->setValueComm(attrib.value("value").toString());
+        parameterController->setValueComm(attrib.value("value").toString());
 //        paramTemp.valueComm = attrib.value("value").toString();
     }
 
     if(attrib.hasAttribute("real")) {
-        PFptr->setRealComm(attrib.value("real").toString());
+        parameterController->setRealComm(attrib.value("real").toString());
 //        paramTemp.realComm = attrib.value("real").toString();
     }
 
     if(attrib.hasAttribute("divider")) {
-        PFptr->setDivider(attrib.value("divider").toDouble());
+        parameterController->setDivider(attrib.value("divider").toDouble());
 //        paramTemp.divider = attrib.value("divider").toDouble();
     }
 
-    PFptr->setTitle(xml.readElementText());
+    parameterController->setTitle(xml.readElementText());
 //    paramTemp.title = xml.readElementText();
-    dev->paramWidgets.append(PFptr);
+    device->paramWidgets.append(parameterController);
 //    tempParams.append(paramTemp);
 }
 
@@ -380,7 +337,7 @@ void xmlReader::parseLimit() {
         devLimit->setBottomValue(attrib.value("bottom").toDouble());
     }
 
-    dev->limits.append(devLimit);
+    device->limits.append(devLimit);
 }
 
 void xmlReader::parseCalibration() {
@@ -410,7 +367,7 @@ void xmlReader::parseCalibration() {
 
     tmpStruct.title = xml.readElementText();
 
-    dev->calibrate.append(tmpStruct);
+    device->calibrate.append(tmpStruct);
 
 }
 
@@ -418,8 +375,6 @@ void xmlReader::parseButtons() {
     doubleMaskCommand_t tmp;
     QXmlStreamAttributes attrib = xml.attributes();
     QString tmpName = "noname";
-//    QPushButton* btn = new QPushButton();
-//    tmp.btnPtr = btn;
     tmp.mask = 0;
 
 //    btn->setStyleSheet("QPushButton {\n	color: #000;\n	border: 1px solid rgb(31,31,31);\n	border-radius: 4px;\n	padding: 3px 20px;\n	background-color: rgb(189, 1, 2);\n}\n\nQPushButton::checked {\n	background-color: rgb(0, 102, 52);\n}");
@@ -428,9 +383,9 @@ void xmlReader::parseButtons() {
         tmpName = attrib.value("name").toString();
 //        btn->setText(tmpName);
         if(tmpName == "laser") {
-            dev->hasLaser = true;
+            device->hasLaser = true;
         } else if (tmpName == "tec") {
-            dev->hasTEC = true;
+            device->hasTEC = true;
         }
     }
 
@@ -449,56 +404,44 @@ void xmlReader::parseButtons() {
         tmp.offCommand = attrib.value("offCommand").toString();
     }
 
-    dev->stateButtons.insert(tmpName, tmp);
+    device->stateButtons.insert(tmpName, tmp);
 }
 
-/*void xmlReader::parseInWindowItems() {
-    while(xml.readNext() != QXmlStreamReader::EndElement) {
-        if(xml.name() == "param") {
-            QXmlStreamAttributes attrib = xml.attributes();
-            if(attrib.hasAttribute("linkCode")) {
-                dev->showInWindowParameters.insert(attrib.value("linkCode").toString(), xml.readElementText());
-            }
-        }
-    }
-}*/
-
 void xmlReader::parseSpecialParam() {
-//    if(!currDeviceFound) return;
-    while(xml.readNext() != QXmlStreamReader::EndElement) {
-        if(xml.name() == "specParam") {
-            specParams_t tmp;
-            QXmlStreamAttributes attrib = xml.attributes();
+//    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "specParam")) {
+        specParams_t tmp;
+        QXmlStreamAttributes attrib = xml.attributes();
 
-            if(attrib.hasAttribute("code")) {
-                tmp.code = attrib.value("code").toString();
-            }
-            if(attrib.hasAttribute("offCommand")) {
-                tmp.offCommand = attrib.value("offCommand").toString();
-            }
-            if(attrib.hasAttribute("onCommand")) {
-                tmp.onCommand = attrib.value("onCommand").toString();
-            }
-            if(attrib.hasAttribute("mask")) {
-                tmp.mask = attrib.value("mask").toUInt(nullptr, 16);
-            } else {
-                tmp.mask = 0;
-            }
-
-            if(attrib.hasAttribute("id")) {
-                tmp.id = attrib.value("id").toUInt(nullptr, 16);
-            }
-
-
-            QCheckBox *cb = new QCheckBox();
-            QString label = xml.readElementText();
-            cb->setText(label);
-            tmp.label = label;
-            cb->setStyleSheet("border: none;");
-            tmp.cbPtr = cb;
-            dev->specialParameters.append(tmp);
+        if(attrib.hasAttribute("code")) {
+            tmp.code = attrib.value("code").toString();
         }
-    }
+        if(attrib.hasAttribute("offCommand")) {
+            tmp.offCommand = attrib.value("offCommand").toString();
+        }
+        if(attrib.hasAttribute("onCommand")) {
+            tmp.onCommand = attrib.value("onCommand").toString();
+        }
+        if(attrib.hasAttribute("mask")) {
+            tmp.mask = attrib.value("mask").toUInt(nullptr, 16);
+        } else {
+            tmp.mask = 0;
+        }
+
+        if(attrib.hasAttribute("id")) {
+            tmp.id = attrib.value("id").toUInt(nullptr, 16);
+        }
+
+
+        QCheckBox *cb = new QCheckBox();
+        QString label = xml.readElementText();
+        cb->setText(label);
+        tmp.label = label;
+        cb->setStyleSheet("border: none;");
+        tmp.cbPtr = cb;
+        device->specialParameters.append(tmp);
+
+//        xml.readNext();
+//    }
 }
 
 //QVector<quint16>& xmlReader::getavailableDevices() {
