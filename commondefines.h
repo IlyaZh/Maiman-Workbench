@@ -80,11 +80,8 @@ const unsigned int STOP_COMMAND_DELAY_DEFAULT = COM_PORT_TIMEOUT-100; // [ms]
 enum comErrors {ERROR_BUFFER_OVERLOAD = 0, ERROR_WRONG_COMMAND = 1};
 const QList<QString> commErrorsDescription = {"Buffer of device was overloaded", "Device received wrong command"};
 
-
 const QString DEFAULT_LOG_FILENAME = "consoleLog " + QDate::currentDate().toString("dd.MM.yyyy") + ".log";
 const QString DEFAULT_LOG_FILEPATH = QDir::currentPath()+"/logs/";
-
-//enum devAction {READ_WRITE, READ_ONLY, WRITE_ONLY};
 
 const int DEFAULT_DIGITS_AFTER_POINT = 2;
 #define DEFAULT_FORMAT_FOR_PARAMETERS 'f', DEFAULT_DIGITS_AFTER_POINT

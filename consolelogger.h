@@ -15,10 +15,8 @@ class consoleLogger : public QObject
 {
     Q_OBJECT
 public:
-    explicit consoleLogger(QObject *parent = 0);
+    explicit consoleLogger(QString logFileName = DEFAULT_LOG_FILENAME, QObject *parent = 0);
     ~consoleLogger();
-    //void setScreen(QPlainTextEdit *ptr);
-    //const QString getLogFilePath();
     void start();
     void stop();
 

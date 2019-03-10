@@ -33,15 +33,8 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 //    }
 }
 
-//void MainWindow::resizeEvent(QResizeEvent *event) {
-//    this->updateWindow();
-//}
-
 
 void MainWindow::setConnections() {
-    // Запоминаем последние 10 отправленных команд
-    //connect(this, SIGNAL(sendToPort(QString)), this, SLOT(setLastSentCommand(QString)));
-
     // Нажатие кнопки соединения\отключения COM-порта
     connect(ui->comPortConnectButton, SIGNAL(released()), this, SLOT(comPortConnectButton_slot()));
     // Отправка сообщений введённых в консоли по нажатию Enter
@@ -100,8 +93,6 @@ void MainWindow::setConnections() {
     QObject::connect(serialPort, SIGNAL(portTimeroutOccure()), this, SLOT(comPortTimeout()));
     // Произошла ошибка COM-порта - пишем в лог и консоль
     QObject::connect(serialPort, SIGNAL(errorOccuredSignal(QString)), this, SLOT(comPortError(QString)));
-    // Разрешение или запрет циклической отсылки комманд в ком-порт
-    //QObject::connect(this, SIGNAL(transmitCycleEnable(bool)), serialPort, SLOT(enableCycleTransmit(bool)));
 
     // Если установленно "автоподключение", то устанавливаем связь с ком-портом при запуске программы
     if(settings.getComAutoconnectFlag()) serialPort->setPortState(true);
@@ -116,7 +107,6 @@ void MainWindow::setConnections() {
     connect(ui->tecButton, SIGNAL(clicked(bool)), this, SLOT(tecButtonSlot()));
 
     // Настройка и создание экземпляра окна "о программе"
-    //connect(aboutDialog, SIGNAL(finished(int)), aboutDialog, SLOT(deleteLater()));
     connect(aboutDialog, SIGNAL(startUpdate()), this, SLOT(startUpdateSlot()));
     connect(aboutDialog, SIGNAL(showConsoleSignal(bool)), this, SLOT(showConsoleSlot(bool)));
 
@@ -126,11 +116,8 @@ void MainWindow::setConnections() {
     connect(ui->devSelectButton, SIGNAL(clicked(bool)), this, SLOT(reselectDevice()));
 
     // Сигналы логгера
-    // Запись событий главного окна в лог
-    //QObject::connect(this, SIGNAL(writeToLogSignal(QString)), logger, SLOT(writeToLog(QString)));
     // Отправка ошибок логгера в консоль основного окна
     QObject::connect(logger, SIGNAL(errorOccuredSignal(QString)), this, SLOT(writeToConsoleError(QString)));
-    logger->start();
 
     // Отправка модели выбранного драйвера (для изделий со старым айди) в главную программу
     connect(selectDeviceDialog, SIGNAL(selectedDevice(QString)), this, SLOT(selectedDeviceSlot(QString)));
@@ -162,10 +149,10 @@ void MainWindow::setupWindow() {
     calibrateDialog = new CalibrateDialog(this);
     xml = new xmlReader(this);
     actualParamsGLayout = new QGridLayout();
-    aboutDeviceDialog = new AboutDeviceDialog();
+    aboutDeviceDialog = new AboutDeviceDialog(this);
     bitsLayout = new BitsLayout(ui->bitMaskBox);
     ui->bitMaskBox->setLayout(bitsLayout->getLayout());
-    selectDeviceDialog = new SelectDeviceDialog();
+    selectDeviceDialog = new SelectDeviceDialog(this);
 
     currCommandItt = nullptr;
     oldDevID = 0;
@@ -177,7 +164,6 @@ void MainWindow::setupWindow() {
     ui->comPortConnectButton->setText(tr("Disconnected"));
     portIsOpen = false;
     isDeviceLoaded = false;
-    //setLink(portIsOpen);
 
     ui->actionAutoconnect->setChecked(settings.getComAutoconnectFlag());
     ui->actionSave_settings->setEnabled(false);
@@ -189,7 +175,6 @@ void MainWindow::setupWindow() {
     setupMenuPort();
     refreshMenuFile();
     ui->actionExit->setShortcut(QKeySequence("ALT+F4"));
-    //checkForUpdatesSlot();
 
 //    ui->devImageLabel->setVisible(false);
     ui->devNameLabel->setVisible(false);
@@ -206,7 +191,7 @@ void MainWindow::setupWindow() {
 
     comPortIntervalCounter = 1;
 
-//    showConsoleSlot(false); debug
+    showConsoleSlot(false);
 }
 
 //void MainWindow::setupIndicators() {
@@ -580,6 +565,7 @@ void MainWindow::refreshMenuView() {
 void MainWindow::setupParameterHandlers() {
 
     serialPort->setStopCommandDelay(devConfig.stopCommandDelay);
+    currCommandItt = nullptr;
 
     if(!devConfig.paramWidgets.empty()) {
 //        QHBoxLayout* hlayoutparams = new QHBoxLayout();
@@ -735,7 +721,6 @@ void MainWindow::getPortNewState(bool state) {
             this->writeToConsole(settings.getComPort() + tr(" is open!\n"), CONSOLE_INFO_COLOR);
             ui->comPortConnectButton->setText(settings.getComPort() + QString("   ") + QString::number(settings.getComBaudrate()) + "bps");
             startDeviceIdent();
-            setLink(true);
             if(ui->statusBar->currentMessage().size() > 0) ui->statusBar->showMessage("");
         } else { // Port is closed now
             this->writeToConsole(settings.getComPort() + tr(" is close!\n"), CONSOLE_INFO_COLOR);
@@ -770,11 +755,6 @@ void MainWindow::startDeviceIdent() {
 
     requestAllCommands = true;
 
-    currCommandItt = nullptr;
-    if (!devConfig.commands.isEmpty()) {
-        currCommandItt = devConfig.commands.constBegin();
-        comPortIntervalCounter = 1;
-    }
     QString tmpStr = QString("%1%2").arg(COM_REQUEST_PREFIX).arg(IDENTIFY_DEVICE_COMMAND, 4, 16, QChar('0'));
     sendDataToPort(tmpStr);
 }
@@ -823,9 +803,15 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     }
 
                     if(!isCommonDevice) {
-                        writeToConsole("Try to select the deivce manually.");
+                        writeToConsole("Please, select deivce model.");
                         reselectDevice();
                     }
+                } else {
+                    setRegulatorsEnable(true);
+                    ui->devNameLabel->setText(devConfig.devName);
+                    ui->devSelectButton->setVisible(true);
+                    ui->devAboutButton->setVisible(true);
+                    oldDevID = devID;
                 }
             } else {
                 devID = value;
@@ -994,24 +980,17 @@ void MainWindow::reselectDevice() {
 }
 
 void MainWindow::selectedDeviceSlot(QString userSelectedDevice) {
-        isDeviceLoaded = false;
-        foreach(availableDev_t devStruct, availableDevices) {
-            if(devStruct.name.compare(userSelectedDevice, Qt::CaseInsensitive) == 0) {
-                bool state = false;
-                if(devID != devStruct.id) {
-//                    state = portIsOpen;
-//                    if(portIsOpen) serialPort->setPortState(false);
-                    clearAllRegulators();
-                }
-                devID = devStruct.id;
-                settings.setLastSelectedDeviceId(devID);
-                loadConfig(devID);
+    isDeviceLoaded = false;
+    foreach(availableDev_t devStruct, availableDevices) {
+        if(devStruct.name.compare(userSelectedDevice, Qt::CaseInsensitive) == 0) {
+            clearAllRegulators();
+            devID = devStruct.id;
+            settings.setLastSelectedDeviceId(devID);
+            loadConfig(devID);
 
-//                if(state) serialPort->setPortState(true);
-
-                break;
-            }
+            break;
         }
+    }
 }
 
 void MainWindow::setComOneStopBit() {
@@ -1134,39 +1113,49 @@ void MainWindow::openHelpSlot() {
 }
 
 void MainWindow::checkForUpdatesSlot() {
+    if(!filedownloader.isNull()) {
+        connect(filedownloader, nullptr, nullptr, nullptr);
+        filedownloader.clear();
+    }
+
     filedownloader = new FileDownloader(QUrl(UPDATE_LIST_URL) , this);
     connect(filedownloader, SIGNAL(downloaded()), this, SLOT(updateRepDownloadedSlot()));
 }
 
 void MainWindow::updateRepDownloadedSlot() {
-    QString data = QString(filedownloader->downloadedData());
-    if (data.isEmpty()) {
-        // Оповещение об отсутствии обновлений.
-        ui->statusBar->showMessage("There is no updates available.", STATUSBAR_MESSAGE_TIMEOUT);
-        return;
-    }
-    QStringList strList = data.split(";");
-    QStringList version = strList.at(0).split(".");
-    QString url = strList.at(1);
-    uint32_t newVer = 255*255*version.at(0).toUInt() + 255*version.at(1).toUInt() + version.at(2).toUInt();
-    uint32_t currVer = MAJOR_VERSION*255*255+MINOR_VERSION*255+PATCH_VERSION;
+    writeToConsole("Checking for updates...");
 
-    if (url.isEmpty()) return;
+    QString data = QString(filedownloader->downloadedData());
+    QStringList strList = data.split(";");
+    QStringList versionList = strList.at(0).split(".");
+    QString url = strList.at(1);
+
+    if (url.isEmpty() || versionList.isEmpty()) return;
+
+    uint32_t newVersion = 0;
+    if(versionList.length() == 3) {
+        newVersion = 255*255*versionList.at(0).toUInt() + 255*versionList.at(1).toUInt() + versionList.at(2).toUInt();
+    } else {
+        newVersion = 255*255*versionList.at(0).toUInt() + 255*versionList.at(1).toUInt();
+    }
+    uint32_t currenVersion = MAJOR_VERSION*255*255+MINOR_VERSION*255+PATCH_VERSION;
 
     updateUrl = url;
 
-    if(newVer > currVer) {
+    if(newVersion > currenVersion) {
         QMessageBox *msgBox = new QMessageBox();
         msgBox->setStyleSheet("QMessageBox QLabel { color: rgb(255,255,255); } QMessageBox { background-color: rgb(51,51,51); }");
         QMessageBox::StandardButton answer;
         answer = msgBox->question(this, tr("Update is available"), tr("Software update is available. Do you want to update now?"), QMessageBox::Yes|QMessageBox::No);
         if(answer == QMessageBox::Yes) {
             startUpdateSlot();
+            writeToConsole("Update is available. Version " + strList.at(0) + ". Update is starting!");
         }
         msgBox->deleteLater();
     } else {
         // Оповещение об отсутствии обновлений.
         ui->statusBar->showMessage("There is no updates available.", STATUSBAR_MESSAGE_TIMEOUT);
+        writeToConsole("There is no updates available.");
     }
 }
 
@@ -1220,7 +1209,7 @@ void MainWindow::setLink(bool state) {
         bitsLayout->setElementColor(linkId, Qt::green);
      } else {
         bitsLayout->setElementColor(linkId, LEDS_DEFAULT_COLOR);
-        ui->devSelectButton->setVisible(false);
+//        ui->devSelectButton->setVisible(false);
 //        ui->devAboutButton->setVisible(false);
     }
 }

@@ -101,6 +101,7 @@
     <widget class="Line" name="line_2">
      <property name="styleSheet">
       <string notr="true">background-color: rgb(18, 18, 18);
+color: rgb(18,18,18);
 width: 1px;</string>
      </property>
      <property name="frameShadow">
