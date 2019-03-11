@@ -2,7 +2,6 @@
 #define ParameterForm_H
 
 #include "commondefines.h"
-//#include "globals.h"
 
 #include "appsettings.h"
 extern AppSettings settings;
@@ -18,57 +17,48 @@ extern AppSettings settings;
 #include <QLineEdit>
 #include <QHBoxLayout>
 #include <QDoubleValidator>
-//#include <QLocale>
-//#include <QRegExpValidator>
 #include <QGroupBox>
 #include <QTimer>
 
-class ParameterForm : public QWidget
+class ParameterController : public QWidget
 {
     Q_OBJECT
 
 public:
-    //explicit ParameterForm(const paramControls_t &inParam, QWidget *parent = 0);
-    explicit ParameterForm(QWidget *parent = nullptr);
-    ~ParameterForm();
-    //~ParameterForm();
+    explicit ParameterController(QString title, QString unit, QString minComm, QString maxComm, QString valueComm, QString realComm, int divider, int realDivider, bool isTemperature = false, QWidget *parent = nullptr);
+    ~ParameterController();
     bool getPinState();
     bool getEnableState();
     QWidget* loadWidget();
     QWidget* loadCompactWidget();
     QWidget* loadTextWidget();
-//    QLabel* getTitleLabel();
-//    QLabel* getValueLabel();
-//    QLabel* getUnitLabel();
-//    void deleteLabels();
     int getCommValue();
     QString getMinComm();
     QString getMaxComm();
     QString getRealComm();
     QString getValueComm();
     bool isTemperature();
-//    void updateWidget();
 
 public slots:
-    void setMinComm(QString str);
-    void setMaxComm(QString str);
-    void setRealComm(QString str);
-    void setValueComm(QString str);
-    void setTitle(QString str);
     void setMax(double val);
     void setMin(double val);
-    void setUnit(QString str);
-    void setType(QString str);
     void setRealValue(double val);
     void setSentValue(double val);
-    void setDivider(double val);
-    void setIsTemperatureFlag(bool state = false);
     void hideRealValue(bool state = false);
     void setEnableState(bool state);
     void temperatureIsChanged(QString);
 
 private:
+    void setUnit(QString str);
+    void setTitle(QString str);
     void setPinState(bool val);
+    void setDivider(int val);
+    void setRealDivider(int val);
+    void prepareBigWidget();
+    void prepareCompactViewWidget();
+    void prepareTextWidget();
+
+    QUiLoader loader;
     QPointer<QWidget> bigWidget;
     QPointer<QWidget> compactWidget;
     QPointer<QWidget> textWidget;
@@ -98,20 +88,18 @@ private:
     QPushButton *ui_plusCompactButton;
     QPushButton *ui_sendValueCompactButton;
     QString unit;
-    QString type;
+//    QString type;
     QString title;
-    //QString valueComm;
     bool pinState;
     bool isCelsius;
     bool hideReal;
     bool isTemperatureFlag;
-    //const paramControls_t *param;
     double min;
     double max;
     double currValue;
     double realValue;
-    double divider;
-    //QHBoxLayout *labelLayout;
+    int realDivider, divider;
+    int precisionOfRealValue, precisionOfValue;
     QLabel* titleLabel;
     QLabel* valueLabel;
     QLabel* unitLabel;
@@ -121,6 +109,7 @@ private:
     QString maxComm;
     QString preparedCommand;
     bool isUserEdited;
+    QDoubleValidator validator;
 
 private slots:
     void on_valueSlider_valueChanged(int value);
@@ -142,7 +131,6 @@ private slots:
     void setEditLineDefaultState();
 
 signals:
-    //void changePinState(bool);
     void changeValue(QString);
 };
 

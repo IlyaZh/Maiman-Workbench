@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>679</width>
+    <width>689</width>
     <height>453</height>
    </rect>
   </property>
@@ -48,6 +48,7 @@
   <property name="styleSheet">
    <string notr="true">QMainWindow *{	
 	background: rgb(51,51,51);
+	color: rgb(255, 255, 255);
 }</string>
   </property>
   <property name="documentMode">
@@ -122,7 +123,7 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>107</width>
+        <width>150</width>
         <height>0</height>
        </size>
       </property>
@@ -611,8 +612,8 @@ color: #fff;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>679</width>
-     <height>23</height>
+     <width>689</width>
+     <height>25</height>
     </rect>
    </property>
    <property name="font">
@@ -982,7 +983,7 @@ QMenu::item:disabled {
   </action>
   <action name="actionSendLog">
    <property name="text">
-    <string>Send log</string>
+    <string>Open logs folder</string>
    </property>
   </action>
   <action name="actiond">

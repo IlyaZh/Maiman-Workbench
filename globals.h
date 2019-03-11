@@ -6,8 +6,8 @@
 #include <QList>
 #include <QCheckBox>
 #include <QWidget>
-#include "parameterform.h"
-#include "parameter_t.h"
+#include "parametercontroller.h"
+#include "command.h"
 #include "devicelimit.h"
 
 typedef struct {
@@ -66,11 +66,11 @@ typedef struct {
     QString description;
     QString link;
     quint16 deviceID;
-    QList<parameter_t*> commands;
+    QMap<QString, Command*> commands;
     QList<DeviceLimit*> limits;
     QList<calibration_t> calibrate;
-    QList<ParameterForm*> paramWidgets;
-    QList<specParams_t> specialParameters;
+    QList<ParameterController*> paramWidgets;
+    QList<specParams_t> binaryOptions;
     QMap<QString, doubleMaskCommand_t> stateButtons;
     QList<leds_t> leds;
     bool hasLaser;

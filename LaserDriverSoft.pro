@@ -17,28 +17,26 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     comport.cpp \
     consolelogger.cpp \
-    parameterform.cpp \
     xmlreader.cpp \
     aboutdialog.cpp \
     filedownloader.cpp \
-    parameter_t.cpp \
     bitslayout.cpp \
     changelimitsdialog.cpp \
     aboutdevicedialog.cpp \
     appsettings.cpp \
     calibratedialog.cpp \
     selectdevicedialog.cpp \
-    devicelimit.cpp
+    devicelimit.cpp \
+    command.cpp \
+    parametercontroller.cpp
 
 HEADERS  += mainwindow.h \
     commondefines.h \
     comport.h \
     consolelogger.h \
-    parameterform.h \
     xmlreader.h \
     aboutdialog.h \
     filedownloader.h \
-    parameter_t.h \
     globals.h \
     bitslayout.h \
     changelimitsdialog.h \
@@ -46,7 +44,9 @@ HEADERS  += mainwindow.h \
     appsettings.h \
     calibratedialog.h \
     selectdevicedialog.h \
-    devicelimit.h
+    devicelimit.h \
+    command.h \
+    parametercontroller.h
 
 FORMS    += mainwindow.ui \
     aboutdialog.ui \

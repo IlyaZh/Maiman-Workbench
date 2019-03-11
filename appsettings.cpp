@@ -16,7 +16,7 @@ quint32 AppSettings::getLastSelectedDeviceId() { return settings->value("userSet
 bool AppSettings::getHideControlsFlag() { return settings->value("userSettings/HideControlsFlag", false).toBool(); }
 int AppSettings::getComCommandsDelay() { return settings->value("userSettings/comPort/commandsDelay", COM_COMMAND_SEND_DELAY).toInt(); }
 QPoint AppSettings::getWindowPosition() { return settings->value("window/position", WINDOW_DEFAULT_POSITION).toPoint(); }
-int AppSettings::getComStopBits() { return settings->value("userSettings/comPort/stopBits", 2).toInt(); }
+int AppSettings::getComStopBits() { return settings->value("userSettings/comPort/stopBits", 1).toInt(); }
 
 // slots
 

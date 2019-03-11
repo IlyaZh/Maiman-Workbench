@@ -1,10 +1,12 @@
 #include "consolelogger.h"
 
-consoleLogger::consoleLogger(QObject *parent) : QObject(parent)
+consoleLogger::consoleLogger(QString logFileName, QObject *parent) : QObject(parent)
 {
-    setLogFileName(DEFAULT_LOG_FILENAME);
+    setLogFileName(logFileName);
     setLogFilePath(DEFAULT_LOG_FILEPATH);
     file = new QFile;
+
+    start();
 
 }
 
@@ -47,7 +49,7 @@ void consoleLogger::stop() {
 void consoleLogger::writeToLog(QString str) {
     QDateTime timestamp;
     timestamp = QDateTime::currentDateTime();
-    QString logString = "[" + timestamp.toString(LOG_TIMESTAMP_DEFAULT_FORMAT) + "] " + str + "\r\n";
+    QString logString = "[" + timestamp.toString(LOG_TIMESTAMP_DEFAULT_FORMAT) + "] " + str + "\n";
     if(file->isOpen()) {
         QTextStream stream(file);
 
@@ -62,7 +64,3 @@ void consoleLogger::writeToLog(QString str) {
         queue.enqueue(logString);
     }
 }
-
-/*const QString consoleLogger::getLogFilePath() {
-    return filePath;
-}*/

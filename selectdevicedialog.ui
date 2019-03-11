@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>SelectDeviceDialog</class>
  <widget class="QDialog" name="SelectDeviceDialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,6 +19,7 @@
   <property name="styleSheet">
    <string notr="true">QDialog {	
 	background: rgb(51,51,51);
+	color: rgb(255,255,255);
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">

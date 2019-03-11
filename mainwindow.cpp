@@ -33,15 +33,8 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 //    }
 }
 
-//void MainWindow::resizeEvent(QResizeEvent *event) {
-//    this->updateWindow();
-//}
-
 
 void MainWindow::setConnections() {
-    // Запоминаем последние 10 отправленных команд
-    //connect(this, SIGNAL(sendToPort(QString)), this, SLOT(setLastSentCommand(QString)));
-
     // Нажатие кнопки соединения\отключения COM-порта
     connect(ui->comPortConnectButton, SIGNAL(released()), this, SLOT(comPortConnectButton_slot()));
     // Отправка сообщений введённых в консоли по нажатию Enter
@@ -96,16 +89,10 @@ void MainWindow::setConnections() {
     QObject::connect(serialPort, SIGNAL(dataIsSentSignal()), this, SLOT(prepareToSendNextCommand()));
     // Установка флага состояния порта в главном окне, при изменении состояния порта
     QObject::connect(serialPort, SIGNAL(portNewState(bool)), this, SLOT(getPortNewState(bool)));
-    // Изменение состояние COM-порта при нажатии кнопки connect\disconnect
-//    QObject::connect(this, SIGNAL(setPortNewState(bool)), serialPort, SLOT(setPortState(bool)));
-    // Отправка данных в ком порт из главного окна программы
-//    QObject::connect(this, SIGNAL(sendToPort(QString)), serialPort, SLOT(sendData(QString)));
     // Если произошел таймаут СОМ-порта - сообщаем в главное окно
     QObject::connect(serialPort, SIGNAL(portTimeroutOccure()), this, SLOT(comPortTimeout()));
     // Произошла ошибка COM-порта - пишем в лог и консоль
     QObject::connect(serialPort, SIGNAL(errorOccuredSignal(QString)), this, SLOT(comPortError(QString)));
-    // Разрешение или запрет циклической отсылки комманд в ком-порт
-    //QObject::connect(this, SIGNAL(transmitCycleEnable(bool)), serialPort, SLOT(enableCycleTransmit(bool)));
 
     // Если установленно "автоподключение", то устанавливаем связь с ком-портом при запуске программы
     if(settings.getComAutoconnectFlag()) serialPort->setPortState(true);
@@ -120,7 +107,6 @@ void MainWindow::setConnections() {
     connect(ui->tecButton, SIGNAL(clicked(bool)), this, SLOT(tecButtonSlot()));
 
     // Настройка и создание экземпляра окна "о программе"
-    //connect(aboutDialog, SIGNAL(finished(int)), aboutDialog, SLOT(deleteLater()));
     connect(aboutDialog, SIGNAL(startUpdate()), this, SLOT(startUpdateSlot()));
     connect(aboutDialog, SIGNAL(showConsoleSignal(bool)), this, SLOT(showConsoleSlot(bool)));
 
@@ -130,17 +116,23 @@ void MainWindow::setConnections() {
     connect(ui->devSelectButton, SIGNAL(clicked(bool)), this, SLOT(reselectDevice()));
 
     // Сигналы логгера
-    // Запись событий главного окна в лог
-    //QObject::connect(this, SIGNAL(writeToLogSignal(QString)), logger, SLOT(writeToLog(QString)));
     // Отправка ошибок логгера в консоль основного окна
     QObject::connect(logger, SIGNAL(errorOccuredSignal(QString)), this, SLOT(writeToConsoleError(QString)));
-    logger->start();
 
     // Отправка модели выбранного драйвера (для изделий со старым айди) в главную программу
     connect(selectDeviceDialog, SIGNAL(selectedDevice(QString)), this, SLOT(selectedDeviceSlot(QString)));
+
+    // XML praser
+    // Если загрузка списка устройств завершилась успешно - вызываем соответствующую процедуру
+    connect(xml, SIGNAL(endOfLoadingProgramConfig(bool)), this, SLOT(loadConfigProgramFinished(bool)));
+    // Если загрузка параметров устройства завершилась успешно - вызываем соответствующую процедуру
+    connect(xml, SIGNAL(endOfLoadingConfig(bool)), this, SLOT(loadConfigFinished(bool)));
+    // Если загрузка произошла с ошибкой, пишем в консоль и в лог ошибку
+    connect(xml, SIGNAL(errorHandler(QString)), this, SLOT(writeToConsoleError(QString)));
 }
 
 void MainWindow::setupWindow() {
+    devID = 0;
     loadFont();
     setWindowTitle(appTitle);
     setWindowIcon(QIcon(":/images/logo-minimal.png"));
@@ -155,12 +147,12 @@ void MainWindow::setupWindow() {
     serialPort = new comPort();
     changeLimitsDialog = new ChangeLimitsDialog(this);
     calibrateDialog = new CalibrateDialog(this);
-    xml = nullptr;
+    xml = new xmlReader(this);
     actualParamsGLayout = new QGridLayout();
-    aboutDeviceDialog = new AboutDeviceDialog();
+    aboutDeviceDialog = new AboutDeviceDialog(this);
     bitsLayout = new BitsLayout(ui->bitMaskBox);
     ui->bitMaskBox->setLayout(bitsLayout->getLayout());
-    selectDeviceDialog = new SelectDeviceDialog();
+    selectDeviceDialog = new SelectDeviceDialog(this);
 
     currCommandItt = nullptr;
     oldDevID = 0;
@@ -172,7 +164,6 @@ void MainWindow::setupWindow() {
     ui->comPortConnectButton->setText(tr("Disconnected"));
     portIsOpen = false;
     isDeviceLoaded = false;
-    //setLink(portIsOpen);
 
     ui->actionAutoconnect->setChecked(settings.getComAutoconnectFlag());
     ui->actionSave_settings->setEnabled(false);
@@ -184,7 +175,6 @@ void MainWindow::setupWindow() {
     setupMenuPort();
     refreshMenuFile();
     ui->actionExit->setShortcut(QKeySequence("ALT+F4"));
-    //checkForUpdatesSlot();
 
 //    ui->devImageLabel->setVisible(false);
     ui->devNameLabel->setVisible(false);
@@ -201,20 +191,10 @@ void MainWindow::setupWindow() {
 
     comPortIntervalCounter = 1;
 
-#ifndef DEBUG_MODE
-    showConsoleSlot(false);
-#endif
+    if(!debugMode) showConsoleSlot(false);
 }
 
-//void MainWindow::setupIndicators() {
-//    bitsLayout = new BitsLayout(this);
-//    //ui->bitMaskBox->setLayout(bitsLayout->getLayout());
-//}
-
 void MainWindow::setupMenuPort() {
-//    refreshMenuPort();
-//    connect(ui->menuSelectPort, SIGNAL(aboutToShow()), this, SLOT(refreshMenuPort()));
-
     // Формирование и вывод в меню списка доступных бауд-рейтов
     ui->menuSelectBaudrate->clear();
     QSignalMapper* signalMapper = new QSignalMapper(this);
@@ -343,7 +323,7 @@ void MainWindow::openCalibrateWindow(QString name) {
         const calibration_t& item = devConfig.calibrate.at(i);
         if(item.title == name) {
             calibrateDialog->setStruct(item);
-            foreach(parameter_t* param, devConfig.commands) {
+            foreach(Command* param, devConfig.commands) {
                 if(param->getCode() == item.code) {
                     calibrateDialog->setValue(param->getRawValue());
                 }
@@ -382,11 +362,10 @@ void MainWindow::refreshMenuLimits() {
 }
 
 void MainWindow::openLimitsWindow(QString name) {
-    for(uint8_t i = 0; i < devConfig.limits.size(); i++) {
-        DeviceLimit* limit = devConfig.limits.at(i);
+    foreach(DeviceLimit* limit, devConfig.limits) {
         if(limit->getTitle() == name) {
             changeLimitsDialog->setData(*limit);
-            foreach(parameter_t* param, devConfig.commands) {
+            foreach(Command* param, devConfig.commands) {
                 if(param->getCode().compare(limit->getUpperLimitCode()) == 0) {
                     changeLimitsDialog->setAbsMax(param->getConvertedValue());
                 } else if(param->getCode().compare(limit->getBottomLimitCode()) == 0) {
@@ -529,7 +508,7 @@ void MainWindow::saveSettingsSlot() {
         QString currentLine = QString("DEVICE:%1").arg(devID, 4, 16, QChar('0'));
         dataOut << currentLine.toUpper() << endl;
 
-        foreach(parameter_t* commPtr, devConfig.commands) {
+        foreach(Command* commPtr, devConfig.commands) {
             currentLine.clear();
             currentLine = QString("%1:%2").arg((*commPtr).getCode()).arg((*commPtr).getRawValue(), 4, 16, QChar('0'));
             dataOut << currentLine.toUpper() << endl;
@@ -578,6 +557,7 @@ void MainWindow::refreshMenuView() {
 void MainWindow::setupParameterHandlers() {
 
     serialPort->setStopCommandDelay(devConfig.stopCommandDelay);
+    currCommandItt = nullptr;
 
     if(!devConfig.paramWidgets.empty()) {
 //        QHBoxLayout* hlayoutparams = new QHBoxLayout();
@@ -596,42 +576,34 @@ void MainWindow::setupParameterHandlers() {
 
         int rowcol = 0;
         int row = 0;
-        for (QList<ParameterForm*>::iterator itemPtr = devConfig.paramWidgets.begin(); itemPtr < devConfig.paramWidgets.end(); itemPtr++) {
-            (*itemPtr)->setEnableState(true);
-            connect((*itemPtr), SIGNAL(changeValue(QString)), this, SLOT(sendDataToPort(QString)));
-//            if((*itemPtr)->isTemperature() && settings.getTemperatureSymbol() == 'F') {
-//            if((*itemPtr)->isTemperature()) {
-//                (*itemPtr)->setUnit(QString::fromRawData(new QChar('\260'), 1) + settings.getTemperatureSymbol());
-//            }
-            (*itemPtr)->setRealValue(0); // default
+        foreach(ParameterController* parameterController, devConfig.paramWidgets) {
+            parameterController->setEnableState(true);
+            connect(parameterController, SIGNAL(changeValue(QString)), this, SLOT(sendDataToPort(QString)));
 
-            actualParamsGLayout->addWidget((*itemPtr)->loadTextWidget(), row, 0);
+            actualParamsGLayout->addWidget(parameterController->loadTextWidget(), row, 0);
             row++;
 
-            if(!(*itemPtr)->getValueComm().isEmpty()) { // Вывод "крутилок-таскалок" для параметров
-                (*itemPtr)->setMin(0); // default
-                (*itemPtr)->setMax(100); // default
-                (*itemPtr)->setSentValue(25); // default
+            if(!parameterController->getValueComm().isEmpty()) { // Вывод "крутилок-таскалок" для параметров
                 // Сокрытие\показ дополнительных полей если параметр доступен только для записи или для чтения\записи
-                (*itemPtr)->hideRealValue((*itemPtr)->getRealComm().isEmpty());
+                parameterController->hideRealValue(parameterController->getRealComm().isEmpty());
 
                 if(settings.getCompactModeFlag()) {
-                    (*itemPtr)->loadCompactWidget()->setVisible(true);
-                    (*itemPtr)->loadWidget()->setVisible(false);
+                    parameterController->loadCompactWidget()->setVisible(true);
+                    parameterController->loadWidget()->setVisible(false);
                 } else {
-                    (*itemPtr)->loadCompactWidget()->setVisible(false);
-                    (*itemPtr)->loadWidget()->setVisible(true);
+                    parameterController->loadCompactWidget()->setVisible(false);
+                    parameterController->loadWidget()->setVisible(true);
                 }
 
-                layoutparams->addWidget((*itemPtr)->loadWidget(), 0, rowcol);
-                layoutparams->addWidget((*itemPtr)->loadCompactWidget(), rowcol+1, 0);
-                (*itemPtr)->loadTextWidget()->setVisible(false);
+                layoutparams->addWidget(parameterController->loadWidget(), 0, rowcol);
+                layoutparams->addWidget(parameterController->loadCompactWidget(), rowcol+1, 0);
+                parameterController->loadTextWidget()->setVisible(false);
                 rowcol++;
             } else { // Вывод значений в окно параметров
 //                actualParamsGLayout->removeWidget((*itemPtr)->loadTextWidget());
 //                actualParamsGLayout->addWidget((*itemPtr)->loadTextWidget(), row, 0);
 //                row++;
-                (*itemPtr)->loadTextWidget()->setVisible(true);
+                parameterController->loadTextWidget()->setVisible(true);
             }
         }
 
@@ -644,14 +616,14 @@ void MainWindow::setupParameterHandlers() {
         // Вынеси в commondefines список параметров
         // Формирование и вывод на экран панели режимов
         QSignalMapper* cbSignalMapper = new QSignalMapper(this);
-        if(!devConfig.specialParameters.empty()) {
+        if(!devConfig.binaryOptions.empty()) {
             QVBoxLayout *vlayout = new QVBoxLayout();
-            for(int i = 0; i < devConfig.specialParameters.count(); i++) {
-                QCheckBox *tmpCheckBox = devConfig.specialParameters.at(i).cbPtr;
+            for(int i = 0; i < devConfig.binaryOptions.count(); i++) {
+                QCheckBox *tmpCheckBox = devConfig.binaryOptions.at(i).cbPtr;
                 tmpCheckBox->setStyleSheet("QCheckBox {font-family: \"Share Tech Mono\"; border: none; color: #fff;} ");
                 vlayout->addWidget(tmpCheckBox);
                 connect(tmpCheckBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
-                cbSignalMapper->setMapping(tmpCheckBox, devConfig.specialParameters.at(i).label);
+                cbSignalMapper->setMapping(tmpCheckBox, devConfig.binaryOptions.at(i).label);
             }
             connect(cbSignalMapper, SIGNAL(mapped(QString)), this, SLOT(spcialParameterSlot(QString)));
             ui->specialParamBox->setLayout(vlayout);
@@ -672,7 +644,7 @@ void MainWindow::setupParameterHandlers() {
 
 void MainWindow::clearAllRegulators() {
 
-    for(QList<ParameterForm*>::ConstIterator i = devConfig.paramWidgets.constBegin(); i != devConfig.paramWidgets.constEnd(); i++) {
+    for(QList<ParameterController*>::ConstIterator i = devConfig.paramWidgets.constBegin(); i != devConfig.paramWidgets.constEnd(); i++) {
         delete (*i)->loadWidget();
         delete (*i)->loadCompactWidget();
         delete (*i)->loadTextWidget();
@@ -682,12 +654,12 @@ void MainWindow::clearAllRegulators() {
 
     bitsLayout->clear();
 
-    foreach(parameter_t* itemPtr, devConfig.commands) {
+    foreach(Command* itemPtr, devConfig.commands) {
         delete itemPtr;
     }
 
 
-    foreach(specParams_t item, devConfig.specialParameters) {
+    foreach(specParams_t item, devConfig.binaryOptions) {
          delete item.cbPtr;
     }
 
@@ -702,7 +674,7 @@ void MainWindow::clearAllRegulators() {
     devConfig.image = "";
     devConfig.link = "";
     devConfig.paramWidgets.clear();
-    devConfig.specialParameters.clear();
+    devConfig.binaryOptions.clear();
     devConfig.stateButtons.clear();
     devConfig.leds.clear();
 
@@ -717,12 +689,12 @@ void MainWindow::clearAllRegulators() {
 
 void MainWindow::setRegulatorsEnable(bool state) {
     for(qint8 i = 0; i < devConfig.paramWidgets.count(); i++) {
-        ParameterForm *item = devConfig.paramWidgets.at(i);
+        ParameterController *item = devConfig.paramWidgets.at(i);
         item->setEnableState(state);
     }
 
-    for(qint8 i = 0; i < devConfig.specialParameters.count(); i++) {
-        devConfig.specialParameters.at(i).cbPtr->setEnabled(state);
+    for(qint8 i = 0; i < devConfig.binaryOptions.count(); i++) {
+        devConfig.binaryOptions.at(i).cbPtr->setEnabled(state);
     }
 
     comSetDataTransfer(state);
@@ -735,21 +707,18 @@ void MainWindow::getPortNewState(bool state) {
     if (state != portIsOpen) {
         if(state) { // Port is openned now
             this->writeToConsole(settings.getComPort() + tr(" is open!\n"), CONSOLE_INFO_COLOR);
-            //emit writeToLogSignal(tr("COM: ") + COM_CURRENT_PORT + " (" + QString::number(COM_CURRENT_BAUDRATE) + "bps)" + tr(" is open!\n"));
             ui->comPortConnectButton->setText(settings.getComPort() + QString("   ") + QString::number(settings.getComBaudrate()) + "bps");
             startDeviceIdent();
-            setLink(true);
             if(ui->statusBar->currentMessage().size() > 0) ui->statusBar->showMessage("");
         } else { // Port is closed now
             this->writeToConsole(settings.getComPort() + tr(" is close!\n"), CONSOLE_INFO_COLOR);
             //emit writeToLogSignal(tr("COM: ") + COM_CURRENT_PORT + tr(" is close!\n"));
             ui->comPortConnectButton->setText(tr("Disconnected"));
-//            if(devID == COMMON_OLD_DEVICES_VALUE) isDeviceLoaded = false;
             devID = 0;
+            isDeviceLoaded = false;
             settings.setLastSelectedDeviceId(0);
             setLink(false);
             setRegulatorsEnable(false);
-//            ui->menuLimits->setEnabled(false);
         }
         ui->consoleStartStopButton->setEnabled(state);
         ui->consoleStartStopButton->setChecked(!autoSendNextCommand);
@@ -774,11 +743,6 @@ void MainWindow::startDeviceIdent() {
 
     requestAllCommands = true;
 
-    currCommandItt = nullptr;
-    if (!devConfig.commands.isEmpty()) {
-        currCommandItt = devConfig.commands.constBegin();
-        comPortIntervalCounter = 1;
-    }
     QString tmpStr = QString("%1%2").arg(COM_REQUEST_PREFIX).arg(IDENTIFY_DEVICE_COMMAND, 4, 16, QChar('0'));
     sendDataToPort(tmpStr);
 }
@@ -816,77 +780,68 @@ void MainWindow::readComData_Slot(QByteArray str) {
         this->writeToConsole("<- "+str, CONSOLE_RECEIVE_COLOR);
         if(command == IDENTIFY_DEVICE_COMMAND) {
             if(value == COMMON_OLD_DEVICES_VALUE) {
-                devID = settings.getLastSelectedDeviceId();
-                bool isCommonDevice = false;
-                foreach(availableDev_t devStruct, availableDevices) {
-                    if(devStruct.id == devID) {
-                        isCommonDevice = true;
-                        break;
+                if(devID == 0) {
+//                    devID = settings.getLastSelectedDeviceId();
+                    bool isCommonDevice = false;
+                    foreach(availableDev_t devStruct, availableDevices) {
+                        if(devStruct.id == devID) {
+                            isCommonDevice = true;
+                            break;
+                        }
                     }
-                }
 
-                if(!isCommonDevice) {
-                    writeToConsoleError("Device id (" + QString::number(devID) + ") is not represented in config file.");
-                    writeToConsole("Try to select the deivce manually.");
-                    reselectDevice();
+                    if(!isCommonDevice) {
+                        writeToConsole("Please, select deivce model.");
+                        reselectDevice();
+                    }
+                } else {
+                    setRegulatorsEnable(true);
+                    ui->devNameLabel->setText(devConfig.devName);
+                    ui->devSelectButton->setVisible(true);
+                    ui->devAboutButton->setVisible(true);
+                    oldDevID = devID;
                 }
-
-                ui->devSelectButton->setVisible(true);
-                ui->devAboutButton->setVisible(true);
-//                aboutDeviceDialog->setInfo(devConfig);
             } else {
                 devID = value;
-            }
-
-            if(!isDeviceLoaded) {
-                clearAllRegulators();
-                loadConfig(devID);
-            } else {
-                // Если это то же устройство, что и было ранее, то
-                if(devID == oldDevID) {
+                if(devID == oldDevID && isDeviceLoaded) {
                     setRegulatorsEnable(true);
+                    ui->devNameLabel->setText(devConfig.devName);
+                    ui->devSelectButton->setVisible(true);
+                    ui->devAboutButton->setVisible(true);
+                    oldDevID = devID;
                 } else {
                     clearAllRegulators();
                     loadConfig(devID);
                 }
             }
-            ui->devNameLabel->setText(devConfig.devName);
-            oldDevID = devID;
-        } else {
-            bool isValidCommand = false;
-            QList<parameter_t*>::iterator paramPtr;
-            for(paramPtr = devConfig.commands.begin(); paramPtr != devConfig.commands.end(); paramPtr++) {
-                if((*paramPtr)->getCode().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                    isValidCommand = true;
-                    (*paramPtr)->setRawValue(value);
-                    break;
-                }
-            }
 
-            if (isValidCommand) {
+        } else {
+            if (devConfig.commands.contains(commandStr)) {
+                Command* currentCommand = devConfig.commands.value(commandStr);
+                currentCommand->setRawValue(value);
                 // Обработка крутилок и информеров основных параметров
-                for(QList<ParameterForm*>::iterator pwPtr = devConfig.paramWidgets.begin(); pwPtr != devConfig.paramWidgets.end(); pwPtr++) {
+                foreach(ParameterController* parameterController, devConfig.paramWidgets) {
                     double newValue;
                     // Если это температура, то конвертируем значение в "знаковое"
-                    if((*pwPtr)->isTemperature()) {
-                        newValue = (*paramPtr)->getConvertedSignedValue();
+                    if(parameterController->isTemperature()) {
+                        newValue = currentCommand->getConvertedSignedValue();
                     } else {
-                        newValue  = (*paramPtr)->getConvertedValue();
+                        newValue  = currentCommand->getConvertedValue();
                     }
 
 
-                    if((*pwPtr)->isTemperature() && settings.getTemperatureSymbol() == "F") {
+                    if(parameterController->isTemperature() && settings.getTemperatureSymbol() == "F") {
                         newValue = convertCelToFar(newValue);
                     }
 
-                    if((*pwPtr)->getMaxComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        (*pwPtr)->setMax(newValue);
-                    } else if((*pwPtr)->getMinComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        (*pwPtr)->setMin(newValue);
-                    } else if((*pwPtr)->getRealComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        (*pwPtr)->setRealValue(newValue);
-                    } else if((*pwPtr)->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        (*pwPtr)->setSentValue(newValue);
+                    if(parameterController->getMaxComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                        parameterController->setMax(newValue);
+                    } else if(parameterController->getMinComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                        parameterController->setMin(newValue);
+                    } else if(parameterController->getRealComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                        parameterController->setRealValue(newValue);
+                    } else if(parameterController->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                        parameterController->setSentValue(newValue);
                     }
                 }
 
@@ -894,23 +849,21 @@ void MainWindow::readComData_Slot(QByteArray str) {
                 setLedState(commandStr, value);
 
                 // Обработка галочек
-                for(int i = 0; i < devConfig.specialParameters.size(); i++) {
-                    specParams_t obj = devConfig.specialParameters.at(i);
-                    if(obj.mask == 0) continue;
+                foreach(specParams_t binaryOption, devConfig.binaryOptions) {
+                    if(binaryOption.mask == 0) continue;
 
-                    if(commandStr == obj.code) {
-                        if(value & obj.mask) {
-                            obj.cbPtr->setChecked(true);
+                    if(commandStr == binaryOption.code) {
+                        if(value & binaryOption.mask) {
+                            binaryOption.cbPtr->setChecked(true);
                         } else {
-                            obj.cbPtr->setChecked(false);
+                            binaryOption.cbPtr->setChecked(false);
                         }
                     }
                 }
 
                 // Обработка команды 0700
-                if(commandStr == DEVICE_STATUS_COMMAND && isValidCommand) {
-                    quint16 newValue = (*paramPtr)->getRawValue();
-                    if(newValue & START_STOP_MASK) {
+                if(commandStr == DEVICE_STATUS_COMMAND) {
+                    if(currentCommand->getRawValue() & START_STOP_MASK) {
                         if(devConfig.hasLaser) {
                             ui->laserButton->setChecked(true);
                         }
@@ -919,22 +872,14 @@ void MainWindow::readComData_Slot(QByteArray str) {
                             ui->laserButton->setChecked(false);
                         }
                     }
-
-
                 }
-            } // isValidCommand
-
+            }
         }
-        //    } else if(str.at(0) == COM_ERROR_PREFIX) { // Если это ошибка
-        //        this->writeToConsole(str, Qt::red);
-//    } else if(preifx == COM_WRITE_PREFIX) {
-//         if(COM_WAIT_ANSWER_FOR_SET)
     } else if (prefix == COM_ERROR_PREFIX) {
         this->writeToConsoleError("<- "+str);
         switch(command) {
         case ERROR_BUFFER_OVERLOAD:
         case ERROR_WRONG_COMMAND:
-            //emit writeToLogSignal(commErrorsDescription[command]);
             writeToConsoleError("[Error]:" + commErrorsDescription[command] + QString(" ") + str);
             break;
         default:
@@ -987,15 +932,6 @@ void MainWindow::setLedState(QString commandStr, quint16 value) {
     }
 }
 
-//void MainWindow::reselectDevice() {
-//    bool state = portIsOpen;
-//    if(portIsOpen) serialPort->setPortState(false);
-//    clearAllRegulators();
-//    if(selectDevice()) isDeviceLoaded = false;
-//    if(state) serialPort->setPortState(true);
-//    startDeviceIdent();
-//}
-
 void MainWindow::reselectDevice() {
     QStringList avDevs;
     int currSelectedItem = -1;
@@ -1014,24 +950,17 @@ void MainWindow::reselectDevice() {
 }
 
 void MainWindow::selectedDeviceSlot(QString userSelectedDevice) {
-        isDeviceLoaded = false;
-        foreach(availableDev_t devStruct, availableDevices) {
-            if(devStruct.name.compare(userSelectedDevice, Qt::CaseInsensitive) == 0) {
-                bool state = false;
-                if(devID != devStruct.id) {
-                    state = portIsOpen;
-                    if(portIsOpen) serialPort->setPortState(false);
-                    clearAllRegulators();
-                }
-                devID = devStruct.id;
-                settings.setLastSelectedDeviceId(devID);
-                isDeviceLoaded = true;
+    isDeviceLoaded = false;
+    foreach(availableDev_t devStruct, availableDevices) {
+        if(devStruct.name.compare(userSelectedDevice, Qt::CaseInsensitive) == 0) {
+            clearAllRegulators();
+            devID = devStruct.id;
+            settings.setLastSelectedDeviceId(devID);
+            loadConfig(devID);
 
-                if(state) serialPort->setPortState(true);
-
-                break;
-            }
+            break;
         }
+    }
 }
 
 void MainWindow::setComOneStopBit() {
@@ -1062,6 +991,7 @@ void MainWindow::writeToConsole(QString str, Qt::GlobalColor color) {
 void MainWindow::loadConfigFinished(bool isDeviceFound) {
     if(isDeviceFound) {
         isDeviceLoaded = isDeviceFound;
+        devID = devConfig.deviceID;
 
         setupParameterHandlers();
         writeToConsole(tr("CONFIG: Config is loaded successful!"));
@@ -1083,52 +1013,21 @@ void MainWindow::loadConfigProgramFinished(bool state) {
 }
 
 void MainWindow::loadConfig(quint16 id) {
-//    if (devID == 0) return;
-
-//    QThread *thread = new QThread();
-
-    if(xml.isNull()) xml = new xmlReader();
     xml->setDeviceOptions(devConfig, id);
     xml->setConfigFile(CONFIG_FILE);
-//    xml->moveToThread(thread);
-
-    // При запуске нового потока начинаем загрузку конфига
-//    connect(thread, SIGNAL(started()), xml, SLOT(startLoading()));
-    // Если загрузка завершилась успешно - вызываем соответствующую процедуру
-    connect(xml, SIGNAL(endOfLoadingConfig(bool)), this, SLOT(loadConfigFinished(bool)));
-    // Если загрузка произошла с ошибкой, пишем в консоль и в лог ошибку
-    connect(xml, SIGNAL(errorHandler(QString)), this, SLOT(writeToConsoleError(QString)));
-    // Если загрузка завершилась (не зависимо от результата) завершаем поток
-//    connect(xml, SIGNAL(endOfLoadingConfig(bool, QList<parameterTemp_t>)), thread, SLOT(quit()));
-//    connect(xml, SIGNAL(errorHandler(QString)), thread, SLOT(quit()));
-    // Если загрузка завершилась (не зависимо от результата) удаляем объект xml-загрузчика
-    connect(xml, SIGNAL(endOfLoadingConfig(bool)), xml, SLOT(deleteLater()));
-    connect(xml, SIGNAL(errorHandler(QString)), xml, SLOT(deleteLater()));
-    // Когда поток больше не нужен удаляем и его
-//    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     xml->startLoading();
-//    thread->start();
 }
 
 void MainWindow::loadProgramConfig(QList<availableDev_t> &listPtr) {
-    if(xml.isNull()) xml = new xmlReader();
     xml->setList(listPtr);
     xml->setBaudsList(comBaudRates);
     xml->setConfigFile(CONFIG_FILE);
-
-    // Если загрузка завершилась успешно - вызываем соответствующую процедуру
-    connect(xml, SIGNAL(endOfLoadingProgramConfig(bool)), this, SLOT(loadConfigProgramFinished(bool)));
-    // Если загрузка произошла с ошибкой, пишем в консоль и в лог ошибку
-    connect(xml, SIGNAL(errorHandler(QString)), this, SLOT(writeToConsoleError(QString)));
-    // Если загрузка завершилась (не зависимо от результата) удаляем объект xml-загрузчика
-    connect(xml, SIGNAL(endOfLoadingProgramConfig(bool)), xml, SLOT(deleteLater()));
-    connect(xml, SIGNAL(errorHandler(QString)), xml, SLOT(deleteLater()));
-
     xml->readProgramConfig();
 }
 
 void MainWindow::comPortTimeout() {
     oldDevID = devID;
+    devID = 0;
     setLink(false);
     setRegulatorsEnable(false);
     startDeviceIdent();
@@ -1138,6 +1037,7 @@ void MainWindow::comPortTimeout() {
 
 void MainWindow::comPortError(QString str) {
     oldDevID = devID;
+    devID = 0;
     setLink(false);
     setRegulatorsEnable(false);
     QTimer sendTimer;
@@ -1163,7 +1063,7 @@ void MainWindow::triggComAutoConnectSlot(bool state) {
 void MainWindow::triggTemperatureSymbolSlot(QString str) {
     settings.setTemperatureSymbol(str);
 
-    for(QList<ParameterForm*>::const_iterator i = devConfig.paramWidgets.constBegin(); i != devConfig.paramWidgets.constEnd(); i++) {
+    for(QList<ParameterController*>::const_iterator i = devConfig.paramWidgets.constBegin(); i != devConfig.paramWidgets.constEnd(); i++) {
         if((*i)->isTemperature()) {
             (*i)->temperatureIsChanged(str);
         }
@@ -1182,39 +1082,49 @@ void MainWindow::openHelpSlot() {
 }
 
 void MainWindow::checkForUpdatesSlot() {
+    if(!filedownloader.isNull()) {
+        connect(filedownloader, nullptr, nullptr, nullptr);
+        filedownloader.clear();
+    }
+
     filedownloader = new FileDownloader(QUrl(UPDATE_LIST_URL) , this);
     connect(filedownloader, SIGNAL(downloaded()), this, SLOT(updateRepDownloadedSlot()));
 }
 
 void MainWindow::updateRepDownloadedSlot() {
-    QString data = QString(filedownloader->downloadedData());
-    if (data.isEmpty()) {
-        // Оповещение об отсутствии обновлений.
-        ui->statusBar->showMessage("There is no updates available.", STATUSBAR_MESSAGE_TIMEOUT);
-        return;
-    }
-    QStringList strList = data.split(";");
-    QStringList version = strList.at(0).split(".");
-    QString url = strList.at(1);
-    uint32_t newVer = 255*255*version.at(0).toUInt() + 255*version.at(1).toUInt() + version.at(2).toUInt();
-    uint32_t currVer = MAJOR_VERSION*255*255+MINOR_VERSION*255+PATCH_VERSION;
+    writeToConsole("Checking for updates...");
 
-    if (url.isEmpty()) return;
+    QString data = QString(filedownloader->downloadedData());
+    QStringList strList = data.split(";");
+    QStringList versionList = strList.at(0).split(".");
+    QString url = strList.at(1);
+
+    if (url.isEmpty() || versionList.isEmpty()) return;
+
+    uint32_t newVersion = 0;
+    if(versionList.length() == 3) {
+        newVersion = 255*255*versionList.at(0).toUInt() + 255*versionList.at(1).toUInt() + versionList.at(2).toUInt();
+    } else {
+        newVersion = 255*255*versionList.at(0).toUInt() + 255*versionList.at(1).toUInt();
+    }
+    uint32_t currenVersion = MAJOR_VERSION*255*255+MINOR_VERSION*255+PATCH_VERSION;
 
     updateUrl = url;
 
-    if(newVer > currVer) {
+    if(newVersion > currenVersion) {
         QMessageBox *msgBox = new QMessageBox();
         msgBox->setStyleSheet("QMessageBox QLabel { color: rgb(255,255,255); } QMessageBox { background-color: rgb(51,51,51); }");
         QMessageBox::StandardButton answer;
         answer = msgBox->question(this, tr("Update is available"), tr("Software update is available. Do you want to update now?"), QMessageBox::Yes|QMessageBox::No);
         if(answer == QMessageBox::Yes) {
             startUpdateSlot();
+            writeToConsole("Update is available. Version " + strList.at(0) + ". Update is starting!");
         }
         msgBox->deleteLater();
     } else {
         // Оповещение об отсутствии обновлений.
         ui->statusBar->showMessage("There is no updates available.", STATUSBAR_MESSAGE_TIMEOUT);
+        writeToConsole("There is no updates available.");
     }
 }
 
@@ -1235,7 +1145,7 @@ void MainWindow::hideControlsButtonSlot(bool state) {
         ui->controlsVisibleButton->setText(tr("Hide controls"));
     }
 
-    for(QList<ParameterForm*>::iterator p = devConfig.paramWidgets.begin(); p != devConfig.paramWidgets.end(); p++) {
+    for(QList<ParameterController*>::iterator p = devConfig.paramWidgets.begin(); p != devConfig.paramWidgets.end(); p++) {
         if((*p)->getPinState() == false && !(*p)->getValueComm().isEmpty()) {
             if(settings.getCompactModeFlag()) {
                 (*p)->loadCompactWidget()->setVisible(!state);
@@ -1268,7 +1178,7 @@ void MainWindow::setLink(bool state) {
         bitsLayout->setElementColor(linkId, Qt::green);
      } else {
         bitsLayout->setElementColor(linkId, LEDS_DEFAULT_COLOR);
-        ui->devSelectButton->setVisible(false);
+//        ui->devSelectButton->setVisible(false);
 //        ui->devAboutButton->setVisible(false);
     }
 }
@@ -1285,14 +1195,13 @@ void MainWindow::sendNextComCommand() {
             currCommandItt = devConfig.commands.constBegin();
         }
 
-        if(currCommandItt >= devConfig.commands.constEnd()) {
+        if(currCommandItt == devConfig.commands.constEnd()) {
             currCommandItt = devConfig.commands.constBegin();
             comPortIntervalCounter++;
             if(comPortIntervalCounter > MAX_COM_INTERVAL_COUNTER) comPortIntervalCounter = 1;
             requestAllCommands = false;
         }
 
-        if(!devConfig.commands.contains(*currCommandItt)) return;
         if((*currCommandItt)->getInterval() == 0)
             needToSend = false;
         else
@@ -1391,7 +1300,7 @@ void MainWindow::toogleCompactModeSlot(bool state) {
 
     if(devConfig.paramWidgets.isEmpty()) return;
 
-    for (QList<ParameterForm*>::iterator item = devConfig.paramWidgets.begin(); item < devConfig.paramWidgets.end(); item++) {
+    for (QList<ParameterController*>::iterator item = devConfig.paramWidgets.begin(); item < devConfig.paramWidgets.end(); item++) {
         if(state) {
             (*item)->loadCompactWidget()->setVisible(true);
             (*item)->loadWidget()->setVisible(false);
@@ -1422,10 +1331,10 @@ void MainWindow::spcialParameterSlot(QString paramLabel) {
     QString tmpQuery = QString(COM_WRITE_PREFIX);
     specParams_t obj;
 
-    for(i = 0; i < devConfig.specialParameters.count(); i++)
-        if(paramLabel.compare(devConfig.specialParameters.at(i).label, Qt::CaseInsensitive) == 0) break;
+    for(i = 0; i < devConfig.binaryOptions.count(); i++)
+        if(paramLabel.compare(devConfig.binaryOptions.at(i).label, Qt::CaseInsensitive) == 0) break;
 
-    obj = devConfig.specialParameters.at(i);
+    obj = devConfig.binaryOptions.at(i);
     tmpQuery += obj.code + QString(" ");
 
     if(obj.cbPtr->isChecked()) {

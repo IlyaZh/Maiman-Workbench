@@ -6,29 +6,20 @@
 #include <QObject>
 #include <QString>
 #include <QXmlStreamReader>
-//#include <QXmlStreamWriter>
 #include <QFile>
-//#include <QStandardItemModel>
 #include <QMap>
 #include <QCheckBox>
 #include <QPushButton>
-//#include <QDomDocument>
-//#include <QDomElement>
-//#include <QDomNode>
-
-#include "globals.h"
 
 class xmlReader : public QObject
 {
     Q_OBJECT
 public:
     explicit xmlReader(QObject *parent = nullptr);
-    ~xmlReader();
     void setConfigFile(QString file);
-    void setDeviceOptions(device_t &dev, quint16 dev_id);
+    void setDeviceOptions(device_t &device, quint16 dev_id);
     void setList(QList<availableDev_t>& listPtr);
     void setBaudsList(QList<uint> &baudList);
-//    QVector<quint16> &getAvailableDevices();
 
 private:
     QFile *file;
@@ -39,24 +30,18 @@ private:
     void parseContent();
     void parseCommand();
     void parseControls();
-//    void parseLeds();
     void parseLed();
     void parseLedMask();
     void parseParam();
     void parseLimit();
     void parseCalibration();
     void parseButtons();
-    //void parseInWindowItems();
     void parseSpecialParam();
     QXmlStreamReader xml;
     quint16 deviceId;
-    device_t *dev;
-//    int currDevIndex;
-//    bool currDeviceFound;
+    device_t *device;
     QList<availableDev_t>* availableListPtr;
     QList<uint>* bauds;
-//    int lastLed;
-//    QList<parameterTemp_t> tempParams;
 
 signals:
     void errorHandler(QString);
