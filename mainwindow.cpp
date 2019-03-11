@@ -290,7 +290,7 @@ void MainWindow::refreshMenuStopBits() {
 }
 
 void MainWindow::refreshMenuCalibrate() {
-    if(devConfig.calibrate.isEmpty()) {
+    if(devConfig.calCoefs.isEmpty()) {
         ui->menuCalibrate->menuAction()->setVisible(false);
         return;
     } else {
@@ -306,7 +306,7 @@ void MainWindow::refreshMenuCalibrate() {
 
     ui->menuCalibrate->setEnabled(true);
 
-    foreach(calibration_t item, devConfig.calibrate) {
+    foreach(calibration_t item, devConfig.calCoefs) {
         QAction *newAction = new QAction();
         newAction->setText(item.title);
         ui->menuCalibrate->addAction(newAction);
@@ -319,14 +319,11 @@ void MainWindow::refreshMenuCalibrate() {
 
 
 void MainWindow::openCalibrateWindow(QString name) {
-    for(uint8_t i = 0; i < devConfig.calibrate.size(); i++) {
-        const calibration_t& item = devConfig.calibrate.at(i);
+    foreach(const calibration_t item, devConfig.calCoefs) {
         if(item.title == name) {
             calibrateDialog->setStruct(item);
-            foreach(Command* param, devConfig.commands) {
-                if(param->getCode() == item.code) {
-                    calibrateDialog->setValue(param->getRawValue());
-                }
+            if(devConfig.commands.contains(item.code)) {
+                calibrateDialog->setValue(devConfig.commands.value(item.code)->getRawValue());
             }
             calibrateDialog->show();
             break;
@@ -665,7 +662,7 @@ void MainWindow::clearAllRegulators() {
 
 
     devConfig.limits.clear();
-    devConfig.calibrate.clear();
+    devConfig.calCoefs.clear();
     devConfig.commands.clear();
     devConfig.description = "";
     devConfig.devName = "";

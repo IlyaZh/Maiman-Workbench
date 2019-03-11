@@ -17,32 +17,30 @@ CalibrateDialog::~CalibrateDialog()
     delete ui;
 }
 
-void CalibrateDialog::setStruct(const calibration_t &itemPtr) {
-    code = itemPtr.code;
-    divider = itemPtr.divider;
+void CalibrateDialog::setStruct(const calibration_t &calibrationData) {
+    code = calibrationData.code;
+    divider = calibrationData.divider;
 
-    ui->titleLabel->setText(itemPtr.title);
-    QString desc = QString("Min: %1, Max: %2").arg(QString::number(itemPtr.min)).arg(QString::number(itemPtr.max));
-    ui->valueSlider->setMinimum(itemPtr.min);
-    ui->valueSlider->setMaximum(itemPtr.max);
-    ui->valueDoubleSpinBox->setDecimals(qRound(log10(itemPtr.divider)));
-    ui->valueDoubleSpinBox->setMinimum(static_cast<double>(itemPtr.min)/itemPtr.divider);
-    ui->valueDoubleSpinBox->setMaximum(static_cast<double>(itemPtr.max)/itemPtr.divider);
-
-//    qDebug() << itemPtr.min << itemPtr.max << log10(itemPtr.divider) << (double)itemPtr.min/itemPtr.divider << (double)itemPtr.max/itemPtr.divider;
+    ui->titleLabel->setText(calibrationData.title);
+    QString desc = QString("Min: %1, Max: %2").arg(QString::number(calibrationData.min)).arg(QString::number(calibrationData.max));
+    ui->valueSlider->setMinimum(calibrationData.min);
+    ui->valueSlider->setMaximum(calibrationData.max);
+    ui->valueDoubleSpinBox->setSingleStep(1.0/calibrationData.divider);
+    ui->valueDoubleSpinBox->setDecimals(qRound(log10(calibrationData.divider)));
+    ui->valueDoubleSpinBox->setMinimum(static_cast<double>(calibrationData.min)/calibrationData.divider);
+    ui->valueDoubleSpinBox->setMaximum(static_cast<double>(calibrationData.max)/calibrationData.divider);
 }
 
 void CalibrateDialog::setValue(int value) {
     coef = value;
     ui->valueSlider->setValue(coef);
-    ui->valueDoubleSpinBox->setValue(qRound(static_cast<double>(coef)/divider));
+    ui->valueDoubleSpinBox->setValue(static_cast<double>(coef)/divider);
 }
 
 void CalibrateDialog::setValue(double value) {
     coef = qRound(value*divider);
     ui->valueSlider->setValue(coef);
     ui->valueDoubleSpinBox->setValue(value);
-//    qDebug() << coef << value;
 }
 
 void CalibrateDialog::saveResult() {
