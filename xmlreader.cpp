@@ -342,7 +342,7 @@ void xmlReader::parseCalibration() {
     tmpStruct.title = "No name";
     tmpStruct.min = 0;
     tmpStruct.max = 10;
-    tmpStruct.divider = 1;
+    tmpStruct.divider = 100;
 
     if(attrib.hasAttribute("code")) {
         tmpStruct.code = attrib.value("code").toString();
@@ -357,12 +357,12 @@ void xmlReader::parseCalibration() {
     }
 
     if(attrib.hasAttribute("divider")) {
-        tmpStruct.divider = attrib.value("divider").toDouble();
+        tmpStruct.divider = attrib.value("divider").toInt();
     }
 
     tmpStruct.title = xml.readElementText();
 
-    device->calibrate.append(tmpStruct);
+    device->calCoefs.append(tmpStruct);
 
 }
 
