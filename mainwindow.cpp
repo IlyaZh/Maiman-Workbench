@@ -579,15 +579,11 @@ void MainWindow::setupParameterHandlers() {
         foreach(ParameterController* parameterController, devConfig.paramWidgets) {
             parameterController->setEnableState(true);
             connect(parameterController, SIGNAL(changeValue(QString)), this, SLOT(sendDataToPort(QString)));
-            parameterController->setRealValue(0, 1); // default
 
             actualParamsGLayout->addWidget(parameterController->loadTextWidget(), row, 0);
             row++;
 
             if(!parameterController->getValueComm().isEmpty()) { // Вывод "крутилок-таскалок" для параметров
-                parameterController->setMin(0); // default
-                parameterController->setMax(100); // default
-                parameterController->setSentValue(25, 1); // default
                 // Сокрытие\показ дополнительных полей если параметр доступен только для записи или для чтения\записи
                 parameterController->hideRealValue(parameterController->getRealComm().isEmpty());
 
@@ -820,18 +816,9 @@ void MainWindow::readComData_Slot(QByteArray str) {
             }
 
         } else {
-            bool isValidCommand = false;
-            Command* currentCommand;
-            foreach(Command* command, devConfig.commands) {
-                if(command->getCode().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                    isValidCommand = true;
-                    currentCommand = command;
-                    command->setRawValue(value);
-                    break;
-                }
-            }
-
-            if (isValidCommand) {
+            if (devConfig.commands.contains(commandStr)) {
+                Command* currentCommand = devConfig.commands.value(commandStr);
+                currentCommand->setRawValue(value);
                 // Обработка крутилок и информеров основных параметров
                 foreach(ParameterController* parameterController, devConfig.paramWidgets) {
                     double newValue;
@@ -852,9 +839,9 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     } else if(parameterController->getMinComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
                         parameterController->setMin(newValue);
                     } else if(parameterController->getRealComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        parameterController->setRealValue(newValue, currentCommand->getDivider());
+                        parameterController->setRealValue(newValue);
                     } else if(parameterController->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        parameterController->setSentValue(newValue, currentCommand->getDivider());
+                        parameterController->setSentValue(newValue);
                     }
                 }
 
@@ -875,9 +862,8 @@ void MainWindow::readComData_Slot(QByteArray str) {
                 }
 
                 // Обработка команды 0700
-                if(commandStr == DEVICE_STATUS_COMMAND && isValidCommand) {
-                    quint16 newValue = currentCommand->getRawValue();
-                    if(newValue & START_STOP_MASK) {
+                if(commandStr == DEVICE_STATUS_COMMAND) {
+                    if(currentCommand->getRawValue() & START_STOP_MASK) {
                         if(devConfig.hasLaser) {
                             ui->laserButton->setChecked(true);
                         }
@@ -886,22 +872,14 @@ void MainWindow::readComData_Slot(QByteArray str) {
                             ui->laserButton->setChecked(false);
                         }
                     }
-
-
                 }
-            } // isValidCommand
-
+            }
         }
-        //    } else if(str.at(0) == COM_ERROR_PREFIX) { // Если это ошибка
-        //        this->writeToConsole(str, Qt::red);
-//    } else if(preifx == COM_WRITE_PREFIX) {
-//         if(COM_WAIT_ANSWER_FOR_SET)
     } else if (prefix == COM_ERROR_PREFIX) {
         this->writeToConsoleError("<- "+str);
         switch(command) {
         case ERROR_BUFFER_OVERLOAD:
         case ERROR_WRONG_COMMAND:
-            //emit writeToLogSignal(commErrorsDescription[command]);
             writeToConsoleError("[Error]:" + commErrorsDescription[command] + QString(" ") + str);
             break;
         default:
@@ -1217,14 +1195,13 @@ void MainWindow::sendNextComCommand() {
             currCommandItt = devConfig.commands.constBegin();
         }
 
-        if(currCommandItt >= devConfig.commands.constEnd()) {
+        if(currCommandItt == devConfig.commands.constEnd()) {
             currCommandItt = devConfig.commands.constBegin();
             comPortIntervalCounter++;
             if(comPortIntervalCounter > MAX_COM_INTERVAL_COUNTER) comPortIntervalCounter = 1;
             requestAllCommands = false;
         }
 
-        if(!devConfig.commands.contains(*currCommandItt)) return;
         if((*currCommandItt)->getInterval() == 0)
             needToSend = false;
         else

@@ -47,7 +47,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void closeEvent(QCloseEvent *event);
 //    void resizeEvent(QResizeEvent *event);
@@ -133,7 +133,7 @@ private:
     QList<QAction*> menuLimitsActions;
     QList<QAction*> menuCalibrateActions;
     QPointer<FileDownloader> filedownloader;
-    QList<Command*>::const_iterator currCommandItt;
+    QMap<QString, Command*>::const_iterator currCommandItt;
     quint16 oldDevID;
     bool link;
     QPointer<comPort> serialPort;

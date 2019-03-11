@@ -192,7 +192,7 @@ void xmlReader::parseCommand() {
 
     quint8 interval = (attrib.hasAttribute("interval")) ? attrib.value("interval").toUInt() : 1;
 
-    device->commands.append(new Command(code, divider, interval));
+    device->commands.insert(code, new Command(code, divider, interval));
 }
 
 void xmlReader::parseControls() {
@@ -247,36 +247,40 @@ void xmlReader::parseParam() {
     bool isTemperatureFlag = false;
     QString unit = "";
     QString title = "no name";
-    QString min, max, value, real;
+    QString minCode, maxCode, valueCode, realCode;
+    minCode = maxCode = valueCode = realCode = "";
 
     if(attrib.hasAttribute("isTemperature")) {
         isTemperatureFlag = (attrib.value("isTemperature").toUInt() == 1) ? true : false;
     }
 
     if(attrib.hasAttribute("unit")) {
-        QString unit = attrib.value("unit").toString();
+        unit = attrib.value("unit").toString();
         unit.replace("(deg)", QString::fromRawData(new QChar('\260'), 1));
     }
 
     if(attrib.hasAttribute("min")) {
-        min = attrib.value("min").toString();
+        minCode = attrib.value("min").toString();
     }
 
     if(attrib.hasAttribute("max")) {
-        max = attrib.value("max").toString();
+        maxCode = attrib.value("max").toString();
     }
 
     if(attrib.hasAttribute("value")) {
-        value = attrib.value("value").toString();
+        valueCode = attrib.value("value").toString();
     }
 
     if(attrib.hasAttribute("real")) {
-        real = attrib.value("real").toString();
+        realCode = attrib.value("real").toString();
     }
 
     title = xml.readElementText();
 
-    ParameterController* parameterController = new ParameterController(title, unit, min, max, value, real, isTemperatureFlag);
+    int divider = (device->commands.contains(valueCode)) ? device->commands.value(valueCode)->getDivider() : 1;
+    int realDivider = (device->commands.contains(realCode)) ? device->commands.value(realCode)->getDivider() : 1;
+
+    ParameterController* parameterController = new ParameterController(title, unit, minCode, maxCode, valueCode, realCode, divider, realDivider, isTemperatureFlag);
 
     device->paramWidgets.append(parameterController);
 

@@ -13,13 +13,13 @@ const QString Command::getCode() {
 }
 
 double Command::getConvertedValue() {
-    return ((double) pValue) / Divider;
+    return static_cast<double>(pValue) / Divider;
 }
 
 double Command::getConvertedSignedValue() {
     qint16 val;
     val = -(~(pValue-1));
-    return ((double) val) / Divider;
+    return static_cast<double>(val) / Divider;
 }
 
 quint16 Command::getRawValue() {

@@ -66,7 +66,7 @@ typedef struct {
     QString description;
     QString link;
     quint16 deviceID;
-    QList<Command*> commands;
+    QMap<QString, Command*> commands;
     QList<DeviceLimit*> limits;
     QList<calibration_t> calibrate;
     QList<ParameterController*> paramWidgets;

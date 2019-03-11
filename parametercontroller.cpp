@@ -1,24 +1,43 @@
 #include "parametercontroller.h"
 
 //ParameterForm::ParameterForm(const paramControls_t &inParam, QWidget *parent) :
-ParameterController::ParameterController(QString title, QString unit, QString minComm, QString maxComm, QString valueComm, QString realComm, bool isTemperature, QWidget *parent) : QWidget(parent)
+ParameterController::ParameterController(QString titleStr, QString unitStr, QString minComm, QString maxComm, QString valueComm, QString realComm, int divider, int realDivider, bool isTemperature, QWidget *parent) : QWidget(parent)
 {
-    setTitle(title);
-    setUnit(unit);
+    isTemperatureFlag = isTemperature;
     this->minComm = minComm;
     this->maxComm = maxComm;
     this->realComm = realComm;
     this->valueComm = valueComm;
 
-    if(divider < 1) divider = 1;
-    if(realDivider < 1) realDivider = 1;
+    prepareBigWidget();
+    prepareCompactViewWidget();
+    prepareTextWidget();
+
     setDivider(divider);
     setRealDivider(realDivider);
+    setTitle(titleStr);
+    setUnit(unitStr);
 
-    isTemperatureFlag = isTemperature;
+    setEditLineDefaultState();
+    QMetaObject::connectSlotsByName(this);
+
+    if(settings.getTemperatureSymbol() == "C")
+        isCelsius = true;
+    else if (settings.getTemperatureSymbol() == "F")
+        isCelsius = false;
+
+    setPinState(false);
+    isUserEdited = false;
+}
 
 
-    QUiLoader loader;
+ParameterController::~ParameterController() {
+    if(compactWidget) delete compactWidget;
+    if(bigWidget) delete bigWidget;
+    if(textWidget) delete textWidget;
+}
+
+void ParameterController::prepareBigWidget() {
     QFile file(":/forms/parambigwidget.ui");
     file.open(QFile::ReadOnly);
     bigWidget = loader.load(&file, this);
@@ -57,40 +76,50 @@ ParameterController::ParameterController(QString title, QString unit, QString mi
     connect(ui_sendValueButton, SIGNAL(clicked(bool)), this, SLOT(sendValueSlot()));
     ui_currValueLine->setLayout(layout);
 
-//    load widget for compact view
-    file.setFileName(":/forms/paramcompactwidget.ui");
-    file.open(QFile::ReadOnly);
-    compactWidget = loader.load(&file, this);
-    file.close();
+    bigWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+}
 
-    ui_currValueCompactLine = compactWidget->findChild<QLineEdit*>("currValueCompactLine");
-    ui_minCompactLabel = compactWidget->findChild<QLabel*>("minCompactLabel");
-    ui_maxCompactLabel = compactWidget->findChild<QLabel*>("maxCompactLabel");
-    ui_realValueUnitCompactLabel = compactWidget->findChild<QLabel*>("realValueUnitCompactLabel");
-    ui_titleCompactLabel = compactWidget->findChild<QLabel*>("titleCompactLabel");
-    ui_minusCompactButton = compactWidget->findChild<QPushButton*>("minusCompactButton");
-    ui_plusCompactButton = compactWidget->findChild<QPushButton*>("plusCompactButton");
+void ParameterController::prepareCompactViewWidget() {
+    //    load widget for compact view
+        QFile file;
+        file.setFileName(":/forms/paramcompactwidget.ui");
+        file.open(QFile::ReadOnly);
+        compactWidget = loader.load(&file, this);
+        file.close();
 
-    QHBoxLayout *layoutCompact = new QHBoxLayout();
-    ui_sendValueCompactButton = new QPushButton();
-    ui_sendValueCompactButton->setText("set");
-    ui_sendValueCompactButton->setCheckable(true);
-//    ui_sendValueCompactButton->setMaximumSize(QSize(15,15));
-    layoutCompact->addWidget(ui_sendValueCompactButton, 0, Qt::AlignRight);
-    ui_sendValueCompactButton->setHidden(true);
-    ui_sendValueCompactButton->setStyleSheet("QPushButton { \
-                                      color: rgb(255, 255, 255); \
-                                      background-color: rgb(51, 51, 51); \
-                                      border: 1px solid #999999; \
-                                      border-radius: 4px; \
-                                      padding: 4px; \
-                                  }");
-    ui_sendValueCompactButton->setFont(APPLICATION_DEFAULT_FONT);
-    connect(ui_sendValueCompactButton, SIGNAL(clicked(bool)), this, SLOT(sendValueCompactSlot()));
-    ui_currValueCompactLine->setLayout(layoutCompact);
-//    end of loading widget for compact view
+        ui_currValueCompactLine = compactWidget->findChild<QLineEdit*>("currValueCompactLine");
+        ui_minCompactLabel = compactWidget->findChild<QLabel*>("minCompactLabel");
+        ui_maxCompactLabel = compactWidget->findChild<QLabel*>("maxCompactLabel");
+        ui_realValueUnitCompactLabel = compactWidget->findChild<QLabel*>("realValueUnitCompactLabel");
+        ui_titleCompactLabel = compactWidget->findChild<QLabel*>("titleCompactLabel");
+        ui_minusCompactButton = compactWidget->findChild<QPushButton*>("minusCompactButton");
+        ui_plusCompactButton = compactWidget->findChild<QPushButton*>("plusCompactButton");
 
-//    load widget for text view
+        QHBoxLayout *layoutCompact = new QHBoxLayout();
+        ui_sendValueCompactButton = new QPushButton();
+        ui_sendValueCompactButton->setText("set");
+        ui_sendValueCompactButton->setCheckable(true);
+    //    ui_sendValueCompactButton->setMaximumSize(QSize(15,15));
+        layoutCompact->addWidget(ui_sendValueCompactButton, 0, Qt::AlignRight);
+        ui_sendValueCompactButton->setHidden(true);
+        ui_sendValueCompactButton->setStyleSheet("QPushButton { \
+                                          color: rgb(255, 255, 255); \
+                                          background-color: rgb(51, 51, 51); \
+                                          border: 1px solid #999999; \
+                                          border-radius: 4px; \
+                                          padding: 4px; \
+                                      }");
+        ui_sendValueCompactButton->setFont(APPLICATION_DEFAULT_FONT);
+        connect(ui_sendValueCompactButton, SIGNAL(clicked(bool)), this, SLOT(sendValueCompactSlot()));
+        ui_currValueCompactLine->setLayout(layoutCompact);
+
+        compactWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    //    end of loading widget for compact view
+}
+
+void ParameterController::prepareTextWidget() {
+    //    load widget for text view
+    QFile file;
     file.setFileName(":/forms/paramtextwidget.ui");
     file.open(QFile::ReadOnly);
     textWidget = loader.load(&file, this);
@@ -99,30 +128,7 @@ ParameterController::ParameterController(QString title, QString unit, QString mi
     titleLabel = textWidget->findChild<QLabel*>("titleLabel");
     valueLabel = textWidget->findChild<QLabel*>("valueLabel");
     unitLabel = textWidget->findChild<QLabel*>("unitLabel");
-//    end of loading widget for text view
-
-
-    QMetaObject::connectSlotsByName(this);
-
-    if(settings.getTemperatureSymbol() == "C")
-        isCelsius = true;
-    else if (settings.getTemperatureSymbol() == "F")
-        isCelsius = false;
-
-    setPinState(false);
-    isUserEdited = true;
-    isTemperatureFlag = false;
-
-    bigWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-    compactWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-
-    setEditLineDefaultState();
-}
-
-ParameterController::~ParameterController() {
-    if(compactWidget) delete compactWidget;
-    if(bigWidget) delete bigWidget;
-    if(textWidget) delete textWidget;
+    //    end of loading widget for text view
 }
 
 QWidget* ParameterController::loadWidget() {
@@ -272,9 +278,8 @@ bool ParameterController::getEnableState() {
     return ui_currValueLine->isEnabled();
 }
 
-void ParameterController::setRealValue(double value, int divider) {
+void ParameterController::setRealValue(double value) {
     realValue = value;
-    setRealDivider(divider);
 
     ui_readedValueBar->setValue(qRound(realValue*realDivider));
     ui_readedValueBar->setStyleSheet(" QProgressBar { \
@@ -294,9 +299,8 @@ void ParameterController::setRealValue(double value, int divider) {
 
 }
 
-void ParameterController::setSentValue(double value, int divider) {
+void ParameterController::setSentValue(double value) {
     if(!isUserEdited) {
-        setDivider(divider);
         ui_valueSlider->setValue(static_cast<int>(qRound(value*divider)));
     }
 }
@@ -519,16 +523,16 @@ void ParameterController::temperatureIsChanged(QString str) {
         isCelsius = false;
         setMin(convertCelToFar(min));
         setMax(convertCelToFar(max));
-        setRealValue(convertCelToFar(realValue), realDivider);
-        setSentValue(convertCelToFar(currValue), divider);
+        setRealValue(convertCelToFar(realValue));
+        setSentValue(convertCelToFar(currValue));
         setUnit(QString::fromRawData(new QChar('\260'), 1));// + str);
     } else if(str == "C" && !isCelsius) {
         // Меняем фаренгейты на цельсии
         isCelsius = true;
         setMin(convertFarToCel(min));
         setMax(convertFarToCel(max));
-        setRealValue(convertFarToCel(realValue), realDivider);
-        setSentValue(convertCelToFar(currValue), divider);
+        setRealValue(convertFarToCel(realValue));
+        setSentValue(convertCelToFar(currValue));
         setUnit(QString::fromRawData(new QChar('\260'), 1));// + str);
     }
 

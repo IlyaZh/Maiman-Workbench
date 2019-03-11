@@ -25,7 +25,7 @@ class ParameterController : public QWidget
     Q_OBJECT
 
 public:
-    explicit ParameterController(QString title, QString unit, QString minComm, QString maxComm, QString valueComm, QString realComm, bool isTemperature = false, QWidget *parent = nullptr);
+    explicit ParameterController(QString title, QString unit, QString minComm, QString maxComm, QString valueComm, QString realComm, int divider, int realDivider, bool isTemperature = false, QWidget *parent = nullptr);
     ~ParameterController();
     bool getPinState();
     bool getEnableState();
@@ -42,8 +42,8 @@ public:
 public slots:
     void setMax(double val);
     void setMin(double val);
-    void setRealValue(double val, int divider);
-    void setSentValue(double val, int divider);
+    void setRealValue(double val);
+    void setSentValue(double val);
     void hideRealValue(bool state = false);
     void setEnableState(bool state);
     void temperatureIsChanged(QString);
@@ -54,7 +54,11 @@ private:
     void setPinState(bool val);
     void setDivider(int val);
     void setRealDivider(int val);
+    void prepareBigWidget();
+    void prepareCompactViewWidget();
+    void prepareTextWidget();
 
+    QUiLoader loader;
     QPointer<QWidget> bigWidget;
     QPointer<QWidget> compactWidget;
     QPointer<QWidget> textWidget;
