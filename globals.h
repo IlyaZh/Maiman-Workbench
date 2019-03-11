@@ -70,7 +70,7 @@ typedef struct {
     QList<DeviceLimit*> limits;
     QList<calibration_t> calibrate;
     QList<ParameterController*> paramWidgets;
-    QList<specParams_t> specialParameters;
+    QList<specParams_t> binaryOptions;
     QMap<QString, doubleMaskCommand_t> stateButtons;
     QList<leds_t> leds;
     bool hasLaser;

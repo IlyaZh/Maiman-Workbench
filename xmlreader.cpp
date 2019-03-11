@@ -244,50 +244,42 @@ void xmlReader::parseLedMask() {
 void xmlReader::parseParam() {
     QXmlStreamAttributes attrib = xml.attributes();
 
-    ParameterController* parameterController = new ParameterController();
+    bool isTemperatureFlag = false;
+    QString unit = "";
+    QString title = "no name";
+    QString min, max, value, real;
 
     if(attrib.hasAttribute("isTemperature")) {
-        parameterController->setIsTemperatureFlag((attrib.value("isTemperature").toUInt() == 1) ? true : false);
-    } else {
-        parameterController->setIsTemperatureFlag(false);
+        isTemperatureFlag = (attrib.value("isTemperature").toUInt() == 1) ? true : false;
     }
 
     if(attrib.hasAttribute("unit")) {
-        QString tmpStr = attrib.value("unit").toString();
-        tmpStr.replace("(deg)", QString::fromRawData(new QChar('\260'), 1));
-        parameterController->setUnit(tmpStr);
-//        paramTemp.unit = tmpStr;
+        QString unit = attrib.value("unit").toString();
+        unit.replace("(deg)", QString::fromRawData(new QChar('\260'), 1));
     }
 
     if(attrib.hasAttribute("min")) {
-        parameterController->setMinComm(attrib.value("min").toString());
-//        paramTemp.minComm = attrib.value("min").toString();
+        min = attrib.value("min").toString();
     }
 
     if(attrib.hasAttribute("max")) {
-        parameterController->setMaxComm(attrib.value("max").toString());
-//        paramTemp.maxComm = attrib.value("max").toString();
+        max = attrib.value("max").toString();
     }
 
     if(attrib.hasAttribute("value")) {
-        parameterController->setValueComm(attrib.value("value").toString());
-//        paramTemp.valueComm = attrib.value("value").toString();
+        value = attrib.value("value").toString();
     }
 
     if(attrib.hasAttribute("real")) {
-        parameterController->setRealComm(attrib.value("real").toString());
-//        paramTemp.realComm = attrib.value("real").toString();
+        real = attrib.value("real").toString();
     }
 
-    if(attrib.hasAttribute("divider")) {
-        parameterController->setDivider(attrib.value("divider").toDouble());
-//        paramTemp.divider = attrib.value("divider").toDouble();
-    }
+    title = xml.readElementText();
 
-    parameterController->setTitle(xml.readElementText());
-//    paramTemp.title = xml.readElementText();
+    ParameterController* parameterController = new ParameterController(title, unit, min, max, value, real, isTemperatureFlag);
+
     device->paramWidgets.append(parameterController);
-//    tempParams.append(paramTemp);
+
 }
 
 void xmlReader::parseLimit() {
@@ -437,7 +429,7 @@ void xmlReader::parseSpecialParam() {
         tmp.label = label;
         cb->setStyleSheet("border: none;");
         tmp.cbPtr = cb;
-        device->specialParameters.append(tmp);
+        device->binaryOptions.append(tmp);
 
 //        xml.readNext();
 //    }

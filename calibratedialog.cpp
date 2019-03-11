@@ -25,9 +25,9 @@ void CalibrateDialog::setStruct(const calibration_t &itemPtr) {
     QString desc = QString("Min: %1, Max: %2").arg(QString::number(itemPtr.min)).arg(QString::number(itemPtr.max));
     ui->valueSlider->setMinimum(itemPtr.min);
     ui->valueSlider->setMaximum(itemPtr.max);
-    ui->valueDoubleSpinBox->setDecimals(log10(itemPtr.divider));
-    ui->valueDoubleSpinBox->setMinimum((double)itemPtr.min/itemPtr.divider);
-    ui->valueDoubleSpinBox->setMaximum((double)itemPtr.max/itemPtr.divider);
+    ui->valueDoubleSpinBox->setDecimals(qRound(log10(itemPtr.divider)));
+    ui->valueDoubleSpinBox->setMinimum(static_cast<double>(itemPtr.min)/itemPtr.divider);
+    ui->valueDoubleSpinBox->setMaximum(static_cast<double>(itemPtr.max)/itemPtr.divider);
 
 //    qDebug() << itemPtr.min << itemPtr.max << log10(itemPtr.divider) << (double)itemPtr.min/itemPtr.divider << (double)itemPtr.max/itemPtr.divider;
 }
@@ -35,7 +35,7 @@ void CalibrateDialog::setStruct(const calibration_t &itemPtr) {
 void CalibrateDialog::setValue(int value) {
     coef = value;
     ui->valueSlider->setValue(coef);
-    ui->valueDoubleSpinBox->setValue((int) qRound((double)coef/divider));
+    ui->valueDoubleSpinBox->setValue(qRound(static_cast<double>(coef)/divider));
 }
 
 void CalibrateDialog::setValue(double value) {

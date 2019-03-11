@@ -194,15 +194,7 @@ void MainWindow::setupWindow() {
     if(!debugMode) showConsoleSlot(false);
 }
 
-//void MainWindow::setupIndicators() {
-//    bitsLayout = new BitsLayout(this);
-//    //ui->bitMaskBox->setLayout(bitsLayout->getLayout());
-//}
-
 void MainWindow::setupMenuPort() {
-//    refreshMenuPort();
-//    connect(ui->menuSelectPort, SIGNAL(aboutToShow()), this, SLOT(refreshMenuPort()));
-
     // Формирование и вывод в меню списка доступных бауд-рейтов
     ui->menuSelectBaudrate->clear();
     QSignalMapper* signalMapper = new QSignalMapper(this);
@@ -584,38 +576,38 @@ void MainWindow::setupParameterHandlers() {
 
         int rowcol = 0;
         int row = 0;
-        foreach(ParameterController* paramRegulator, devConfig.paramWidgets) {
-            paramRegulator->setEnableState(true);
-            connect(paramRegulator, SIGNAL(changeValue(QString)), this, SLOT(sendDataToPort(QString)));
-            paramRegulator->setRealValue(0); // default
+        foreach(ParameterController* parameterController, devConfig.paramWidgets) {
+            parameterController->setEnableState(true);
+            connect(parameterController, SIGNAL(changeValue(QString)), this, SLOT(sendDataToPort(QString)));
+            parameterController->setRealValue(0, 1); // default
 
-            actualParamsGLayout->addWidget(paramRegulator->loadTextWidget(), row, 0);
+            actualParamsGLayout->addWidget(parameterController->loadTextWidget(), row, 0);
             row++;
 
-            if(!paramRegulator->getValueComm().isEmpty()) { // Вывод "крутилок-таскалок" для параметров
-                paramRegulator->setMin(0); // default
-                paramRegulator->setMax(100); // default
-                paramRegulator->setSentValue(25); // default
+            if(!parameterController->getValueComm().isEmpty()) { // Вывод "крутилок-таскалок" для параметров
+                parameterController->setMin(0); // default
+                parameterController->setMax(100); // default
+                parameterController->setSentValue(25, 1); // default
                 // Сокрытие\показ дополнительных полей если параметр доступен только для записи или для чтения\записи
-                paramRegulator->hideRealValue(paramRegulator->getRealComm().isEmpty());
+                parameterController->hideRealValue(parameterController->getRealComm().isEmpty());
 
                 if(settings.getCompactModeFlag()) {
-                    paramRegulator->loadCompactWidget()->setVisible(true);
-                    paramRegulator->loadWidget()->setVisible(false);
+                    parameterController->loadCompactWidget()->setVisible(true);
+                    parameterController->loadWidget()->setVisible(false);
                 } else {
-                    paramRegulator->loadCompactWidget()->setVisible(false);
-                    paramRegulator->loadWidget()->setVisible(true);
+                    parameterController->loadCompactWidget()->setVisible(false);
+                    parameterController->loadWidget()->setVisible(true);
                 }
 
-                layoutparams->addWidget(paramRegulator->loadWidget(), 0, rowcol);
-                layoutparams->addWidget(paramRegulator->loadCompactWidget(), rowcol+1, 0);
-                paramRegulator->loadTextWidget()->setVisible(false);
+                layoutparams->addWidget(parameterController->loadWidget(), 0, rowcol);
+                layoutparams->addWidget(parameterController->loadCompactWidget(), rowcol+1, 0);
+                parameterController->loadTextWidget()->setVisible(false);
                 rowcol++;
             } else { // Вывод значений в окно параметров
 //                actualParamsGLayout->removeWidget((*itemPtr)->loadTextWidget());
 //                actualParamsGLayout->addWidget((*itemPtr)->loadTextWidget(), row, 0);
 //                row++;
-                paramRegulator->loadTextWidget()->setVisible(true);
+                parameterController->loadTextWidget()->setVisible(true);
             }
         }
 
@@ -628,14 +620,14 @@ void MainWindow::setupParameterHandlers() {
         // Вынеси в commondefines список параметров
         // Формирование и вывод на экран панели режимов
         QSignalMapper* cbSignalMapper = new QSignalMapper(this);
-        if(!devConfig.specialParameters.empty()) {
+        if(!devConfig.binaryOptions.empty()) {
             QVBoxLayout *vlayout = new QVBoxLayout();
-            for(int i = 0; i < devConfig.specialParameters.count(); i++) {
-                QCheckBox *tmpCheckBox = devConfig.specialParameters.at(i).cbPtr;
+            for(int i = 0; i < devConfig.binaryOptions.count(); i++) {
+                QCheckBox *tmpCheckBox = devConfig.binaryOptions.at(i).cbPtr;
                 tmpCheckBox->setStyleSheet("QCheckBox {font-family: \"Share Tech Mono\"; border: none; color: #fff;} ");
                 vlayout->addWidget(tmpCheckBox);
                 connect(tmpCheckBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
-                cbSignalMapper->setMapping(tmpCheckBox, devConfig.specialParameters.at(i).label);
+                cbSignalMapper->setMapping(tmpCheckBox, devConfig.binaryOptions.at(i).label);
             }
             connect(cbSignalMapper, SIGNAL(mapped(QString)), this, SLOT(spcialParameterSlot(QString)));
             ui->specialParamBox->setLayout(vlayout);
@@ -671,7 +663,7 @@ void MainWindow::clearAllRegulators() {
     }
 
 
-    foreach(specParams_t item, devConfig.specialParameters) {
+    foreach(specParams_t item, devConfig.binaryOptions) {
          delete item.cbPtr;
     }
 
@@ -686,7 +678,7 @@ void MainWindow::clearAllRegulators() {
     devConfig.image = "";
     devConfig.link = "";
     devConfig.paramWidgets.clear();
-    devConfig.specialParameters.clear();
+    devConfig.binaryOptions.clear();
     devConfig.stateButtons.clear();
     devConfig.leds.clear();
 
@@ -705,8 +697,8 @@ void MainWindow::setRegulatorsEnable(bool state) {
         item->setEnableState(state);
     }
 
-    for(qint8 i = 0; i < devConfig.specialParameters.count(); i++) {
-        devConfig.specialParameters.at(i).cbPtr->setEnabled(state);
+    for(qint8 i = 0; i < devConfig.binaryOptions.count(); i++) {
+        devConfig.binaryOptions.at(i).cbPtr->setEnabled(state);
     }
 
     comSetDataTransfer(state);
@@ -829,39 +821,40 @@ void MainWindow::readComData_Slot(QByteArray str) {
 
         } else {
             bool isValidCommand = false;
-            QList<Command*>::iterator paramPtr;
-            for(paramPtr = devConfig.commands.begin(); paramPtr != devConfig.commands.end(); paramPtr++) {
-                if((*paramPtr)->getCode().compare(commandStr, Qt::CaseInsensitive) == 0) {
+            Command* currentCommand;
+            foreach(Command* command, devConfig.commands) {
+                if(command->getCode().compare(commandStr, Qt::CaseInsensitive) == 0) {
                     isValidCommand = true;
-                    (*paramPtr)->setRawValue(value);
+                    currentCommand = command;
+                    command->setRawValue(value);
                     break;
                 }
             }
 
             if (isValidCommand) {
                 // Обработка крутилок и информеров основных параметров
-                for(QList<ParameterController*>::iterator pwPtr = devConfig.paramWidgets.begin(); pwPtr != devConfig.paramWidgets.end(); pwPtr++) {
+                foreach(ParameterController* parameterController, devConfig.paramWidgets) {
                     double newValue;
                     // Если это температура, то конвертируем значение в "знаковое"
-                    if((*pwPtr)->isTemperature()) {
-                        newValue = (*paramPtr)->getConvertedSignedValue();
+                    if(parameterController->isTemperature()) {
+                        newValue = currentCommand->getConvertedSignedValue();
                     } else {
-                        newValue  = (*paramPtr)->getConvertedValue();
+                        newValue  = currentCommand->getConvertedValue();
                     }
 
 
-                    if((*pwPtr)->isTemperature() && settings.getTemperatureSymbol() == "F") {
+                    if(parameterController->isTemperature() && settings.getTemperatureSymbol() == "F") {
                         newValue = convertCelToFar(newValue);
                     }
 
-                    if((*pwPtr)->getMaxComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        (*pwPtr)->setMax(newValue);
-                    } else if((*pwPtr)->getMinComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        (*pwPtr)->setMin(newValue);
-                    } else if((*pwPtr)->getRealComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        (*pwPtr)->setRealValue(newValue);
-                    } else if((*pwPtr)->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        (*pwPtr)->setSentValue(newValue);
+                    if(parameterController->getMaxComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                        parameterController->setMax(newValue);
+                    } else if(parameterController->getMinComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                        parameterController->setMin(newValue);
+                    } else if(parameterController->getRealComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                        parameterController->setRealValue(newValue, currentCommand->getDivider());
+                    } else if(parameterController->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                        parameterController->setSentValue(newValue, currentCommand->getDivider());
                     }
                 }
 
@@ -869,22 +862,21 @@ void MainWindow::readComData_Slot(QByteArray str) {
                 setLedState(commandStr, value);
 
                 // Обработка галочек
-                for(int i = 0; i < devConfig.specialParameters.size(); i++) {
-                    specParams_t obj = devConfig.specialParameters.at(i);
-                    if(obj.mask == 0) continue;
+                foreach(specParams_t binaryOption, devConfig.binaryOptions) {
+                    if(binaryOption.mask == 0) continue;
 
-                    if(commandStr == obj.code) {
-                        if(value & obj.mask) {
-                            obj.cbPtr->setChecked(true);
+                    if(commandStr == binaryOption.code) {
+                        if(value & binaryOption.mask) {
+                            binaryOption.cbPtr->setChecked(true);
                         } else {
-                            obj.cbPtr->setChecked(false);
+                            binaryOption.cbPtr->setChecked(false);
                         }
                     }
                 }
 
                 // Обработка команды 0700
                 if(commandStr == DEVICE_STATUS_COMMAND && isValidCommand) {
-                    quint16 newValue = (*paramPtr)->getRawValue();
+                    quint16 newValue = currentCommand->getRawValue();
                     if(newValue & START_STOP_MASK) {
                         if(devConfig.hasLaser) {
                             ui->laserButton->setChecked(true);
@@ -1362,10 +1354,10 @@ void MainWindow::spcialParameterSlot(QString paramLabel) {
     QString tmpQuery = QString(COM_WRITE_PREFIX);
     specParams_t obj;
 
-    for(i = 0; i < devConfig.specialParameters.count(); i++)
-        if(paramLabel.compare(devConfig.specialParameters.at(i).label, Qt::CaseInsensitive) == 0) break;
+    for(i = 0; i < devConfig.binaryOptions.count(); i++)
+        if(paramLabel.compare(devConfig.binaryOptions.at(i).label, Qt::CaseInsensitive) == 0) break;
 
-    obj = devConfig.specialParameters.at(i);
+    obj = devConfig.binaryOptions.at(i);
     tmpQuery += obj.code + QString(" ");
 
     if(obj.cbPtr->isChecked()) {

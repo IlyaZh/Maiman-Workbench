@@ -26,7 +26,9 @@ quint16 Command::getRawValue() {
     return pValue;
 }
 
-
+int Command::getDivider() {
+    return Divider;
+}
 
 // SLOTS are declared below
 

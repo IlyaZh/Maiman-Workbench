@@ -25,7 +25,7 @@ class ParameterController : public QWidget
     Q_OBJECT
 
 public:
-    explicit ParameterController(QWidget *parent = nullptr);
+    explicit ParameterController(QString title, QString unit, QString minComm, QString maxComm, QString valueComm, QString realComm, bool isTemperature = false, QWidget *parent = nullptr);
     ~ParameterController();
     bool getPinState();
     bool getEnableState();
@@ -38,28 +38,23 @@ public:
     QString getRealComm();
     QString getValueComm();
     bool isTemperature();
-//    void updateWidget();
 
 public slots:
-    void setMinComm(QString str);
-    void setMaxComm(QString str);
-    void setRealComm(QString str);
-    void setValueComm(QString str);
-    void setTitle(QString str);
     void setMax(double val);
     void setMin(double val);
-    void setUnit(QString str);
-    void setType(QString str);
-    void setRealValue(double val);
-    void setSentValue(double val);
-    void setDivider(double val);
-    void setIsTemperatureFlag(bool state = false);
+    void setRealValue(double val, int divider);
+    void setSentValue(double val, int divider);
     void hideRealValue(bool state = false);
     void setEnableState(bool state);
     void temperatureIsChanged(QString);
 
 private:
+    void setUnit(QString str);
+    void setTitle(QString str);
     void setPinState(bool val);
+    void setDivider(int val);
+    void setRealDivider(int val);
+
     QPointer<QWidget> bigWidget;
     QPointer<QWidget> compactWidget;
     QPointer<QWidget> textWidget;
@@ -89,7 +84,7 @@ private:
     QPushButton *ui_plusCompactButton;
     QPushButton *ui_sendValueCompactButton;
     QString unit;
-    QString type;
+//    QString type;
     QString title;
     bool pinState;
     bool isCelsius;
@@ -99,7 +94,8 @@ private:
     double max;
     double currValue;
     double realValue;
-    double divider;
+    int realDivider, divider;
+    int precisionOfRealValue, precisionOfValue;
     QLabel* titleLabel;
     QLabel* valueLabel;
     QLabel* unitLabel;
@@ -109,6 +105,7 @@ private:
     QString maxComm;
     QString preparedCommand;
     bool isUserEdited;
+    QDoubleValidator validator;
 
 private slots:
     void on_valueSlider_valueChanged(int value);

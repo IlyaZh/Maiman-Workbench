@@ -17,13 +17,14 @@ bool debugMode = false;
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
     QApplication::setApplicationVersion(QString::number(MAJOR_VERSION) + "." + QString::number(MINOR_VERSION) + "." + QString::number(PATCH_VERSION));
     QApplication::setFont(APPLICATION_DEFAULT_FONT);
 
     QCommandLineParser cliParser;
     QCommandLineOption debugOption(QStringList() << "d" << "debug");
     cliParser.addOption(debugOption);
+    cliParser.parse(QCoreApplication::arguments());
     if(cliParser.isSet(debugOption)) {
         debugMode = true;
     }
@@ -39,5 +40,5 @@ int main(int argc, char *argv[])
     // Отобразить главное окно
     w.show();
 
-    return a.exec();
+    return app.exec();
 }

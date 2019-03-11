@@ -16,6 +16,7 @@ public:
     double getConvertedSignedValue();
     quint16 getRawValue();
     quint8 getInterval();
+    int getDivider();
 
 public slots:
     void setRawValue(quint16 value);
