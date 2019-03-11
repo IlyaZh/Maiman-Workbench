@@ -25,7 +25,6 @@ void CalibrateDialog::setStruct(const calibration_t &calibrationData) {
     QString desc = QString("Min: %1, Max: %2").arg(QString::number(calibrationData.min)).arg(QString::number(calibrationData.max));
     ui->valueSlider->setMinimum(calibrationData.min);
     ui->valueSlider->setMaximum(calibrationData.max);
-    ui->valueSlider->setSingleStep(1.0/calibrationData.divider);
     ui->valueDoubleSpinBox->setSingleStep(1.0/calibrationData.divider);
     ui->valueDoubleSpinBox->setDecimals(qRound(log10(calibrationData.divider)));
     ui->valueDoubleSpinBox->setMinimum(static_cast<double>(calibrationData.min)/calibrationData.divider);
@@ -35,7 +34,7 @@ void CalibrateDialog::setStruct(const calibration_t &calibrationData) {
 void CalibrateDialog::setValue(int value) {
     coef = value;
     ui->valueSlider->setValue(coef);
-    ui->valueDoubleSpinBox->setValue(qRound(static_cast<double>(coef)/divider));
+    ui->valueDoubleSpinBox->setValue(static_cast<double>(coef)/divider);
 }
 
 void CalibrateDialog::setValue(double value) {
