@@ -191,7 +191,7 @@ void MainWindow::setupWindow() {
 
     comPortIntervalCounter = 1;
 
-    showConsoleSlot(false);
+    if(!debugMode) showConsoleSlot(false);
 }
 
 //void MainWindow::setupIndicators() {
@@ -1010,7 +1010,6 @@ void MainWindow::prepareToSendNextCommand() {
 void MainWindow::writeToConsoleError(QString str) {
     writeToConsole(str, CONSOLE_ERROR_COLOR);
      ui->statusBar->showMessage(str, STATUSBAR_MESSAGE_TIMEOUT);
-     qDebug() << str; //debug
 }
 
 void MainWindow::writeToConsole(QString str, Qt::GlobalColor color) {

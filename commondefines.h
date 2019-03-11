@@ -28,6 +28,8 @@ const quint8 MAJOR_VERSION = 1;
 const quint8 MINOR_VERSION = 0;
 const quint8 PATCH_VERSION = 1;
 
+extern bool debugMode;
+
 const QString SECRET_CODE_COMBINATION = "3.1415926";
 
 const QFont APPLICATION_DEFAULT_FONT(":/fonts/ShareTechMono.ttf", 9);

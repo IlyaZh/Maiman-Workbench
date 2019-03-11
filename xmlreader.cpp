@@ -135,7 +135,6 @@ void xmlReader::startLoading() {
     // (отсутствует)
 
     if(xml.hasError()) {
-        qDebug() << xml.errorString() << " at line " << xml.lineNumber() << xml.text() << xml.tokenString();
         emit errorHandler("Error in config at line (" + QString::number(xml.lineNumber()) + "): " + xml.errorString());
     } else {
         emit endOfLoadingConfig(isDeviceFound);
