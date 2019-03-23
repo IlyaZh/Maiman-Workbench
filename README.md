@@ -1,5 +1,5 @@
 # Maiman-Workbench
-Maiman software to control laser drivers
+Software to control Maiman Electronics laser drivers.
 
 ## Features
 - Configurable GUI. Adding a new device without rebuilding code
