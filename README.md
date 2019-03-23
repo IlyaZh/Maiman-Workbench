@@ -3,10 +3,11 @@ Maiman software to control laser drivers
 
 ## Features
 - Configurable GUI. Adding a new device without rebuilding code
-- Export and import device's staet and configuration
+- Export and import device's state and configuration
 - Setting limits
 - Setting calibrations coefficients
 - Writing a log file
+- Checking a software updates
 
 ## Screeshots
 ![Screenshot1](screenshots/maiman-screen-1.JPG?raw=true)
