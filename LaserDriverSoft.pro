@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     selectdevicedialog.cpp \
     devicelimit.cpp \
     command.cpp \
-    parametercontroller.cpp
+    parametercontroller.cpp \
+    signedcommand.cpp
 
 HEADERS  += mainwindow.h \
     commondefines.h \
@@ -46,7 +47,8 @@ HEADERS  += mainwindow.h \
     selectdevicedialog.h \
     devicelimit.h \
     command.h \
-    parametercontroller.h
+    parametercontroller.h \
+    signedcommand.h
 
 FORMS    += mainwindow.ui \
     aboutdialog.ui \

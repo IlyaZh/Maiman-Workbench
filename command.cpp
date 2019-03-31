@@ -16,11 +16,11 @@ double Command::getConvertedValue() {
     return static_cast<double>(pValue) / Divider;
 }
 
-double Command::getConvertedSignedValue() {
-    qint16 val;
-    val = -(~(pValue-1));
-    return static_cast<double>(val) / Divider;
-}
+//double Command::getConvertedSignedValue() {
+//    qint16 val;
+//    val = -(~(pValue-1));
+//    return static_cast<double>(val) / Divider;
+//}
 
 quint16 Command::getRawValue() {
     return pValue;
@@ -28,6 +28,10 @@ quint16 Command::getRawValue() {
 
 int Command::getDivider() {
     return Divider;
+}
+
+bool Command::isSignedValue() {
+    return false;
 }
 
 // SLOTS are declared below

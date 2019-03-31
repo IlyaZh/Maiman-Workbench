@@ -1,5 +1,6 @@
 #include "xmlreader.h"
 #include "command.h"
+#include "signedcommand.h"
 
 xmlReader::xmlReader(QObject *parent) : QObject(parent)
 {
@@ -58,7 +59,7 @@ void xmlReader::readProgramConfig() {
                 attrib = xml.attributes();
                 if(attrib.hasAttribute("id")) {
                     availableDev_t devStruct;
-                    devStruct.id = attrib.value("id").toUInt(nullptr, 16);
+                    devStruct.id = static_cast<quint16>(attrib.value("id").toUInt(nullptr, 16));
                     devStruct.name = xml.readElementText();
                     availableListPtr->append(devStruct);
                 }
@@ -147,7 +148,7 @@ void xmlReader::startLoading() {
 bool xmlReader::parseDevice() {
     QXmlStreamAttributes attrib = xml.attributes();
     if(attrib.hasAttribute("id")) {
-        quint16 currID = attrib.value("id").toUInt(nullptr, 16);
+        quint16 currID = static_cast<quint16>(attrib.value("id").toUInt(nullptr, 16));
         if(currID != deviceId) return false;
         device->deviceID = currID;
         if (attrib.hasAttribute("name")) device->devName = attrib.value("name").toString();
@@ -192,7 +193,14 @@ void xmlReader::parseCommand() {
 
     quint8 interval = (attrib.hasAttribute("interval")) ? attrib.value("interval").toUInt() : 1;
 
-    device->commands.insert(code, new Command(code, divider, interval));
+    bool isSigned = (attrib.hasAttribute("isSigned")) ? true : false;
+
+    if(isSigned) {
+        device->commands.insert(code, new SignedCommand(code, divider, interval));
+    } else {
+        device->commands.insert(code, new Command(code, divider, interval));
+    }
+
 }
 
 void xmlReader::parseControls() {

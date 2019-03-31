@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Config>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Config>
   <BaudRate value="9600"/>
   <BaudRate value="57600"/>
   <BaudRate value="115200"/>
@@ -389,15 +390,15 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
       <command code="0800"/>
       <command code="0A05" divider="10" interval="100"/>
       <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10"/>
+      <command code="0AE4" divider="10" interval="10" isSigned />
       <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10"/>
+      <command code="0AF4" divider="10" interval="10" isSigned />
     </commands>
     <!-- доступные для регулирования пределы -->
     <limits>
-       <limit minCode="0201" upper="1500" divider="10" unit="мс" show="max">Max duration</limit>
+       <limit minCode="0201" maxCode="0202" upper="1500" divider="10" unit="мс" show="max">Max duration</limit>
       <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
-      <limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</limit>
+      <limit upper="200" max="198" min="15" bottom="10" divider="10" unit="V" show="both">Voltage</limit>
     </limits>
     <!--  калибровка -->
     <calibrationKoefs>

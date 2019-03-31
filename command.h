@@ -13,10 +13,10 @@ public:
     explicit Command(QString code, int divider = 1, quint8 interval = 1, QObject *parent = nullptr);
     const QString getCode();
     double getConvertedValue();
-    double getConvertedSignedValue();
     quint16 getRawValue();
     quint8 getInterval();
     int getDivider();
+    virtual bool isSignedValue();
 
 public slots:
     void setRawValue(quint16 value);
