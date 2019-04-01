@@ -390,9 +390,9 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
       <command code="0800"/>
       <command code="0A05" divider="10" interval="100"/>
       <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10" isSigned />
+      <command code="0AE4" divider="10" interval="10" isSigned="" />
       <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10" isSigned />
+      <command code="0AF4" divider="10" interval="10" isSigned="" />
     </commands>
     <!-- доступные для регулирования пределы -->
     <limits>

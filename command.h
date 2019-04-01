@@ -10,22 +10,23 @@ class Command : public QObject
 {
     Q_OBJECT
 public:
-    explicit Command(QString code, int divider = 1, quint8 interval = 1, QObject *parent = nullptr);
+    explicit Command(QString code, double divider = 1, quint8 interval = 1, QObject *parent = nullptr);
     const QString getCode();
-    double getConvertedValue();
+    virtual double getConvertedValue();
     quint16 getRawValue();
     quint8 getInterval();
-    int getDivider();
+    double getDivider();
     virtual bool isSignedValue();
 
 public slots:
-    void setRawValue(quint16 value);
+    virtual void setRawValue(quint16 value);
 
-private:
+protected:
     QString Code;
-    int Divider;
+    double Divider;
     bool isTemperature;
-    quint16 pValue;
+    quint16 rawValue;
+    double value;
     quint8 interval;
 };
 

@@ -819,11 +819,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
                 // Обработка крутилок и информеров основных параметров
                 foreach(ParameterController* parameterController, devConfig.paramWidgets) {
                     double newValue;
-                    if(currentCommand->isSignedValue()) {
-                        newValue = currentCommand->getConvertedSignedValue();
-                    } else {
-                        newValue  = currentCommand->getConvertedValue();
-                    }
+                    newValue  = currentCommand->getConvertedValue();
 
 
                     if(parameterController->isTemperature() && settings.getTemperatureSymbol() == "F") {

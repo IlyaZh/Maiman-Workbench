@@ -100,7 +100,7 @@ inline QString getDefaultPort() { return getAvailablePorts().value(0); }
 // Список ID устройств, которые отвечают общим "кодом".
 const quint16 DEFAULT_DEV_ID = 16;
 
-enum DEV_STATUS_MASK_RD {START_STOP_MASK = 0x2, CURRENT_EXT_INT_MASK = 0x4, START_EXT_INT_MASK = 0x10, BLOCK_THERMO_MASK = 0x40, BLOCK_USE_IGNORE_MASK = 0x80};
+enum deviceStatusMask {START_STOP_MASK = 0x2, CURRENT_EXT_INT_MASK = 0x4, START_EXT_INT_MASK = 0x10, BLOCK_THERMO_MASK = 0x40, BLOCK_USE_IGNORE_MASK = 0x80};
 
 const QString HELP_URL = "http://yandex.ru/";
 const QString UPDATE_LIST_URL = "http://maiman.online/soft-upd.txt";

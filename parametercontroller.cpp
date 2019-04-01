@@ -1,7 +1,7 @@
 #include "parametercontroller.h"
 
 //ParameterForm::ParameterForm(const paramControls_t &inParam, QWidget *parent) :
-ParameterController::ParameterController(QString titleStr, QString unitStr, QString minComm, QString maxComm, QString valueComm, QString realComm, int divider, int realDivider, bool isTemperature, QWidget *parent) : QWidget(parent)
+ParameterController::ParameterController(QString titleStr, QString unitStr, QString minComm, QString maxComm, QString valueComm, QString realComm, double divider, double realDivider, bool isTemperature, QWidget *parent) : QWidget(parent)
 {
     isTemperatureFlag = isTemperature;
     this->minComm = minComm;
@@ -143,7 +143,7 @@ QWidget* ParameterController::loadTextWidget() {
     return textWidget;
 }
 
-void ParameterController::setDivider(int val) {
+void ParameterController::setDivider(double val) {
     divider = val;
     precisionOfValue = qRound(log10(divider));
     validator.setDecimals(precisionOfValue);

@@ -25,7 +25,7 @@ class ParameterController : public QWidget
     Q_OBJECT
 
 public:
-    explicit ParameterController(QString title, QString unit, QString minComm, QString maxComm, QString valueComm, QString realComm, int divider, int realDivider, bool isTemperature = false, QWidget *parent = nullptr);
+    explicit ParameterController(QString title, QString unit, QString minComm, QString maxComm, QString valueComm, QString realComm, double divider, double realDivider, bool isTemperature = false, QWidget *parent = nullptr);
     ~ParameterController();
     bool getPinState();
     bool getEnableState();
@@ -52,7 +52,7 @@ private:
     void setUnit(QString str);
     void setTitle(QString str);
     void setPinState(bool val);
-    void setDivider(int val);
+    void setDivider(double val);
     void setRealDivider(int val);
     void prepareBigWidget();
     void prepareCompactViewWidget();
@@ -98,7 +98,7 @@ private:
     double max;
     double currValue;
     double realValue;
-    int realDivider, divider;
+    double realDivider, divider;
     int precisionOfRealValue, precisionOfValue;
     QLabel* titleLabel;
     QLabel* valueLabel;

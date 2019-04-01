@@ -285,8 +285,8 @@ void xmlReader::parseParam() {
 
     title = xml.readElementText();
 
-    int divider = (device->commands.contains(valueCode)) ? device->commands.value(valueCode)->getDivider() : 1;
-    int realDivider = (device->commands.contains(realCode)) ? device->commands.value(realCode)->getDivider() : 1;
+    double divider = (device->commands.contains(valueCode)) ? device->commands.value(valueCode)->getDivider() : 1;
+    double realDivider = (device->commands.contains(realCode)) ? device->commands.value(realCode)->getDivider() : 1;
 
     ParameterController* parameterController = new ParameterController(title, unit, minCode, maxCode, valueCode, realCode, divider, realDivider, isTemperatureFlag);
 
