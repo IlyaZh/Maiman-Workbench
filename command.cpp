@@ -32,7 +32,7 @@ bool Command::isSignedValue() {
 
 void Command::setRawValue(quint16 value) {
     rawValue = value;
-    value = static_cast<double>(rawValue) / Divider;
+    this->value = static_cast<double>(rawValue) / Divider;
 }
 
 quint8 Command::getInterval() {
