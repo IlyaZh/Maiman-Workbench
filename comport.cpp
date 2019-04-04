@@ -218,7 +218,7 @@ void comPort::dataIsWritten(qint64 length) {
             // startToSendNextCommand();
 
             // Ожидаем длительную паузу после отправки команды "стоп"
-            if(lastSentCommand == DEVICE_STOP_COMMAND+QString(COM_END_OF_LINE)) {
+            if(lastSentCommand == DEVICE_STOP_COMMAND+QString(COM_END_OF_LINE) || lastSentCommand == TEC_STOP_COMMAND+QString(COM_END_OF_LINE)) {
                 QTimer::singleShot(stopCommandDelay, this, SLOT(waitForNextCommandSlot()));
             } else {
                 waitForNextCommandSlot();

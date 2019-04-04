@@ -853,7 +853,6 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     }
                 }
 
-                // Обработка команды 0700
                 if(commandStr == DEVICE_STATUS_COMMAND) {
                     if(devConfig.hasLaser) {
                         if(currentCommand->getRawValue() & START_STOP_MASK) {
@@ -862,7 +861,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
                             ui->laserButton->setChecked(false);
                         }
                     }
-                } else // Обработка команды 0A1A
+                } else
                     if(commandStr == TEC_STATUS_COMMAND) {
                         if(devConfig.hasTEC) {
                             if(currentCommand->getRawValue() & START_STOP_MASK) {

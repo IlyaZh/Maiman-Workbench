@@ -63,6 +63,7 @@ const char COM_ERROR_PREFIX = 'E';
 const char COM_END_OF_LINE = '\r';
 
 const QString DEVICE_STOP_COMMAND = QString(COM_WRITE_PREFIX) + "0700 0010";
+const QString TEC_STOP_COMMAND = QString(COM_WRITE_PREFIX) + "0A1A 0010";
 
 const unsigned int DEFAULT_BAUD_RATE = 115200;
 

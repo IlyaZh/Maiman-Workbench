@@ -314,14 +314,29 @@ void xmlReader::parseLimit() {
         }
     }
 
+    double divider = 1;
+    QString dividerParam;
+    dividerParam.clear();
+
+    if(attrib.hasAttribute("minCode")) {
+        dividerParam = attrib.value("minCode").toString();
+    } else if (attrib.hasAttribute("maxCode")) {
+       dividerParam = attrib.value("maxCode").toString();
+    }
+
+    if(!dividerParam.isEmpty()) {
+        if(device->commands.contains(dividerParam)) {
+            divider = device->commands.value(dividerParam)->getDivider();
+        }
+    }
+
     DeviceLimit* devLimit = new DeviceLimit(xml.readElementText(),
                                  attrib.hasAttribute("unit") ? attrib.value("unit").toString() : "",
                                  attrib.hasAttribute("bottomCode") ? attrib.value("bottomCode").toString() : "",
                                  attrib.hasAttribute("upperCode") ? attrib.value("upperCode").toString() : "",
                                  attrib.hasAttribute("minCode") ? attrib.value("minCode").toString() : "",
                                  attrib.hasAttribute("maxCode") ? attrib.value("maxCode").toString() : "",
-                                 attrib.hasAttribute("divider") ? attrib.value("divider").toDouble() : 1,
-                                 showMin, showMax);
+                                 divider, showMin, showMax);
 
 
     if(attrib.hasAttribute("min")) {
