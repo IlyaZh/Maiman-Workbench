@@ -855,16 +855,23 @@ void MainWindow::readComData_Slot(QByteArray str) {
 
                 // Обработка команды 0700
                 if(commandStr == DEVICE_STATUS_COMMAND) {
-                    if(currentCommand->getRawValue() & START_STOP_MASK) {
-                        if(devConfig.hasLaser) {
+                    if(devConfig.hasLaser) {
+                        if(currentCommand->getRawValue() & START_STOP_MASK) {
                             ui->laserButton->setChecked(true);
-                        }
-                    } else {
-                        if(devConfig.hasLaser) {
+                        } else {
                             ui->laserButton->setChecked(false);
                         }
                     }
-                }
+                } else // Обработка команды 0A1A
+                    if(commandStr == TEC_STATUS_COMMAND) {
+                        if(devConfig.hasTEC) {
+                            if(currentCommand->getRawValue() & START_STOP_MASK) {
+                                ui->tecButton->setChecked(true);
+                            } else {
+                                ui->tecButton->setChecked(false);
+                            }
+                        }
+                    }
             }
         }
     } else if (prefix == COM_ERROR_PREFIX) {
