@@ -19,6 +19,7 @@ extern AppSettings settings;
 #include <QDoubleValidator>
 #include <QGroupBox>
 #include <QTimer>
+#include <QtGlobal>
 
 class ParameterController : public QWidget
 {
@@ -53,7 +54,7 @@ private:
     void setTitle(QString str);
     void setPinState(bool val);
     void setDivider(double val);
-    void setRealDivider(int val);
+    void setRealDivider(double val);
     void prepareBigWidget();
     void prepareCompactViewWidget();
     void prepareTextWidget();
@@ -73,7 +74,7 @@ private:
     QLabel *ui_currUnitProgressLabel;
     QLabel *ui_minUnitProgressLabel;
     QLabel *ui_maxUnitProgressLabel;
-    QProgressBar *ui_readedValueBar;
+    QProgressBar *ui_measuredValueBar;
     QSlider *ui_valueSlider;
     QPushButton *ui_minusButton;
     QPushButton *ui_plusButton;

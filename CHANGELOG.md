@@ -16,3 +16,4 @@ All notable changes to this project will be documented in this file.
 - Each time you connect to device, if it returns a "common ID", user is prompted to select a custom device model.
 - Limit settings window is working correctly now. Fix bug with sending new limits without code: user could send a new limit like "P <value>".
 - TEC button did not show the TEC status.
+- Fixed an issue with displaying the measured value. If measured value is over then bar will not show new value.

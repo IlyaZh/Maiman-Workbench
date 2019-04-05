@@ -52,7 +52,7 @@ void ParameterController::prepareBigWidget() {
     ui_currValueLine = bigWidget->findChild<QLineEdit*>("currValueLine");
     ui_minUnitProgressLabel = bigWidget->findChild<QLabel*>("minUnitProgressLabel");
     ui_maxUnitProgressLabel = bigWidget->findChild<QLabel*>("maxUnitProgressLabel");
-    ui_readedValueBar = bigWidget->findChild<QProgressBar*>("readedValueBar");
+    ui_measuredValueBar = bigWidget->findChild<QProgressBar*>("measuredValueBar");
     ui_valueSlider = bigWidget->findChild<QSlider*>("valueSlider");
     ui_minusButton = bigWidget->findChild<QPushButton*>("minusButton");
     ui_plusButton = bigWidget->findChild<QPushButton*>("plusButton");
@@ -151,7 +151,7 @@ void ParameterController::setDivider(double val) {
     ui_currValueCompactLine->setValidator(&validator);
 }
 
-void ParameterController::setRealDivider(int val) {
+void ParameterController::setRealDivider(double val) {
     realDivider = val;
     precisionOfRealValue = qRound(log10(realDivider));
 }
@@ -166,7 +166,7 @@ void ParameterController::hideRealValue(bool state) {
 
 //        ui_currValueLine->setEnabled(false);
         ui_typeLabel->setText(tr("Set"));
-        ui_readedValueBar->setValue(ui_readedValueBar->minimum());
+        ui_measuredValueBar->setValue(ui_measuredValueBar->minimum());
 //        ui_realValueUnitCompactLabel->hide();
     } else {
         // присутствуют оба значения: измеренное и установленное
@@ -178,7 +178,7 @@ void ParameterController::hideRealValue(bool state) {
         ui_typeLabel->setText(tr("Real"));
         ui_setValueLabel->setText("set=" + wlocale.toString(static_cast<double>(ui_valueSlider->value())/realDivider, DOUBLE_FORMAT, precisionOfRealValue) + unit);
         // Устанавлиавем красный цвет прогресс-бара
-        ui_readedValueBar->setStyleSheet(" QProgressBar { \
+        ui_measuredValueBar->setStyleSheet(" QProgressBar { \
                                                  border: 1px solid rgb(25,25,25); \
                                                  background: rgb(25,25,25); \
                                                  border-radius: 5px; \
@@ -237,7 +237,7 @@ void ParameterController::setMax(double val) {
     ui_maxLabel->setText("max=" + wlocale.toString(max, DOUBLE_FORMAT, precisionOfValue) + unit);
     ui_maxCompactLabel->setText("max=" + wlocale.toString(max, DOUBLE_FORMAT, precisionOfValue) + unit);
     ui_valueSlider->setMaximum(qRound(max*divider));
-    ui_readedValueBar->setMaximum(qRound(max*divider));
+    ui_measuredValueBar->setMaximum(qRound(max*divider));
     ui_maxUnitProgressLabel->setText(wlocale.toString(max, DOUBLE_FORMAT, precisionOfValue) + unit);
 
 //    QDoubleValidator *validator = new QDoubleValidator(min, max, DEFAULT_DIGITS_AFTER_POINT);
@@ -252,12 +252,12 @@ void ParameterController::setMax(double val) {
 }
 
 void ParameterController::setMin(double val) {
-     min = val;
+    min = val;
 
     ui_minLabel->setText("min=" + wlocale.toString(min, DOUBLE_FORMAT, precisionOfValue) + unit);
     ui_minCompactLabel->setText("min=" + wlocale.toString(min, DOUBLE_FORMAT, precisionOfValue) + unit);
     ui_valueSlider->setMinimum(qRound(min*divider));
-    ui_readedValueBar->setMinimum(qRound(min*divider));
+    ui_measuredValueBar->setMinimum(qRound(min*divider));
     ui_minUnitProgressLabel->setText(wlocale.toString(min, DOUBLE_FORMAT, precisionOfValue) + unit);
 
     if(currValue < min) {
@@ -281,8 +281,8 @@ bool ParameterController::getEnableState() {
 void ParameterController::setRealValue(double value) {
     realValue = value;
 
-    ui_readedValueBar->setValue(qRound(realValue*realDivider));
-    ui_readedValueBar->setStyleSheet(" QProgressBar { \
+    ui_measuredValueBar->setValue(qBound(qRound(min*divider), qRound(realValue*realDivider), qRound(max*divider)));
+    ui_measuredValueBar->setStyleSheet(" QProgressBar { \
                                      border: 1px solid rgb(25,25,25); \
                                      background: rgb(25,25,25); \
                                      border-radius: 5px; \

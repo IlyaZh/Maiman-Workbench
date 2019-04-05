@@ -318,7 +318,7 @@ QPushButton::disabled {
     </widget>
    </item>
    <item row="2" column="0" rowspan="3">
-    <widget class="QProgressBar" name="readedValueBar">
+    <widget class="QProgressBar" name="measuredValueBar">
      <property name="enabled">
       <bool>false</bool>
      </property>
@@ -568,7 +568,7 @@ border-radius: 5px;</string>
    </item>
   </layout>
   <zorder>minusButton</zorder>
-  <zorder>readedValueBar</zorder>
+  <zorder>measuredValueBar</zorder>
   <zorder>plusButton</zorder>
   <zorder>line_2</zorder>
   <zorder>groupBox</zorder>
