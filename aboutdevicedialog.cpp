@@ -27,7 +27,9 @@ void AboutDeviceDialog::setInfo(const device_t& device) {
     ui->nameLabel->setText(device.devName);
 
     ui->descriptionLabel->setText(device.description);
-    QString link = QString("<a href=\"%1\" style=\"color: #fff;\">Product page</a>").arg(device.link);
+    QString link = QString("");
+    if(!device.link.isEmpty())
+        link = QString("<a href=\"%1\" style=\"color: #fff;\">Product page</a>").arg(device.link);
     ui->linkLabel->setText(link);
 
     if(device.hasLaser) {
