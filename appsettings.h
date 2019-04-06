@@ -17,7 +17,7 @@ public:
     quint32 getComBaudrate();
     QString getComPort();
     uint getComAutoconnectFlag(bool flag);
-    int getComCommandsDelay();
+    uint getComCommandsDelay();
     bool getComAutoconnectFlag();
     QString getTemperatureSymbol();
     bool getCompactModeFlag();
@@ -38,7 +38,7 @@ public slots:
     void setComBaudrate(quint32 BR);
     void setComPort(QString port);
     void setComAutoconnectFlag(bool flag);
-    void setComCommandsDelay(int delayMs);
+    void setComCommandsDelay(uint delayMs);
     void setTemperatureSymbol(QString tempSymbol);
     void setCompactModeFlag(bool flag);
     void setRecentOpenFiles(const QList<QVariant> &list);
