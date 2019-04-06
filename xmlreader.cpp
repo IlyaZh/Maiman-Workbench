@@ -78,6 +78,7 @@ void xmlReader::parseCommonConfig(QString fileName, QList<availableDev_t>& devic
         } else if(token == QXmlStreamReader::EndElement) {
             // Завершаем цикл чтения по прошествию соответствующего закрывающего тэга
             if(xname == "CommonIDDevices") break;
+            if(xname == "Config") break;
         }
     }
 
@@ -131,9 +132,8 @@ void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16
 //                xml.skipCurrentElement();
             }
         } else if(token == QXmlStreamReader::EndElement) {
-            if(xml.name() == "Device" && isDeviceFound) {
-                break;
-            }
+            if(xml.name() == "Device" && isDeviceFound) break;
+            if(xml.name() == "Config") break;
         }
     }
 
