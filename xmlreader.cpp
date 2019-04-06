@@ -18,7 +18,7 @@ void xmlReader::setDeviceOptions(device_t &device, quint16 dev_id) {
     device.maxCommDelay = COM_COMMAND_MAX_SEND_DELAY;
 }
 
-void xmlReader::setList(QList<availableDev_t>& listPtr) {
+void xmlReader::setDeviceList(QList<availableDev_t>& listPtr) {
     availableListPtr = &listPtr;
 }
 
@@ -41,7 +41,10 @@ bool xmlReader::readFile() {
     return true;
 }
 
-void xmlReader::readProgramConfig() {
+void xmlReader::parseCommonConfig(QString fileName, QList<availableDev_t>& deviceList, QList<uint> &baudList) {
+    setConfigFile(fileName);
+    setDeviceList(deviceList);
+    setBaudsList(baudList);
     if(!readFile()) return;
 
     availableListPtr->clear();
@@ -85,7 +88,9 @@ void xmlReader::readProgramConfig() {
     file->deleteLater();
 }
 
-void xmlReader::startLoading() {
+void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16 dev_id) {
+    setConfigFile(fileName);
+    setDeviceOptions(devicePtr, dev_id);
     if(!readFile()) return;
     bool isDeviceFound = false;
 //    currDeviceFound = false;

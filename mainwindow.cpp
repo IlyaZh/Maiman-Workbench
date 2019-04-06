@@ -159,7 +159,7 @@ void MainWindow::setupWindow() {
     autoSendNextCommand = true;
     requestAllCommands = true;
 
-    loadProgramConfig(availableDevices);
+    loadCommonConfig(availableDevices);
 
     ui->comPortConnectButton->setText(tr("Disconnected"));
     portIsOpen = false;
@@ -808,7 +808,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     oldDevID = devID;
                 } else {
                     clearAllRegulators();
-                    loadConfig(devID);
+                    loadDeviceConfig(devID);
                 }
             }
 
@@ -954,7 +954,7 @@ void MainWindow::selectedDeviceSlot(QString userSelectedDevice) {
             clearAllRegulators();
             devID = devStruct.id;
             settings.setLastSelectedDeviceId(devID);
-            loadConfig(devID);
+            loadDeviceConfig(devID);
 
             break;
         }
@@ -1010,17 +1010,12 @@ void MainWindow::loadConfigProgramFinished(bool state) {
     }
 }
 
-void MainWindow::loadConfig(quint16 id) {
-    xml->setDeviceOptions(devConfig, id);
-    xml->setConfigFile(CONFIG_FILE);
-    xml->startLoading();
+void MainWindow::loadDeviceConfig(quint16 id) {
+    xml->parseDeviceConfig(CONFIG_FILE, devConfig, id);
 }
 
-void MainWindow::loadProgramConfig(QList<availableDev_t> &listPtr) {
-    xml->setList(listPtr);
-    xml->setBaudsList(comBaudRates);
-    xml->setConfigFile(CONFIG_FILE);
-    xml->readProgramConfig();
+void MainWindow::loadCommonConfig(QList<availableDev_t> &deviceList) {
+    xml->parseCommonConfig(CONFIG_FILE, deviceList, comBaudRates);
 }
 
 void MainWindow::comPortTimeout() {

@@ -87,8 +87,8 @@ private slots:
     void startUpdateSlot();
     void sendLogSlot();
     void hideControlsButtonSlot(bool);
-    void loadConfig(quint16 id = 0);
-    void loadProgramConfig(QList<availableDev_t>& listPtr);
+    void loadDeviceConfig(quint16 id = 0);
+    void loadCommonConfig(QList<availableDev_t>& deviceList);
     void spcialParameterSlot(QString);
 //    void paramPrepareToSendCommand(QString);
     //void setLastSentCommand(QString);

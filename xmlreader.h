@@ -16,12 +16,12 @@ class xmlReader : public QObject
     Q_OBJECT
 public:
     explicit xmlReader(QObject *parent = nullptr);
-    void setConfigFile(QString file);
-    void setDeviceOptions(device_t &device, quint16 dev_id);
-    void setList(QList<availableDev_t>& listPtr);
-    void setBaudsList(QList<uint> &baudList);
 
 private:
+    void setConfigFile(QString file);
+    void setDeviceOptions(device_t &device, quint16 dev_id);
+    void setDeviceList(QList<availableDev_t>& listPtr);
+    void setBaudsList(QList<uint> &baudList);
     QFile *file;
     //QDomDocument doc;
     QString filePath;
@@ -50,8 +50,8 @@ signals:
 
 
 public slots:
-    void startLoading();
-    void readProgramConfig();
+    void parseCommonConfig(QString fileName, QList<availableDev_t>& deviceList, QList<uint> &baudList);
+    void parseDeviceConfig(QString fileName, device_t &devicePtr, quint16 dev_id);
 
 
 };
