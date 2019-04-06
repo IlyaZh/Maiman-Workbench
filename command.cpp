@@ -1,6 +1,6 @@
 #include "command.h"
 
-Command::Command(QString code, int divider, quint8 interval, QObject *parent) : QObject(parent)
+Command::Command(QString code, double divider, quint8 interval, QObject *parent) : QObject(parent)
 {
     this->Code = code;
     this->interval = (interval < MAX_COM_INTERVAL_COUNTER) ? interval : MAX_COM_INTERVAL_COUNTER;
@@ -13,28 +13,26 @@ const QString Command::getCode() {
 }
 
 double Command::getConvertedValue() {
-    return static_cast<double>(pValue) / Divider;
-}
-
-double Command::getConvertedSignedValue() {
-    qint16 val;
-    val = -(~(pValue-1));
-    return static_cast<double>(val) / Divider;
+    return value;
 }
 
 quint16 Command::getRawValue() {
-    return pValue;
+    return rawValue;
 }
 
-int Command::getDivider() {
+double Command::getDivider() {
     return Divider;
+}
+
+bool Command::isSignedValue() {
+    return false;
 }
 
 // SLOTS are declared below
 
 void Command::setRawValue(quint16 value) {
-    pValue = value;
-//    emit changeRawOccured(Code);
+    rawValue = value;
+    this->value = static_cast<double>(rawValue) / Divider;
 }
 
 quint8 Command::getInterval() {

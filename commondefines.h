@@ -23,6 +23,7 @@ const QPoint WINDOW_DEFAULT_POSITION = QPoint(-1, -1);
 //const QSize WINDOW_DEFAULT_SIZE = QSize(-1,-1);
 
 const QString DEVICE_STATUS_COMMAND = "0700";
+const QString TEC_STATUS_COMMAND = "0A1A";
 
 const quint8 MAJOR_VERSION = 1;
 const quint8 MINOR_VERSION = 0;
@@ -62,6 +63,7 @@ const char COM_ERROR_PREFIX = 'E';
 const char COM_END_OF_LINE = '\r';
 
 const QString DEVICE_STOP_COMMAND = QString(COM_WRITE_PREFIX) + "0700 0010";
+const QString TEC_STOP_COMMAND = QString(COM_WRITE_PREFIX) + "0A1A 0010";
 
 const unsigned int DEFAULT_BAUD_RATE = 115200;
 
@@ -100,7 +102,7 @@ inline QString getDefaultPort() { return getAvailablePorts().value(0); }
 // Список ID устройств, которые отвечают общим "кодом".
 const quint16 DEFAULT_DEV_ID = 16;
 
-enum DEV_STATUS_MASK_RD {START_STOP_MASK = 0x2, CURRENT_EXT_INT_MASK = 0x4, START_EXT_INT_MASK = 0x10, BLOCK_THERMO_MASK = 0x40, BLOCK_USE_IGNORE_MASK = 0x80};
+enum deviceStatusMask {START_STOP_MASK = 0x2, CURRENT_EXT_INT_MASK = 0x4, START_EXT_INT_MASK = 0x10, BLOCK_THERMO_MASK = 0x40, BLOCK_USE_IGNORE_MASK = 0x80};
 
 const QString HELP_URL = "http://yandex.ru/";
 const QString UPDATE_LIST_URL = "http://maiman.online/soft-upd.txt";

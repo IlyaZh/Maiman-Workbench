@@ -159,7 +159,7 @@ void MainWindow::setupWindow() {
     autoSendNextCommand = true;
     requestAllCommands = true;
 
-    loadProgramConfig(availableDevices);
+    loadCommonConfig(availableDevices);
 
     ui->comPortConnectButton->setText(tr("Disconnected"));
     portIsOpen = false;
@@ -808,7 +808,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     oldDevID = devID;
                 } else {
                     clearAllRegulators();
-                    loadConfig(devID);
+                    loadDeviceConfig(devID);
                 }
             }
 
@@ -819,12 +819,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
                 // Обработка крутилок и информеров основных параметров
                 foreach(ParameterController* parameterController, devConfig.paramWidgets) {
                     double newValue;
-                    // Если это температура, то конвертируем значение в "знаковое"
-                    if(parameterController->isTemperature()) {
-                        newValue = currentCommand->getConvertedSignedValue();
-                    } else {
-                        newValue  = currentCommand->getConvertedValue();
-                    }
+                    newValue  = currentCommand->getConvertedValue();
 
 
                     if(parameterController->isTemperature() && settings.getTemperatureSymbol() == "F") {
@@ -858,18 +853,24 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     }
                 }
 
-                // Обработка команды 0700
                 if(commandStr == DEVICE_STATUS_COMMAND) {
-                    if(currentCommand->getRawValue() & START_STOP_MASK) {
-                        if(devConfig.hasLaser) {
+                    if(devConfig.hasLaser) {
+                        if(currentCommand->getRawValue() & START_STOP_MASK) {
                             ui->laserButton->setChecked(true);
-                        }
-                    } else {
-                        if(devConfig.hasLaser) {
+                        } else {
                             ui->laserButton->setChecked(false);
                         }
                     }
-                }
+                } else
+                    if(commandStr == TEC_STATUS_COMMAND) {
+                        if(devConfig.hasTEC) {
+                            if(currentCommand->getRawValue() & START_STOP_MASK) {
+                                ui->tecButton->setChecked(true);
+                            } else {
+                                ui->tecButton->setChecked(false);
+                            }
+                        }
+                    }
             }
         }
     } else if (prefix == COM_ERROR_PREFIX) {
@@ -953,7 +954,7 @@ void MainWindow::selectedDeviceSlot(QString userSelectedDevice) {
             clearAllRegulators();
             devID = devStruct.id;
             settings.setLastSelectedDeviceId(devID);
-            loadConfig(devID);
+            loadDeviceConfig(devID);
 
             break;
         }
@@ -1009,17 +1010,12 @@ void MainWindow::loadConfigProgramFinished(bool state) {
     }
 }
 
-void MainWindow::loadConfig(quint16 id) {
-    xml->setDeviceOptions(devConfig, id);
-    xml->setConfigFile(CONFIG_FILE);
-    xml->startLoading();
+void MainWindow::loadDeviceConfig(quint16 id) {
+    xml->parseDeviceConfig(CONFIG_FILE, devConfig, id);
 }
 
-void MainWindow::loadProgramConfig(QList<availableDev_t> &listPtr) {
-    xml->setList(listPtr);
-    xml->setBaudsList(comBaudRates);
-    xml->setConfigFile(CONFIG_FILE);
-    xml->readProgramConfig();
+void MainWindow::loadCommonConfig(QList<availableDev_t> &deviceList) {
+    xml->parseCommonConfig(CONFIG_FILE, deviceList, comBaudRates);
 }
 
 void MainWindow::comPortTimeout() {

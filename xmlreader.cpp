@@ -1,5 +1,6 @@
 #include "xmlreader.h"
 #include "command.h"
+#include "signedcommand.h"
 
 xmlReader::xmlReader(QObject *parent) : QObject(parent)
 {
@@ -17,7 +18,7 @@ void xmlReader::setDeviceOptions(device_t &device, quint16 dev_id) {
     device.maxCommDelay = COM_COMMAND_MAX_SEND_DELAY;
 }
 
-void xmlReader::setList(QList<availableDev_t>& listPtr) {
+void xmlReader::setDeviceList(QList<availableDev_t>& listPtr) {
     availableListPtr = &listPtr;
 }
 
@@ -40,7 +41,10 @@ bool xmlReader::readFile() {
     return true;
 }
 
-void xmlReader::readProgramConfig() {
+void xmlReader::parseCommonConfig(QString fileName, QList<availableDev_t>& deviceList, QList<uint> &baudList) {
+    setConfigFile(fileName);
+    setDeviceList(deviceList);
+    setBaudsList(baudList);
     if(!readFile()) return;
 
     availableListPtr->clear();
@@ -58,7 +62,7 @@ void xmlReader::readProgramConfig() {
                 attrib = xml.attributes();
                 if(attrib.hasAttribute("id")) {
                     availableDev_t devStruct;
-                    devStruct.id = attrib.value("id").toUInt(nullptr, 16);
+                    devStruct.id = static_cast<quint16>(attrib.value("id").toUInt(nullptr, 16));
                     devStruct.name = xml.readElementText();
                     availableListPtr->append(devStruct);
                 }
@@ -74,6 +78,7 @@ void xmlReader::readProgramConfig() {
         } else if(token == QXmlStreamReader::EndElement) {
             // Завершаем цикл чтения по прошествию соответствующего закрывающего тэга
             if(xname == "CommonIDDevices") break;
+            if(xname == "Config") break;
         }
     }
 
@@ -84,7 +89,9 @@ void xmlReader::readProgramConfig() {
     file->deleteLater();
 }
 
-void xmlReader::startLoading() {
+void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16 dev_id) {
+    setConfigFile(fileName);
+    setDeviceOptions(devicePtr, dev_id);
     if(!readFile()) return;
     bool isDeviceFound = false;
 //    currDeviceFound = false;
@@ -125,9 +132,8 @@ void xmlReader::startLoading() {
 //                xml.skipCurrentElement();
             }
         } else if(token == QXmlStreamReader::EndElement) {
-            if(xml.name() == "Device" && isDeviceFound) {
-                break;
-            }
+            if(xml.name() == "Device" && isDeviceFound) break;
+            if(xml.name() == "Config") break;
         }
     }
 
@@ -147,7 +153,7 @@ void xmlReader::startLoading() {
 bool xmlReader::parseDevice() {
     QXmlStreamAttributes attrib = xml.attributes();
     if(attrib.hasAttribute("id")) {
-        quint16 currID = attrib.value("id").toUInt(nullptr, 16);
+        quint16 currID = static_cast<quint16>(attrib.value("id").toUInt(nullptr, 16));
         if(currID != deviceId) return false;
         device->deviceID = currID;
         if (attrib.hasAttribute("name")) device->devName = attrib.value("name").toString();
@@ -192,7 +198,14 @@ void xmlReader::parseCommand() {
 
     quint8 interval = (attrib.hasAttribute("interval")) ? attrib.value("interval").toUInt() : 1;
 
-    device->commands.insert(code, new Command(code, divider, interval));
+    bool isSigned = (attrib.hasAttribute("isSigned")) ? true : false;
+
+    if(isSigned) {
+        device->commands.insert(code, new SignedCommand(code, divider, interval));
+    } else {
+        device->commands.insert(code, new Command(code, divider, interval));
+    }
+
 }
 
 void xmlReader::parseControls() {
@@ -277,8 +290,8 @@ void xmlReader::parseParam() {
 
     title = xml.readElementText();
 
-    int divider = (device->commands.contains(valueCode)) ? device->commands.value(valueCode)->getDivider() : 1;
-    int realDivider = (device->commands.contains(realCode)) ? device->commands.value(realCode)->getDivider() : 1;
+    double divider = (device->commands.contains(valueCode)) ? device->commands.value(valueCode)->getDivider() : 1;
+    double realDivider = (device->commands.contains(realCode)) ? device->commands.value(realCode)->getDivider() : 1;
 
     ParameterController* parameterController = new ParameterController(title, unit, minCode, maxCode, valueCode, realCode, divider, realDivider, isTemperatureFlag);
 
@@ -306,14 +319,29 @@ void xmlReader::parseLimit() {
         }
     }
 
+    double divider = 1;
+    QString dividerParam;
+    dividerParam.clear();
+
+    if(attrib.hasAttribute("minCode")) {
+        dividerParam = attrib.value("minCode").toString();
+    } else if (attrib.hasAttribute("maxCode")) {
+       dividerParam = attrib.value("maxCode").toString();
+    }
+
+    if(!dividerParam.isEmpty()) {
+        if(device->commands.contains(dividerParam)) {
+            divider = device->commands.value(dividerParam)->getDivider();
+        }
+    }
+
     DeviceLimit* devLimit = new DeviceLimit(xml.readElementText(),
                                  attrib.hasAttribute("unit") ? attrib.value("unit").toString() : "",
                                  attrib.hasAttribute("bottomCode") ? attrib.value("bottomCode").toString() : "",
                                  attrib.hasAttribute("upperCode") ? attrib.value("upperCode").toString() : "",
                                  attrib.hasAttribute("minCode") ? attrib.value("minCode").toString() : "",
                                  attrib.hasAttribute("maxCode") ? attrib.value("maxCode").toString() : "",
-                                 attrib.hasAttribute("divider") ? attrib.value("divider").toDouble() : 1,
-                                 showMin, showMax);
+                                 divider, showMin, showMax);
 
 
     if(attrib.hasAttribute("min")) {

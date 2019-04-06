@@ -77,8 +77,8 @@ typedef struct {
     bool hasTEC;
     bool startTECwithLaser;
     uint stopCommandDelay;
-    int minCommDelay;
-    int maxCommDelay;
+    uint minCommDelay;
+    uint maxCommDelay;
 } device_t;
 
 typedef struct {

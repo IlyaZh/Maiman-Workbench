@@ -19,13 +19,14 @@ extern AppSettings settings;
 #include <QDoubleValidator>
 #include <QGroupBox>
 #include <QTimer>
+#include <QtGlobal>
 
 class ParameterController : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ParameterController(QString title, QString unit, QString minComm, QString maxComm, QString valueComm, QString realComm, int divider, int realDivider, bool isTemperature = false, QWidget *parent = nullptr);
+    explicit ParameterController(QString title, QString unit, QString minComm, QString maxComm, QString valueComm, QString realComm, double divider, double realDivider, bool isTemperature = false, QWidget *parent = nullptr);
     ~ParameterController();
     bool getPinState();
     bool getEnableState();
@@ -52,8 +53,8 @@ private:
     void setUnit(QString str);
     void setTitle(QString str);
     void setPinState(bool val);
-    void setDivider(int val);
-    void setRealDivider(int val);
+    void setDivider(double val);
+    void setRealDivider(double val);
     void prepareBigWidget();
     void prepareCompactViewWidget();
     void prepareTextWidget();
@@ -73,7 +74,7 @@ private:
     QLabel *ui_currUnitProgressLabel;
     QLabel *ui_minUnitProgressLabel;
     QLabel *ui_maxUnitProgressLabel;
-    QProgressBar *ui_readedValueBar;
+    QProgressBar *ui_measuredValueBar;
     QSlider *ui_valueSlider;
     QPushButton *ui_minusButton;
     QPushButton *ui_plusButton;
@@ -98,7 +99,7 @@ private:
     double max;
     double currValue;
     double realValue;
-    int realDivider, divider;
+    double realDivider, divider;
     int precisionOfRealValue, precisionOfValue;
     QLabel* titleLabel;
     QLabel* valueLabel;
