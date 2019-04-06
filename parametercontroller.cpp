@@ -1,6 +1,5 @@
 #include "parametercontroller.h"
 
-//ParameterForm::ParameterForm(const paramControls_t &inParam, QWidget *parent) :
 ParameterController::ParameterController(QString titleStr, QString unitStr, QString minComm, QString maxComm, QString valueComm, QString realComm, double divider, double realDivider, bool isTemperature, QWidget *parent) : QWidget(parent)
 {
     isTemperatureFlag = isTemperature;
@@ -160,21 +159,15 @@ void ParameterController::hideRealValue(bool state) {
     hideReal = state;
     if(hideReal) {
         // только установленное значение
-//        ui_setValueLabel->hide();
         ui_setValueLabel->setStyleSheet("color: rgb(17, 17, 17);");
         ui_realValueUnitCompactLabel->setStyleSheet("color: rgb(17, 17, 17);");
 
-//        ui_currValueLine->setEnabled(false);
         ui_typeLabel->setText(tr("Set"));
         ui_measuredValueBar->setValue(ui_measuredValueBar->minimum());
-//        ui_realValueUnitCompactLabel->hide();
     } else {
         // присутствуют оба значения: измеренное и установленное
-//        ui_setValueLabel->show();
-//        ui_realValueUnitCompactLabel->show();
         ui_setValueLabel->setStyleSheet("color: rgb(180, 180, 180);");
         ui_realValueUnitCompactLabel->setStyleSheet("color: rgb(180, 180, 180);");
-//        ui_currValueLine->setEnabled(true);
         ui_typeLabel->setText(tr("Real"));
         ui_setValueLabel->setText("set=" + wlocale.toString(static_cast<double>(ui_valueSlider->value())/realDivider, DOUBLE_FORMAT, precisionOfRealValue) + unit);
         // Устанавлиавем красный цвет прогресс-бара
@@ -188,17 +181,6 @@ void ParameterController::hideRealValue(bool state) {
                                                  background: rgb(254, 26, 6); \
                                              }");
     }
-
-//    QGroupBox *gb = bigWidget->findChild<QGroupBox*>("groupBox");
-//    if(gb) gb->adjustSize();
-//    QWidget *w =  bigWidget->findChild<QWidget*>("parameterForm");
-//    if(w) w->adjustSize();
-//    gb = compactWidget->findChild<QGroupBox*>("groupBox");
-//    if(gb) gb->adjustSize();
-//    w =  compactWidget->findChild<QWidget*>("parameterForm");
-//    if(w) w->adjustSize();
-//    bigWidget->adjustSize();
-//    compactWidget->adjustSize();
 
 }
 
@@ -240,15 +222,10 @@ void ParameterController::setMax(double val) {
     ui_measuredValueBar->setMaximum(qRound(max*divider));
     ui_maxUnitProgressLabel->setText(wlocale.toString(max, DOUBLE_FORMAT, precisionOfValue) + unit);
 
-//    QDoubleValidator *validator = new QDoubleValidator(min, max, DEFAULT_DIGITS_AFTER_POINT);
-//    validator->setNotation(QDoubleValidator::StandardNotation);
-
     if(currValue > max) {
         currValue = max;
         ui_valueSlider->setValue(qRound(currValue*divider));
     }
-//    ui_currValueLine->setValidator(validator);
-//    ui_currValueCompactLine->setValidator(validator);
 }
 
 void ParameterController::setMin(double val) {
