@@ -157,12 +157,12 @@ bool xmlReader::parseDevice() {
         if(currID != deviceId) return false;
         device->deviceID = currID;
         if (attrib.hasAttribute("name")) device->devName = attrib.value("name").toString();
-        if(attrib.hasAttribute("minStopCommandDelayMs")) {
-            device->minCommDelay = attrib.value("minStopCommandDelayMs").toUInt();
+        if(attrib.hasAttribute("minCommandDelayMs")) {
+            device->minCommDelay = attrib.value("minCommandDelayMs").toUInt();
         }
 
-        if(attrib.hasAttribute("maxStopCommandDelayMs")) {
-            device->maxCommDelay = attrib.value("maxStopCommandDelayMs").toUInt();
+        if(attrib.hasAttribute("maxCommandDelayMs")) {
+            device->maxCommDelay = attrib.value("maxCommandDelayMs").toUInt();
         }
 
         if(attrib.hasAttribute("stopCommandDelayMs")) {
@@ -175,14 +175,12 @@ bool xmlReader::parseDevice() {
 }
 
 void xmlReader::parseContent() {
-    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "content")) {
-        if(xml.name() == "name") {
-            device->devName = xml.readElementText();
-        } else if(xml.name() == "image") {
+    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Content")) {
+        if(xml.name() == "Image") {
             device->image = xml.readElementText();
-        } else if(xml.name() == "description") {
+        } else if(xml.name() == "Description") {
             device->description = xml.readElementText();
-        } else if(xml.name() == "link") {
+        } else if(xml.name() == "Link") {
             device->link = xml.readElementText();
         }
         xml.readNext();

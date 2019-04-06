@@ -17,19 +17,19 @@
   </CommonIDDevices>
 
 
-  <Device id="10" name="SF6100 v1" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6100-1.jpg</image>
-      <description>Input Voltage Range (Vin): 12-55 Volts
+  <Device id="10" name="SF6100 v1" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6100-1.jpg</Image>
+      <Description>Input Voltage Range (Vin): 12-55 Volts
 Output Current Range (I): 0-20 Аmps
 Output Voltage (0.73*Vin max) (V): 5-40 Volts
 Minimum Current Set-Point Step Size: 0.1 Amps
 Rise Time: less then 800μs
 Fall Time: less then 200μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/archive</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/archive</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
     <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
       <command code="0100" divider="10"/>
@@ -99,19 +99,19 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
   </Device>
 
 
-  <Device id="11" name="SF6015 v1" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6015-1.jpg</image>
-      <description>Input Voltage Range (Vin): 10-14 Volts
+  <Device id="11" name="SF6015 v1" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6015-1.jpg</Image>
+      <Description>Input Voltage Range (Vin): 10-14 Volts
 Output Current Range (I): 0-15 Аmps
 Output Voltage (0.75*Vin max) (V): 0.5-10 Volts
 Minimum Current Set-Point Step Size: 0.1 Amps
 Rise Time: less then 1,200μs
 Fall Time: less then 200μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/archive</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/archive</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
     <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
       <command code="0100" divider="10"/>
@@ -181,19 +181,19 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
   </Device>
 
 
-  <Device id="12" name="SF6030 v1" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6030-1.jpg</image>
-      <description>Input Voltage Range (Vin): 10-14 Volts
+  <Device id="12" name="SF6030 v1" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6030-1.jpg</Image>
+      <Description>Input Voltage Range (Vin): 10-14 Volts
 Output Current Range (I): 0-30 Аmps
 Output Voltage (0.75*Vin max) (V): 0.5-10 Volts
 Minimum Current Set-Point Step Size: 0.1 Amps
 Rise Time: less then 1,200μs
 Fall Time: less then 200μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/archive</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/archive</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
     <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
       <command code="0100" divider="10"/>
@@ -263,19 +263,19 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
   </Device>
 
 
-  <Device id="13" name="SF6100 v2" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6100-2.jpg</image>
-      <description>Input Voltage Range (Vin): 12-55 Volts
+  <Device id="13" name="SF6100 v2" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6100-2.jpg</Image>
+      <Description>Input Voltage Range (Vin): 12-55 Volts
 Output Current Range (I): 0-25 Аmps
 Output Voltage (0.73*Vin max) (V): 1-40 Volts
 Minimum Current Set-Point Step Size: 0.01 Amps
 Rise Time: less then 300μs
 Fall Time: less then 50μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-20a-40v-sf6100</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-20a-40v-sf6100</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
     <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
       <command code="0100" divider="10"/>
@@ -356,19 +356,19 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
   </Device>
 
 
-  <Device id="14" name="SF6015 v2" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6015-2.jpg</image>
-      <description>Input Voltage Range (Vin): 10-14 Volts
+  <Device id="14" name="SF6015 v2" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6015-2.jpg</Image>
+      <Description>Input Voltage Range (Vin): 10-14 Volts
 Output Current Range (I): 0-15 Аmps
 Output Voltage (0.75*Vin max) (V): 1-10 Volts
 Minimum Current Set-Point Step Size: 0.01 Amps
 Rise Time: less then 500μs
 Fall Time: less then 1,200μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-15a-10v-sf6015</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-15a-10v-sf6015</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
     <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
       <command code="0100" divider="10"/>
@@ -450,19 +450,19 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
   </Device>
 
 
-  <Device id="15" name="SF6030 v2" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6030-2.jpg</image>
-      <description>Input Voltage Range (Vin): 10-14 Volts
+  <Device id="15" name="SF6030 v2" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6030-2.jpg</Image>
+      <Description>Input Voltage Range (Vin): 10-14 Volts
 Output Current Range (I): 0-30 Аmps
 Output Voltage (0.75*Vin max) (V): 1-10 Volts
 Minimum Current Set-Point Step Size: 0.01 Amps
 Rise Time: less then 700μs
 Fall Time: less then 1,500μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-30a-10v-sf6030</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-30a-10v-sf6030</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
     <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
       <command code="0100" divider="10"/>
@@ -543,19 +543,19 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
   </Device>
 
 
-	<Device id="16" name="SF6040" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6040.jpg</image>
-      <description>Input Voltage Range (Vin): 12-55 Volts
+	<Device id="16" name="SF6040" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6040.jpg</Image>
+      <Description>Input Voltage Range (Vin): 12-55 Volts
 Output Current Range (I): 0-10 Аmps
 Output Voltage (0.73*Vin max) (V): 5-40 Volts
 Minimum Current Set-Point Step Size: 0.01 Amps
 Rise Time: less then 100μs
 Fall Time: less then 80μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/product-page/high-power-laser-diode-driver-oem-cw-10a-40v-sf6040</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/product-page/high-power-laser-diode-driver-oem-cw-10a-40v-sf6040</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
     <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
       <command code="0100" divider="10"/>
@@ -636,19 +636,19 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
   </Device>
 
 
-  <Device id="17" name="SF6090" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6090.jpg</image>
-      <description>Input Voltage Range (Vin): 10-14 Volts
+  <Device id="17" name="SF6090" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6090.jpg</Image>
+      <Description>Input Voltage Range (Vin): 10-14 Volts
 Output Current Range (I): 0-100 Аmps
 Output Voltage (0.75*Vin max) (V): 1-10 Volts
 Minimum Current Set-Point Step Size: 0.03 Amps
 Rise Time: less then 1,200μs
 Fall Time: less then 1,800μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-100a-10v-sf6090</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-100a-10v-sf6090</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
     <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
       <command code="0100" divider="10"/>
@@ -727,19 +727,19 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     </leds>
   </Device>
 
-  <Device id="18" name="SF6250" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6090.jpg</image>
-      <description>Input Voltage Range (Vin): 10-14 Volts
+  <Device id="18" name="SF6250" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6090.jpg</Image>
+      <Description>Input Voltage Range (Vin): 10-14 Volts
 Output Current Range (I): 0-250 Аmps
 Output Voltage (0.75*Vin max) (V): 1-10 Volts
 Minimum Current Set-Point Step Size: 0.1 Amps
 Rise Time: less then 1,200μs
 Fall Time: less then 1,800μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-100a-10v-sf6090</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-100a-10v-sf6090</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
     <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
       <command code="0100" divider="10"/>
