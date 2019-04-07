@@ -118,15 +118,15 @@ void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16
                 parseCalibration();
             } else if (xname == "Commands") {
                 parseCommands();
-            } else if (xname == "paramControls") {
+            } else if (xname == "ParamControls") {
                 parseControls();
-            } else if (xname == "led") {
+            } else if (xname == "Led") {
                 parseLed();
-            } else if (xname == "ledMask") {
+            } else if (xname == "LedMask") {
                 parseLedMask();
-            } else if (xname == "specParam") {
+            } else if (xname == "SpecParam") {
                 parseSpecialParam();
-            } else if (xname == "button") {
+            } else if (xname == "Button") {
                 parseButtons();
             } else {
 //                xml.skipCurrentElement();
@@ -196,7 +196,7 @@ void xmlReader::parseCommands() {
         double divider = (attrib.hasAttribute("divider")) ? attrib.value("divider").toDouble() : 1;
 
         quint8 interval = (attrib.hasAttribute("interval")) ? attrib.value("interval").toUInt() : 1;
-        interval = qBound((quint8) 1, interval, (quint8) 100);
+        interval = qBound(MIN_COM_INTERVAL_COUNTER, interval, MAX_COM_INTERVAL_COUNTER);
 
         bool isSigned = (attrib.hasAttribute("isSigned")) ? true : false;
 
@@ -209,8 +209,8 @@ void xmlReader::parseCommands() {
 }
 
 void xmlReader::parseControls() {
-    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "paramControls")) {
-        if(xml.name() == "param")
+    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "ParamControls")) {
+        if(xml.name() == "Param")
             parseParam();
         xml.readNext();
     }
@@ -218,6 +218,7 @@ void xmlReader::parseControls() {
 
 void xmlReader::parseLed() {
     leds_t led;
+    // optimize me (debug)
     QXmlStreamAttributes attrib = xml.attributes();
     if(attrib.hasAttribute("label")) {
         led.label = attrib.value("label").toString();
