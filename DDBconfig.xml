@@ -31,23 +31,23 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
       <Link>https://www.maimanelectronics.com/archive</Link>
     </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="10"/>
-      <command code="0301" divider="10" interval="100"/>
-      <command code="0302" divider="10" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0704" interval="10"/>
-      <command code="0800"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="10"/>
+      <Command code="0301" divider="10" interval="100"/>
+      <Command code="0302" divider="10" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0704" interval="10"/>
+      <Command code="0800"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
     <limits>
     <!--  <limit bottomCode="0" minCode="0201" min="2" maxCode="0203" upperCode="1500" max="1500" divider="10" unit="ms" show="both">Max. Duration</limit>
@@ -86,14 +86,14 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </buttons>
     <leds>
       <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <ledMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </led>
       <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
       </led>
 	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+        <ledMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
       </led>
     </leds>
   </Device>
@@ -113,23 +113,23 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
       <Link>https://www.maimanelectronics.com/archive</Link>
     </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="10"/>
-      <command code="0301" divider="10" interval="100"/>
-      <command code="0302" divider="10" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0704" interval="10"/>
-      <command code="0800"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="10"/>
+      <Command code="0301" divider="10" interval="100"/>
+      <Command code="0302" divider="10" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0704" interval="10"/>
+      <Command code="0800"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
     <limits>
       <limit bottomCode="0" minCode="0201" min="2" maxCode="0203" upperCode="1500" max="1500" divider="10" unit="ms" show="max">Max. Duration</limit>
@@ -168,14 +168,14 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </buttons>
     <leds>
       <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <ledMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </led>
       <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
       </led>
 	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+        <ledMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
       </led>
     </leds>
   </Device>
@@ -195,23 +195,23 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
       <Link>https://www.maimanelectronics.com/archive</Link>
     </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="10"/>
-      <command code="0301" divider="10" interval="100"/>
-      <command code="0302" divider="10" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0704" interval="10"/>
-      <command code="0800"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="10"/>
+      <Command code="0301" divider="10" interval="100"/>
+      <Command code="0302" divider="10" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0704" interval="10"/>
+      <Command code="0800"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
     <limits>
     <!--  <limit bottom="0" minCode="0201" min="2" maxCode="0203" upper="1500" max="1500" divider="10" unit="ms" show="max">Max. Duration</limit>
@@ -250,14 +250,14 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </buttons>
     <leds>
       <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <ledMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </led>
       <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
       </led>
 	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+        <ledMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
       </led>
     </leds>
   </Device>
@@ -277,29 +277,29 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
       <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-20a-40v-sf6100</Link>
     </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="100"/>
-      <command code="0301" divider="100" interval="100"/>
-      <command code="0302" divider="100" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="030E" divider="100" interval="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0702" interval="100"/>
-      <command code="0800"/>
-      <command code="0A05" divider="10" interval="100"/>
-      <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10"/>
-      <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="100"/>
+      <Command code="0301" divider="100" interval="100"/>
+      <Command code="0302" divider="100" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="030E" divider="100" interval="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0702" interval="100"/>
+      <Command code="0800"/>
+      <Command code="0A05" divider="10" interval="100"/>
+      <Command code="0A06" divider="10" interval="100"/>
+      <Command code="0AE4" divider="10" interval="10"/>
+      <Command code="0B0E" divider="1" interval="100"/>
+      <Command code="0AF4" divider="10" interval="10"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
     <limits>
     <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max duration</limit>
@@ -342,15 +342,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </buttons>
     <leds>
       <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <ledMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </led>
       <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
+        <ledMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask Command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
       </led>
 	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+        <ledMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
       </led>
     </leds>
   </Device>
@@ -370,30 +370,30 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
       <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-15a-10v-sf6015</Link>
     </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="100"/>
-      <command code="0301" divider="100" interval="100"/>
-      <command code="0302" divider="100" interval="100"/>
-      <command code="0306" divider="100" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="030E" divider="100" interval="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0702" interval="100"/>
-      <command code="0800"/>
-      <command code="0A05" divider="10" interval="100"/>
-      <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10" isSigned="" />
-      <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10" isSigned="" />
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="100"/>
+      <Command code="0301" divider="100" interval="100"/>
+      <Command code="0302" divider="100" interval="100"/>
+      <Command code="0306" divider="100" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="030E" divider="100" interval="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0702" interval="100"/>
+      <Command code="0800"/>
+      <Command code="0A05" divider="10" interval="100"/>
+      <Command code="0A06" divider="10" interval="100"/>
+      <Command code="0AE4" divider="10" interval="10" isSigned="" />
+      <Command code="0B0E" divider="1" interval="100"/>
+      <Command code="0AF4" divider="10" interval="10" isSigned="" />
+    </Commands>
     <!-- доступные для регулирования пределы -->
     <limits>
        <limit minCode="0201" maxCode="0202" upper="1500" divider="10" unit="мс" show="max">Max duration</limit>
@@ -436,15 +436,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </buttons>
     <leds>
       <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <ledMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </led>
       <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
+        <ledMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask Command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
       </led>
 	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+        <ledMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
       </led>
     </leds>
   </Device>
@@ -464,29 +464,29 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
       <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-30a-10v-sf6030</Link>
     </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="100"/>
-      <command code="0301" divider="100" interval="100"/>
-      <command code="0302" divider="100" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="030E" divider="100" interval="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0702" interval="100"/>
-      <command code="0800"/>
-      <command code="0A05" divider="10" interval="100"/>
-      <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10"/>
-      <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="100"/>
+      <Command code="0301" divider="100" interval="100"/>
+      <Command code="0302" divider="100" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="030E" divider="100" interval="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0702" interval="100"/>
+      <Command code="0800"/>
+      <Command code="0A05" divider="10" interval="100"/>
+      <Command code="0A06" divider="10" interval="100"/>
+      <Command code="0AE4" divider="10" interval="10"/>
+      <Command code="0B0E" divider="1" interval="100"/>
+      <Command code="0AF4" divider="10" interval="10"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
     <limits>
     <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max>Max duration</limit>
@@ -529,15 +529,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </buttons>
     <leds>
       <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <ledMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </led>
       <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
+        <ledMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask Command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
       </led>
 	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+        <ledMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
      </led>
     </leds>
   </Device>
@@ -557,29 +557,29 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
       <Link>https://www.maimanelectronics.com/product-page/high-power-laser-diode-driver-oem-cw-10a-40v-sf6040</Link>
     </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="100"/>
-      <command code="0301" divider="100" interval="100"/>
-      <command code="0302" divider="100" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="030E" divider="100" interval="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0702" interval="100"/>
-      <command code="0800"/>
-      <command code="0A05" divider="10" interval="100"/>
-      <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10"/>
-      <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="100"/>
+      <Command code="0301" divider="100" interval="100"/>
+      <Command code="0302" divider="100" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="030E" divider="100" interval="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0702" interval="100"/>
+      <Command code="0800"/>
+      <Command code="0A05" divider="10" interval="100"/>
+      <Command code="0A06" divider="10" interval="100"/>
+      <Command code="0AE4" divider="10" interval="10"/>
+      <Command code="0B0E" divider="1" interval="100"/>
+      <Command code="0AF4" divider="10" interval="10"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
     <limits>
     <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max. duration</limit>
@@ -622,15 +622,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </buttons>
     <leds>
       <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <ledMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </led>
       <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
+        <ledMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask Command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
       </led>
 	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+        <ledMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
       </led>
     </leds>
   </Device>
@@ -650,29 +650,29 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
       <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-100a-10v-sf6090</Link>
     </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="100"/>
-      <command code="0301" divider="100" interval="100"/>
-      <command code="0302" divider="100" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="030E" divider="100" interval="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0702" interval="100"/>
-      <command code="0800"/>
-      <command code="0A05" divider="10" interval="100"/>
-      <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10"/>
-      <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="100"/>
+      <Command code="0301" divider="100" interval="100"/>
+      <Command code="0302" divider="100" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="030E" divider="100" interval="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0702" interval="100"/>
+      <Command code="0800"/>
+      <Command code="0A05" divider="10" interval="100"/>
+      <Command code="0A06" divider="10" interval="100"/>
+      <Command code="0AE4" divider="10" interval="10"/>
+      <Command code="0B0E" divider="1" interval="100"/>
+      <Command code="0AF4" divider="10" interval="10"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
     <limits>
     <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max duration</limit>
@@ -714,15 +714,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </buttons>
     <leds>
       <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <ledMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </led>
       <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
+        <ledMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask Command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
       </led>
 	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+        <ledMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
       </led>
     </leds>
   </Device>
@@ -741,29 +741,29 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
       <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-100a-10v-sf6090</Link>
     </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="10"/>
-      <command code="0301" divider="10" interval="100"/>
-      <command code="0302" divider="10" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="030E" divider="100" interval="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0702" interval="100"/>
-      <command code="0800"/>
-      <command code="0A05" divider="10" interval="100"/>
-      <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10"/>
-      <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="10"/>
+      <Command code="0301" divider="10" interval="100"/>
+      <Command code="0302" divider="10" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="030E" divider="100" interval="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0702" interval="100"/>
+      <Command code="0800"/>
+      <Command code="0A05" divider="10" interval="100"/>
+      <Command code="0A06" divider="10" interval="100"/>
+      <Command code="0AE4" divider="10" interval="10"/>
+      <Command code="0B0E" divider="1" interval="100"/>
+      <Command code="0AF4" divider="10" interval="10"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
     <limits>
     <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max duration</limit>
@@ -806,15 +806,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </buttons>
     <leds>
       <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <ledMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </led>
       <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
+        <ledMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
+        <ledMask Command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
       </led>
 	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
+        <ledMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
+        <ledMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
       </led>
     </leds>
   </Device>

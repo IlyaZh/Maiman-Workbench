@@ -109,15 +109,15 @@ void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16
             }
 //            if(!isDeviceFound) continue;
 
-            else if (xname == "content") {
+            else if (xname == "Content") {
                 parseContent();
 //                currDevIndex++;
-            } else if (xname == "limit") {
+            } else if (xname == "Limit") {
                 parseLimit();
-            } else if (xname == "calibrate") {
+            } else if (xname == "Calibrate") {
                 parseCalibration();
-            } else if (xname == "command") {
-                parseCommand();
+            } else if (xname == "Commands") {
+                parseCommands();
             } else if (xname == "paramControls") {
                 parseControls();
             } else if (xname == "led") {
@@ -187,23 +187,25 @@ void xmlReader::parseContent() {
     }
 }
 
-void xmlReader::parseCommand() {
-    QXmlStreamAttributes attrib = xml.attributes();
+void xmlReader::parseCommands() {
+    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Command")) {
+        QXmlStreamAttributes attrib = xml.attributes();
 
-    QString code = (attrib.hasAttribute("code")) ? attrib.value("code").toString() : "";
+        QString code = (attrib.hasAttribute("code")) ? attrib.value("code").toString() : "";
 
-    double divider = (attrib.hasAttribute("divider")) ? attrib.value("divider").toDouble() : 1;
+        double divider = (attrib.hasAttribute("divider")) ? attrib.value("divider").toDouble() : 1;
 
-    quint8 interval = (attrib.hasAttribute("interval")) ? attrib.value("interval").toUInt() : 1;
+        quint8 interval = (attrib.hasAttribute("interval")) ? attrib.value("interval").toUInt() : 1;
+        interval = qBound((quint8) 1, interval, (quint8) 100);
 
-    bool isSigned = (attrib.hasAttribute("isSigned")) ? true : false;
+        bool isSigned = (attrib.hasAttribute("isSigned")) ? true : false;
 
-    if(isSigned) {
-        device->commands.insert(code, new SignedCommand(code, divider, interval));
-    } else {
-        device->commands.insert(code, new Command(code, divider, interval));
+        if(isSigned) {
+            device->commands.insert(code, new SignedCommand(code, divider, interval));
+        } else {
+            device->commands.insert(code, new Command(code, divider, interval));
+        }
     }
-
 }
 
 void xmlReader::parseControls() {

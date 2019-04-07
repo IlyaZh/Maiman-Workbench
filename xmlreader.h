@@ -28,7 +28,7 @@ private:
     bool readFile();
     bool parseDevice();
     void parseContent();
-    void parseCommand();
+    void parseCommands();
     void parseControls();
     void parseLed();
     void parseLedMask();
