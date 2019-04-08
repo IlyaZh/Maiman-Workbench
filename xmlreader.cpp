@@ -186,7 +186,9 @@ void xmlReader::parseContent() {
 }
 
 void xmlReader::parseCommands() {
-    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Command")) {
+    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Commands")) {
+        xml.readNext();
+        if(xml.name() != "Command") continue;
         QXmlStreamAttributes attrib = xml.attributes();
 
         QString code = (attrib.hasAttribute("code")) ? attrib.value("code").toString() : "";
@@ -203,6 +205,7 @@ void xmlReader::parseCommands() {
         } else {
             device->commands.insert(code, new Command(code, divider, interval));
         }
+
     }
 }
 
@@ -231,6 +234,7 @@ void xmlReader::parseLeds() {
         } else if (xml.name() == "LedMask") {
             parseLedMask(led);
         }
+        xml.readNext();
     }
 }
 
@@ -308,6 +312,7 @@ void xmlReader::parseParam() {
 
 void xmlReader::parseLimits() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Limits")) {
+        xml.readNext();
         if(xml.name() != "Limit") continue;
         //    if(!currDeviceFound) return;
         QXmlStreamAttributes attrib = xml.attributes();
@@ -370,44 +375,47 @@ void xmlReader::parseLimits() {
         }
 
         device->limits.append(devLimit);
+
     }
 }
 
 void xmlReader::parseCalibration() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "CalibrationKoefs")) {
+        xml.readNext();
         if(xml.name() != "Calibrate") continue;
         QXmlStreamAttributes attrib = xml.attributes();
-        calibration_t tmpStruct;
-        tmpStruct.code = "";
-        tmpStruct.title = "No name";
-        tmpStruct.min = 0;
-        tmpStruct.max = 10;
-        tmpStruct.divider = 100;
+        calibration_t calibrate;
+        calibrate.code = "";
+        calibrate.title = "No name";
+        calibrate.min = 9500;
+        calibrate.max = 10500;
+        calibrate.divider = 100;
 
         if(attrib.hasAttribute("code")) {
-            tmpStruct.code = attrib.value("code").toString();
+            calibrate.code = attrib.value("code").toString();
+            if(device->commands.contains(calibrate.code)) {
+                calibrate.divider = device->commands.find(calibrate.code).value()->getDivider();
+            }
         }
 
         if(attrib.hasAttribute("min")) {
-            tmpStruct.min = attrib.value("min").toInt();
+            calibrate.min = attrib.value("min").toInt();
         }
 
         if(attrib.hasAttribute("max")) {
-            tmpStruct.max = attrib.value("max").toInt();
+            calibrate.max = attrib.value("max").toInt();
         }
 
-        if(attrib.hasAttribute("divider")) {
-            tmpStruct.divider = attrib.value("divider").toInt();
-        }
+        calibrate.title = xml.readElementText();
 
-        tmpStruct.title = xml.readElementText();
+        device->calCoefs.append(calibrate);
 
-        device->calCoefs.append(tmpStruct);
     }
 }
 
 void xmlReader::parseButtons() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Buttons")) {
+        xml.readNext();
         if(xml.name() != "Button") continue;
         doubleMaskCommand_t tmp;
         QXmlStreamAttributes attrib = xml.attributes();
@@ -442,11 +450,13 @@ void xmlReader::parseButtons() {
         }
 
         device->stateButtons.insert(tmpName, tmp);
+
     }
 }
 
 void xmlReader::parseBinaryOptions() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "BinaryOptions")) {
+        xml.readNext();
         if(xml.name() != "BinOption") continue;
 
         binOption_t binOption;
@@ -475,5 +485,6 @@ void xmlReader::parseBinaryOptions() {
         binOptionCb->setStyleSheet("border: none;");
         binOption.cbPtr = binOptionCb;
         device->binaryOptions.append(binOption);
+
     }
 }

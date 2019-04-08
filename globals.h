@@ -34,7 +34,7 @@ typedef struct {
     QString code;
     int min;
     int max;
-    int divider;
+    double divider;
 } calibration_t;
 
 typedef struct {

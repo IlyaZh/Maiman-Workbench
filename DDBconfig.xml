@@ -86,14 +86,14 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Buttons>
     <Leds>
       <Led label="Laser">
-        <LedMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </Led>
       <Led label="IntLock">
-        <LedMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
       </Led>
 	  <Led label="Error">
-        <LedMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
-        <LedMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
       </Led>
     </Leds>
   </Device>
@@ -168,14 +168,14 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Buttons>
     <Leds>
       <Led label="Laser">
-        <LedMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </Led>
       <Led label="IntLock">
-        <LedMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
       </Led>
 	  <Led label="Error">
-        <LedMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
-        <LedMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
       </Led>
     </Leds>
   </Device>
@@ -250,14 +250,14 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Buttons>
     <Leds>
       <Led label="Laser">
-        <LedMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </Led>
       <Led label="IntLock">
-        <LedMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
       </Led>
 	  <Led label="Error">
-        <LedMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
-        <LedMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
       </Led>
     </Leds>
   </Device>
@@ -308,7 +308,7 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Limits>
     <!--  калибровка -->
     <CalibrationKoefs>
-      <Calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</Calibrate>
+      <Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
     </CalibrationKoefs>
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
@@ -342,15 +342,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Buttons>
     <Leds>
       <Led label="Laser">
-        <LedMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </Led>
       <Led label="IntLock">
-        <LedMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
-        <LedMask Command="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
       </Led>
 	  <Led label="Error">
-        <LedMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
-        <LedMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
       </Led>
     </Leds>
   </Device>
@@ -402,7 +402,7 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Limits>
     <!--  калибровка -->
     <CalibrationKoefs>
-      <Calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</Calibrate>
+      <Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
     </CalibrationKoefs>
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
@@ -436,15 +436,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Buttons>
     <Leds>
       <Led label="Laser">
-        <LedMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </Led>
       <Led label="IntLock">
-        <LedMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
-        <LedMask Command="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
       </Led>
 	  <Led label="Error">
-        <LedMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
-        <LedMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
       </Led>
     </Leds>
   </Device>
@@ -495,7 +495,7 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Limits>
     <!--  калибровка -->
     <CalibrationKoefs>
-      <Calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</Calibrate>
+      <Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
     </CalibrationKoefs>
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
@@ -529,15 +529,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Buttons>
     <Leds>
       <Led label="Laser">
-        <LedMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </Led>
       <Led label="IntLock">
-        <LedMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
-        <LedMask Command="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
       </Led>
 	  <Led label="Error">
-        <LedMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
-        <LedMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
      </Led>
     </Leds>
   </Device>
@@ -588,7 +588,7 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Limits>
     <!--  калибровка -->
     <CalibrationKoefs>
-      <Calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</Calibrate>
+      <Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
     </CalibrationKoefs>
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
@@ -622,15 +622,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Buttons>
     <Leds>
       <Led label="Laser">
-        <LedMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </Led>
       <Led label="IntLock">
-        <LedMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
-        <LedMask Command="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
       </Led>
 	  <Led label="Error">
-        <LedMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
-        <LedMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
       </Led>
     </Leds>
   </Device>
@@ -681,7 +681,7 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Limits>
     <!--  калибровка -->
     <CalibrationKoefs>
-      <Calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</Calibrate>
+      <Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
     </CalibrationKoefs>
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
@@ -714,15 +714,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Buttons>
     <Leds>
       <Led label="Laser">
-        <LedMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </Led>
       <Led label="IntLock">
-        <LedMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
-        <LedMask Command="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
       </Led>
 	  <Led label="Error">
-        <LedMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
-        <LedMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
       </Led>
     </Leds>
   </Device>
@@ -772,7 +772,7 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Limits>
     <!--  калибровка -->
     <CalibrationKoefs>
-      <Calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</Calibrate>
+      <Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
     </CalibrationKoefs>
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
@@ -806,15 +806,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     </Buttons>
     <Leds>
       <Led label="Laser">
-        <LedMask Command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
       </Led>
       <Led label="IntLock">
-        <LedMask Command="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
-        <LedMask Command="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
       </Led>
 	  <Led label="Error">
-        <LedMask Command="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
-        <LedMask Command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
       </Led>
     </Leds>
   </Device>
