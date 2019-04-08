@@ -304,7 +304,7 @@ void xmlReader::parseLimit() {
 //    if(!currDeviceFound) return;
     QXmlStreamAttributes attrib = xml.attributes();
     // If there is no both codes (min and max) then it is a wrong configuration of limit
-    if(!(attrib.hasAttribute("minCode") || attrib.hasAttribute("maxCode"))) return;
+    if(!(attrib.hasAttribute("minCode") || attrib.hasAttribute("maxCode") || attrib.hasAttribute("min") || attrib.hasAttribute("max"))) return;
 
     bool showMin = false;
     bool showMax = false;
