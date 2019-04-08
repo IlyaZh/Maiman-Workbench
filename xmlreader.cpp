@@ -457,7 +457,7 @@ void xmlReader::parseButtons() {
 void xmlReader::parseBinaryOptions() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "BinaryOptions")) {
         xml.readNext();
-        if(xml.name() != "BinOption") continue;
+        if(xml.name() != "CheckBox") continue;
 
         binOption_t binOption;
         QXmlStreamAttributes attrib = xml.attributes();
@@ -484,7 +484,7 @@ void xmlReader::parseBinaryOptions() {
         binOption.label = label;
         binOptionCb->setStyleSheet("border: none;");
         binOption.cbPtr = binOptionCb;
-        device->binaryOptions.append(binOption);
+        device->checkBoxes.append(binOption);
 
     }
 }

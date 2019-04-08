@@ -76,9 +76,9 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
     <BinaryOptions>
-      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
-      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
-      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</BinOption>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</CheckBox>
     </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
@@ -158,9 +158,9 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
     <BinaryOptions>
-      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
-      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
-      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</BinOption>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</CheckBox>
     </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
@@ -240,9 +240,9 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
     <BinaryOptions>
-      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
-      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
-      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</BinOption>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</CheckBox>
     </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
@@ -331,10 +331,10 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
     <BinaryOptions>
-      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004">Internal Current Set</BinOption>
-      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010">Internal Enable</BinOption>
-      <BinOption code="0700" onCommand="4000" offCommand="8000" mask="0040">Ignore LD Overheat Block</BinOption>
-      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080">Ignore IntLock</BinOption>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="4000" offCommand="8000" mask="0040">Ignore LD Overheat Block</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080">Ignore IntLock</CheckBox>
     </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
@@ -425,10 +425,10 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
     <BinaryOptions>
-      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
-      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
-      <BinOption code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</BinOption>
-      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</BinOption>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</CheckBox>
     </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
@@ -518,10 +518,10 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
     <BinaryOptions>
-      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
-      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
-      <BinOption code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</BinOption>
-      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</BinOption>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</CheckBox>
     </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
@@ -611,10 +611,10 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
     <BinaryOptions>
-      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
-      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
-      <BinOption code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</BinOption>
-      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</BinOption>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</CheckBox>
     </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
@@ -703,10 +703,10 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
     <BinaryOptions>
-      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
-      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
-      <BinOption code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</BinOption>
-      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</BinOption>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</CheckBox>
     </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
@@ -795,10 +795,10 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
     <BinaryOptions>
-      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
-      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
-      <BinOption code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</BinOption>
-      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</BinOption>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</CheckBox>
     </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
