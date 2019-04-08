@@ -38,14 +38,13 @@ typedef struct {
 } calibration_t;
 
 typedef struct {
-    uint8_t id;
     QString code;
     QString onCommand;
     QString offCommand;
     QString label;
     uint mask;
     QCheckBox* cbPtr;
-} specParams_t;
+} binOption_t;
 
 typedef struct {
     QString command;
@@ -70,7 +69,7 @@ typedef struct {
     QList<DeviceLimit*> limits;
     QList<calibration_t> calCoefs;
     QList<ParameterController*> paramWidgets;
-    QList<specParams_t> binaryOptions;
+    QList<binOption_t> binaryOptions;
     QMap<QString, doubleMaskCommand_t> stateButtons;
     QList<leds_t> leds;
     bool hasLaser;

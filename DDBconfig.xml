@@ -75,11 +75,11 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <SpecialParams>
-      <SpecParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</SpecParam>
-      <SpecParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</SpecParam>
-      <SpecParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</SpecParam>
-    </SpecialParams>
+    <BinaryOptions>
+      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
+      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
+      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</BinOption>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
       <Button name="laser" mask="0002" code="0700" onCommand="0008" offCommand="0010"/>
@@ -157,11 +157,11 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <SpecialParams>
-      <SpecParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</SpecParam>
-      <SpecParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</SpecParam>
-      <SpecParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</SpecParam>
-    </SpecialParams>
+    <BinaryOptions>
+      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
+      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
+      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</BinOption>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
       <Button name="laser" mask="0002" code="0700" onCommand="0008" offCommand="0010"/>
@@ -239,11 +239,11 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <SpecialParams>
-      <SpecParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</SpecParam>
-      <SpecParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</SpecParam>
-      <SpecParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</SpecParam>
-    </SpecialParams>
+    <BinaryOptions>
+      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
+      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
+      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</BinOption>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
       <Button name="laser" mask="0002" code="0700" onCommand="0008" offCommand="0010"/>
@@ -330,12 +330,12 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <SpecialParams>
-      <SpecParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</SpecParam>
-      <SpecParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</SpecParam>
-      <SpecParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</SpecParam>
-      <SpecParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</SpecParam>
-    </SpecialParams>
+    <BinaryOptions>
+      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004">Internal Current Set</BinOption>
+      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010">Internal Enable</BinOption>
+      <BinOption code="0700" onCommand="4000" offCommand="8000" mask="0040">Ignore LD Overheat Block</BinOption>
+      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080">Ignore IntLock</BinOption>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
       <Button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
@@ -424,12 +424,12 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <SpecialParams>
-      <SpecParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</SpecParam>
-      <SpecParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</SpecParam>
-      <SpecParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</SpecParam>
-      <SpecParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</SpecParam>
-    </SpecialParams>
+    <BinaryOptions>
+      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
+      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
+      <BinOption code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</BinOption>
+      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</BinOption>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
       <Button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
@@ -517,12 +517,12 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <SpecialParams>
-      <SpecParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</SpecParam>
-      <SpecParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</SpecParam>
-      <SpecParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</SpecParam>
-      <SpecParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</SpecParam>
-    </SpecialParams>
+    <BinaryOptions>
+      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
+      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
+      <BinOption code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</BinOption>
+      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</BinOption>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
       <Button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
@@ -610,12 +610,12 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <SpecialParams>
-      <SpecParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</SpecParam>
-      <SpecParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</SpecParam>
-      <SpecParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</SpecParam>
-      <SpecParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</SpecParam>
-    </SpecialParams>
+    <BinaryOptions>
+      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
+      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
+      <BinOption code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</BinOption>
+      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</BinOption>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
       <Button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
@@ -702,12 +702,12 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <SpecialParams>
-      <SpecParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</SpecParam>
-      <SpecParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</SpecParam>
-      <SpecParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</SpecParam>
-      <SpecParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</SpecParam>
-    </SpecialParams>
+    <BinaryOptions>
+      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
+      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
+      <BinOption code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</BinOption>
+      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</BinOption>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
       <Button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
@@ -794,12 +794,12 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <SpecialParams>
-      <SpecParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</SpecParam>
-      <SpecParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</SpecParam>
-      <SpecParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</SpecParam>
-      <SpecParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</SpecParam>
-    </SpecialParams>
+    <BinaryOptions>
+      <BinOption code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</BinOption>
+      <BinOption code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</BinOption>
+      <BinOption code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</BinOption>
+      <BinOption code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</BinOption>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
     <Buttons>
       <Button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>

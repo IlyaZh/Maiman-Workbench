@@ -112,21 +112,19 @@ void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16
             else if (xname == "Content") {
                 parseContent();
 //                currDevIndex++;
-            } else if (xname == "Limit") {
-                parseLimit();
-            } else if (xname == "Calibrate") {
+            } else if (xname == "Limits") {
+                parseLimits();
+            } else if (xname == "CalibrationKoefs") {
                 parseCalibration();
             } else if (xname == "Commands") {
                 parseCommands();
             } else if (xname == "ParamControls") {
                 parseControls();
-            } else if (xname == "Led") {
-                parseLed();
-            } else if (xname == "LedMask") {
-                parseLedMask();
-            } else if (xname == "SpecParam") {
-                parseSpecialParam();
-            } else if (xname == "Button") {
+            } else if (xname == "Leds") {
+                parseLeds();
+            }  else if (xname == "BinaryOptions") {
+                parseBinaryOptions();
+            } else if (xname == "Buttons") {
                 parseButtons();
             } else {
 //                xml.skipCurrentElement();
@@ -216,19 +214,28 @@ void xmlReader::parseControls() {
     }
 }
 
-void xmlReader::parseLed() {
-    leds_t led;
-    // optimize me (debug)
-    QXmlStreamAttributes attrib = xml.attributes();
-    if(attrib.hasAttribute("label")) {
-        led.label = attrib.value("label").toString();
+void xmlReader::parseLeds() {
+    leds_t *led = nullptr;
+    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Leds")) {
+        if(xml.name() == "Led") {
+            if(xml.tokenType() == QXmlStreamReader::StartElement) {
+                led = new leds_t;
+                QXmlStreamAttributes attrib = xml.attributes();
+                if(attrib.hasAttribute("label")) {
+                    led->label = attrib.value("label").toString();
+                }
+            } else if (xml.tokenType() == QXmlStreamReader::EndElement) {
+                device->leds.append(*led);
+                led = nullptr;
+            }
+        } else if (xml.name() == "LedMask") {
+            parseLedMask(led);
+        }
     }
-    device->leds.append(led);
-//    lastLed = dev->leds.length()-1;
 }
 
-void xmlReader::parseLedMask() {
-    if(device->leds.isEmpty()) return;
+void xmlReader::parseLedMask(leds_t* ledPtr) {
+    if(ledPtr == nullptr) return;
 
     ledMask_t ledMask;
     ledMask.message.clear();
@@ -249,10 +256,9 @@ void xmlReader::parseLedMask() {
     }
 
     QString maskMsg = xml.readElementText();
-    if(!maskMsg.isEmpty())
-        ledMask.message = maskMsg;
+    if(!maskMsg.isEmpty()) ledMask.message = maskMsg;
 
-    device->leds.last().masks.append(ledMask);
+    ledPtr->masks.append(ledMask);
 }
 
 void xmlReader::parseParam() {
@@ -300,174 +306,174 @@ void xmlReader::parseParam() {
 
 }
 
-void xmlReader::parseLimit() {
-//    if(!currDeviceFound) return;
-    QXmlStreamAttributes attrib = xml.attributes();
-    // If there is no both codes (min and max) then it is a wrong configuration of limit
-    if(!(attrib.hasAttribute("minCode") || attrib.hasAttribute("maxCode") || attrib.hasAttribute("min") || attrib.hasAttribute("max"))) return;
+void xmlReader::parseLimits() {
+    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Limits")) {
+        if(xml.name() != "Limit") continue;
+        //    if(!currDeviceFound) return;
+        QXmlStreamAttributes attrib = xml.attributes();
+        // If there is no both codes (min and max) then it is a wrong configuration of limit
+        if(!(attrib.hasAttribute("minCode") || attrib.hasAttribute("maxCode") || attrib.hasAttribute("min") || attrib.hasAttribute("max"))) return;
 
-    bool showMin = false;
-    bool showMax = false;
+        bool showMin = false;
+        bool showMax = false;
 
-    if(attrib.hasAttribute("show")) {
-        QString showValue = attrib.value("show").toString();
-        if(showValue.compare("min", Qt::CaseInsensitive) == 0) {
-            showMin = true;
-        } else if(showValue.compare("max", Qt::CaseInsensitive) == 0) {
-            showMax = true;
-        } else if(showValue.compare("both", Qt::CaseInsensitive) == 0) {
-            showMax = showMin = true;
+        if(attrib.hasAttribute("show")) {
+            QString showValue = attrib.value("show").toString();
+            if(showValue.compare("min", Qt::CaseInsensitive) == 0) {
+                showMin = true;
+            } else if(showValue.compare("max", Qt::CaseInsensitive) == 0) {
+                showMax = true;
+            } else if(showValue.compare("both", Qt::CaseInsensitive) == 0) {
+                showMax = showMin = true;
+            }
         }
-    }
 
-    double divider = 1;
-    QString dividerParam;
-    dividerParam.clear();
+        double divider = 1;
+        QString dividerParam;
+        dividerParam.clear();
 
-    if(attrib.hasAttribute("minCode")) {
-        dividerParam = attrib.value("minCode").toString();
-    } else if (attrib.hasAttribute("maxCode")) {
-       dividerParam = attrib.value("maxCode").toString();
-    }
-
-    if(!dividerParam.isEmpty()) {
-        if(device->commands.contains(dividerParam)) {
-            divider = device->commands.value(dividerParam)->getDivider();
+        if(attrib.hasAttribute("minCode")) {
+            dividerParam = attrib.value("minCode").toString();
+        } else if (attrib.hasAttribute("maxCode")) {
+            dividerParam = attrib.value("maxCode").toString();
         }
+
+        if(!dividerParam.isEmpty()) {
+            if(device->commands.contains(dividerParam)) {
+                divider = device->commands.value(dividerParam)->getDivider();
+            }
+        }
+
+        DeviceLimit* devLimit = new DeviceLimit(xml.readElementText(),
+                                                attrib.hasAttribute("unit") ? attrib.value("unit").toString() : "",
+                                                attrib.hasAttribute("bottomCode") ? attrib.value("bottomCode").toString() : "",
+                                                attrib.hasAttribute("upperCode") ? attrib.value("upperCode").toString() : "",
+                                                attrib.hasAttribute("minCode") ? attrib.value("minCode").toString() : "",
+                                                attrib.hasAttribute("maxCode") ? attrib.value("maxCode").toString() : "",
+                                                divider, showMin, showMax);
+
+
+        if(attrib.hasAttribute("min")) {
+            devLimit->setMinValue(attrib.value("min").toDouble());
+        }
+
+        if(attrib.hasAttribute("max")) {
+            devLimit->setMaxValue(attrib.value("max").toDouble());
+        }
+
+        if(attrib.hasAttribute("upper")) {
+            devLimit->setUpperValue(attrib.value("upper").toDouble());
+        }
+
+        if(attrib.hasAttribute("bottom")) {
+            devLimit->setBottomValue(attrib.value("bottom").toDouble());
+        }
+
+        device->limits.append(devLimit);
     }
-
-    DeviceLimit* devLimit = new DeviceLimit(xml.readElementText(),
-                                 attrib.hasAttribute("unit") ? attrib.value("unit").toString() : "",
-                                 attrib.hasAttribute("bottomCode") ? attrib.value("bottomCode").toString() : "",
-                                 attrib.hasAttribute("upperCode") ? attrib.value("upperCode").toString() : "",
-                                 attrib.hasAttribute("minCode") ? attrib.value("minCode").toString() : "",
-                                 attrib.hasAttribute("maxCode") ? attrib.value("maxCode").toString() : "",
-                                 divider, showMin, showMax);
-
-
-    if(attrib.hasAttribute("min")) {
-        devLimit->setMinValue(attrib.value("min").toDouble());
-    }
-
-    if(attrib.hasAttribute("max")) {
-        devLimit->setMaxValue(attrib.value("max").toDouble());
-    }
-
-    if(attrib.hasAttribute("upper")) {
-        devLimit->setUpperValue(attrib.value("upper").toDouble());
-    }
-
-    if(attrib.hasAttribute("bottom")) {
-        devLimit->setBottomValue(attrib.value("bottom").toDouble());
-    }
-
-    device->limits.append(devLimit);
 }
 
 void xmlReader::parseCalibration() {
-    QXmlStreamAttributes attrib = xml.attributes();
-    calibration_t tmpStruct;
-    tmpStruct.code = "";
-    tmpStruct.title = "No name";
-    tmpStruct.min = 0;
-    tmpStruct.max = 10;
-    tmpStruct.divider = 100;
+    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "CalibrationKoefs")) {
+        if(xml.name() != "Calibrate") continue;
+        QXmlStreamAttributes attrib = xml.attributes();
+        calibration_t tmpStruct;
+        tmpStruct.code = "";
+        tmpStruct.title = "No name";
+        tmpStruct.min = 0;
+        tmpStruct.max = 10;
+        tmpStruct.divider = 100;
 
-    if(attrib.hasAttribute("code")) {
-        tmpStruct.code = attrib.value("code").toString();
+        if(attrib.hasAttribute("code")) {
+            tmpStruct.code = attrib.value("code").toString();
+        }
+
+        if(attrib.hasAttribute("min")) {
+            tmpStruct.min = attrib.value("min").toInt();
+        }
+
+        if(attrib.hasAttribute("max")) {
+            tmpStruct.max = attrib.value("max").toInt();
+        }
+
+        if(attrib.hasAttribute("divider")) {
+            tmpStruct.divider = attrib.value("divider").toInt();
+        }
+
+        tmpStruct.title = xml.readElementText();
+
+        device->calCoefs.append(tmpStruct);
     }
-
-    if(attrib.hasAttribute("min")) {
-        tmpStruct.min = attrib.value("min").toInt();
-    }
-
-    if(attrib.hasAttribute("max")) {
-        tmpStruct.max = attrib.value("max").toInt();
-    }
-
-    if(attrib.hasAttribute("divider")) {
-        tmpStruct.divider = attrib.value("divider").toInt();
-    }
-
-    tmpStruct.title = xml.readElementText();
-
-    device->calCoefs.append(tmpStruct);
-
 }
 
 void xmlReader::parseButtons() {
-    doubleMaskCommand_t tmp;
-    QXmlStreamAttributes attrib = xml.attributes();
-    QString tmpName = "noname";
-    tmp.mask = 0;
-
-//    btn->setStyleSheet("QPushButton {\n	color: #000;\n	border: 1px solid rgb(31,31,31);\n	border-radius: 4px;\n	padding: 3px 20px;\n	background-color: rgb(189, 1, 2);\n}\n\nQPushButton::checked {\n	background-color: rgb(0, 102, 52);\n}");
-
-    if(attrib.hasAttribute("name")) {
-        tmpName = attrib.value("name").toString();
-//        btn->setText(tmpName);
-        if(tmpName == "laser") {
-            device->hasLaser = true;
-        } else if (tmpName == "tec") {
-            device->hasTEC = true;
-        }
-    }
-
-    if(attrib.hasAttribute("code")) {
-        tmp.code = attrib.value("code").toString();
-    }
-    if(attrib.hasAttribute("mask")) {
-        tmp.mask = attrib.value("mask").toUInt(nullptr, 16);
-    }
-
-    if(attrib.hasAttribute("onCommand")) {
-        tmp.onCommand = attrib.value("onCommand").toString();
-    }
-
-    if(attrib.hasAttribute("offCommand")) {
-        tmp.offCommand = attrib.value("offCommand").toString();
-    }
-
-    device->stateButtons.insert(tmpName, tmp);
-}
-
-void xmlReader::parseSpecialParam() {
-//    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "specParam")) {
-        specParams_t tmp;
+    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Buttons")) {
+        if(xml.name() != "Button") continue;
+        doubleMaskCommand_t tmp;
         QXmlStreamAttributes attrib = xml.attributes();
+        QString tmpName = "noname";
+        tmp.mask = 0;
+
+        //    btn->setStyleSheet("QPushButton {\n	color: #000;\n	border: 1px solid rgb(31,31,31);\n	border-radius: 4px;\n	padding: 3px 20px;\n	background-color: rgb(189, 1, 2);\n}\n\nQPushButton::checked {\n	background-color: rgb(0, 102, 52);\n}");
+
+        if(attrib.hasAttribute("name")) {
+            tmpName = attrib.value("name").toString();
+            //        btn->setText(tmpName);
+            if(tmpName == "laser") {
+                device->hasLaser = true;
+            } else if (tmpName == "tec") {
+                device->hasTEC = true;
+            }
+        }
 
         if(attrib.hasAttribute("code")) {
             tmp.code = attrib.value("code").toString();
         }
-        if(attrib.hasAttribute("offCommand")) {
-            tmp.offCommand = attrib.value("offCommand").toString();
+        if(attrib.hasAttribute("mask")) {
+            tmp.mask = attrib.value("mask").toUInt(nullptr, 16);
         }
+
         if(attrib.hasAttribute("onCommand")) {
             tmp.onCommand = attrib.value("onCommand").toString();
         }
-        if(attrib.hasAttribute("mask")) {
-            tmp.mask = attrib.value("mask").toUInt(nullptr, 16);
-        } else {
-            tmp.mask = 0;
+
+        if(attrib.hasAttribute("offCommand")) {
+            tmp.offCommand = attrib.value("offCommand").toString();
         }
 
-        if(attrib.hasAttribute("id")) {
-            tmp.id = attrib.value("id").toUInt(nullptr, 16);
-        }
-
-
-        QCheckBox *cb = new QCheckBox();
-        QString label = xml.readElementText();
-        cb->setText(label);
-        tmp.label = label;
-        cb->setStyleSheet("border: none;");
-        tmp.cbPtr = cb;
-        device->binaryOptions.append(tmp);
-
-//        xml.readNext();
-//    }
+        device->stateButtons.insert(tmpName, tmp);
+    }
 }
 
-//QVector<quint16>& xmlReader::getavailableDevices() {
-        //return availableDevices;
-//}
+void xmlReader::parseBinaryOptions() {
+    while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "BinaryOptions")) {
+        if(xml.name() != "BinOption") continue;
+
+        binOption_t binOption;
+        QXmlStreamAttributes attrib = xml.attributes();
+
+        if(attrib.hasAttribute("code")) {
+            binOption.code = attrib.value("code").toString();
+        }
+        if(attrib.hasAttribute("offCommand")) {
+            binOption.offCommand = attrib.value("offCommand").toString();
+        }
+        if(attrib.hasAttribute("onCommand")) {
+            binOption.onCommand = attrib.value("onCommand").toString();
+        }
+        if(attrib.hasAttribute("mask")) {
+            binOption.mask = attrib.value("mask").toUInt(nullptr, 16);
+        } else {
+            binOption.mask = 0;
+        }
+
+
+        QCheckBox *binOptionCb = new QCheckBox();
+        QString label = xml.readElementText();
+        binOptionCb->setText(label);
+        binOption.label = label;
+        binOptionCb->setStyleSheet("border: none;");
+        binOption.cbPtr = binOptionCb;
+        device->binaryOptions.append(binOption);
+    }
+}

@@ -656,7 +656,7 @@ void MainWindow::clearAllRegulators() {
     }
 
 
-    foreach(specParams_t item, devConfig.binaryOptions) {
+    foreach(binOption_t item, devConfig.binaryOptions) {
          delete item.cbPtr;
     }
 
@@ -841,7 +841,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
                 setLedState(commandStr, value);
 
                 // Обработка галочек
-                foreach(specParams_t binaryOption, devConfig.binaryOptions) {
+                foreach(binOption_t binaryOption, devConfig.binaryOptions) {
                     if(binaryOption.mask == 0) continue;
 
                     if(commandStr == binaryOption.code) {
@@ -1056,9 +1056,9 @@ void MainWindow::triggComAutoConnectSlot(bool state) {
 void MainWindow::triggTemperatureSymbolSlot(QString str) {
     settings.setTemperatureSymbol(str);
 
-    for(QList<ParameterController*>::const_iterator i = devConfig.paramWidgets.constBegin(); i != devConfig.paramWidgets.constEnd(); i++) {
-        if((*i)->isTemperature()) {
-            (*i)->temperatureIsChanged(str);
+    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
+        if(parameterController->isTemperature()) {
+            parameterController->temperatureIsChanged(str);
         }
     }
 
@@ -1322,7 +1322,7 @@ void MainWindow::updateWindow() {
 void MainWindow::spcialParameterSlot(QString paramLabel) {
     int i = 0;
     QString tmpQuery = QString(COM_WRITE_PREFIX);
-    specParams_t obj;
+    binOption_t obj;
 
     for(i = 0; i < devConfig.binaryOptions.count(); i++)
         if(paramLabel.compare(devConfig.binaryOptions.at(i).label, Qt::CaseInsensitive) == 0) break;

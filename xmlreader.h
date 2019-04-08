@@ -30,13 +30,13 @@ private:
     void parseContent();
     void parseCommands();
     void parseControls();
-    void parseLed();
-    void parseLedMask();
+    void parseLeds();
+    void parseLedMask(leds_t*);
     void parseParam();
-    void parseLimit();
+    void parseLimits();
     void parseCalibration();
     void parseButtons();
-    void parseSpecialParam();
+    void parseBinaryOptions();
     QXmlStreamReader xml;
     quint16 deviceId;
     device_t *device;
