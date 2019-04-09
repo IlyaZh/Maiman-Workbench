@@ -613,14 +613,14 @@ void MainWindow::setupParameterHandlers() {
         // Вынеси в commondefines список параметров
         // Формирование и вывод на экран панели режимов
         QSignalMapper* cbSignalMapper = new QSignalMapper(this);
-        if(!devConfig.checkBoxes.empty()) {
+        if(!devConfig.binOptions.empty()) {
             QVBoxLayout *vlayout = new QVBoxLayout();
-            for(int i = 0; i < devConfig.checkBoxes.count(); i++) {
-                QCheckBox *tmpCheckBox = devConfig.checkBoxes.at(i).cbPtr;
-                tmpCheckBox->setStyleSheet("QCheckBox {font-family: \"Share Tech Mono\"; border: none; color: #fff;} ");
-                vlayout->addWidget(tmpCheckBox);
-                connect(tmpCheckBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
-                cbSignalMapper->setMapping(tmpCheckBox, devConfig.checkBoxes.at(i).label);
+            foreach(binOption_t binOption, devConfig.binOptions) {
+                QCheckBox* checkBox = binOption.checkBox;
+                checkBox->setStyleSheet("QCheckBox {font-family: \"Share Tech Mono\"; border: none; color: #fff;} ");
+                vlayout->addWidget(checkBox);
+                connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
+                cbSignalMapper->setMapping(checkBox, binOption.label);
             }
             connect(cbSignalMapper, SIGNAL(mapped(QString)), this, SLOT(spcialParameterSlot(QString)));
             ui->specialParamBox->setLayout(vlayout);
@@ -656,8 +656,8 @@ void MainWindow::clearAllRegulators() {
     }
 
 
-    foreach(binOption_t item, devConfig.checkBoxes) {
-         delete item.cbPtr;
+    foreach(binOption_t item, devConfig.binOptions) {
+         delete item.checkBox;
     }
 
 
@@ -671,7 +671,7 @@ void MainWindow::clearAllRegulators() {
     devConfig.image = "";
     devConfig.link = "";
     devConfig.paramWidgets.clear();
-    devConfig.checkBoxes.clear();
+    devConfig.binOptions.clear();
     devConfig.stateButtons.clear();
     devConfig.leds.clear();
 
@@ -690,8 +690,8 @@ void MainWindow::setRegulatorsEnable(bool state) {
         item->setEnableState(state);
     }
 
-    for(qint8 i = 0; i < devConfig.checkBoxes.count(); i++) {
-        devConfig.checkBoxes.at(i).cbPtr->setEnabled(state);
+    for(qint8 i = 0; i < devConfig.binOptions.count(); i++) {
+        devConfig.binOptions.at(i).checkBox->setEnabled(state);
     }
 
     comSetDataTransfer(state);
@@ -841,14 +841,14 @@ void MainWindow::readComData_Slot(QByteArray str) {
                 setLedState(commandStr, value);
 
                 // Обработка галочек
-                foreach(binOption_t binaryOption, devConfig.checkBoxes) {
+                foreach(binOption_t binaryOption, devConfig.binOptions) {
                     if(binaryOption.mask == 0) continue;
 
                     if(commandStr == binaryOption.code) {
                         if(value & binaryOption.mask) {
-                            binaryOption.cbPtr->setChecked(true);
+                            binaryOption.checkBox->setChecked(true);
                         } else {
-                            binaryOption.cbPtr->setChecked(false);
+                            binaryOption.checkBox->setChecked(false);
                         }
                     }
                 }
@@ -1324,13 +1324,13 @@ void MainWindow::spcialParameterSlot(QString paramLabel) {
     QString tmpQuery = QString(COM_WRITE_PREFIX);
     binOption_t obj;
 
-    for(i = 0; i < devConfig.checkBoxes.count(); i++)
-        if(paramLabel.compare(devConfig.checkBoxes.at(i).label, Qt::CaseInsensitive) == 0) break;
+    for(i = 0; i < devConfig.binOptions.count(); i++)
+        if(paramLabel.compare(devConfig.binOptions.at(i).label, Qt::CaseInsensitive) == 0) break;
 
-    obj = devConfig.checkBoxes.at(i);
+    obj = devConfig.binOptions.at(i);
     tmpQuery += obj.code + QString(" ");
 
-    if(obj.cbPtr->isChecked()) {
+    if(obj.checkBox->isChecked()) {
         tmpQuery += obj.onCommand;
     } else {
         tmpQuery += obj.offCommand;

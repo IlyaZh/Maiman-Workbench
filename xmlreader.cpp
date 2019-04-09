@@ -188,7 +188,7 @@ void xmlReader::parseContent() {
 void xmlReader::parseCommands() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Commands")) {
         xml.readNext();
-        if(xml.name() != "Command") continue;
+        if(!(xml.name() == "Command" && xml.tokenType() == QXmlStreamReader::StartElement)) continue;
         QXmlStreamAttributes attrib = xml.attributes();
 
         QString code = (attrib.hasAttribute("code")) ? attrib.value("code").toString() : "";
@@ -211,7 +211,7 @@ void xmlReader::parseCommands() {
 
 void xmlReader::parseControls() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "ParamControls")) {
-        if(xml.name() == "Param")
+        if(xml.name() == "Param" && xml.tokenType() == QXmlStreamReader::StartElement)
             parseParam();
         xml.readNext();
     }
@@ -313,7 +313,7 @@ void xmlReader::parseParam() {
 void xmlReader::parseLimits() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Limits")) {
         xml.readNext();
-        if(xml.name() != "Limit") continue;
+        if(!(xml.name() == "Limit" && xml.tokenType() == QXmlStreamReader::StartElement)) continue;
         //    if(!currDeviceFound) return;
         QXmlStreamAttributes attrib = xml.attributes();
         // If there is no both codes (min and max) then it is a wrong configuration of limit
@@ -382,7 +382,7 @@ void xmlReader::parseLimits() {
 void xmlReader::parseCalibration() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "CalibrationKoefs")) {
         xml.readNext();
-        if(xml.name() != "Calibrate") continue;
+        if(!(xml.name() == "Calibrate" && xml.tokenType() == QXmlStreamReader::StartElement)) continue;
         QXmlStreamAttributes attrib = xml.attributes();
         calibration_t calibrate;
         calibrate.code = "";
@@ -416,7 +416,7 @@ void xmlReader::parseCalibration() {
 void xmlReader::parseButtons() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Buttons")) {
         xml.readNext();
-        if(xml.name() != "Button") continue;
+        if(!(xml.name() == "Button" && xml.tokenType() == QXmlStreamReader::StartElement)) continue;
         doubleMaskCommand_t tmp;
         QXmlStreamAttributes attrib = xml.attributes();
         QString tmpName = "noname";
@@ -457,7 +457,7 @@ void xmlReader::parseButtons() {
 void xmlReader::parseBinaryOptions() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "BinaryOptions")) {
         xml.readNext();
-        if(xml.name() != "CheckBox") continue;
+        if(!(xml.name() == "CheckBox" && xml.tokenType() == QXmlStreamReader::StartElement)) continue;
 
         binOption_t binOption;
         QXmlStreamAttributes attrib = xml.attributes();
@@ -483,8 +483,8 @@ void xmlReader::parseBinaryOptions() {
         binOptionCb->setText(label);
         binOption.label = label;
         binOptionCb->setStyleSheet("border: none;");
-        binOption.cbPtr = binOptionCb;
-        device->checkBoxes.append(binOption);
+        binOption.checkBox = binOptionCb;
+        device->binOptions.append(binOption);
 
     }
 }

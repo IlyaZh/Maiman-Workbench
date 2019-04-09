@@ -43,7 +43,7 @@ typedef struct {
     QString offCommand;
     QString label;
     uint mask;
-    QCheckBox* cbPtr;
+    QCheckBox* checkBox;
 } binOption_t;
 
 typedef struct {
@@ -69,7 +69,7 @@ typedef struct {
     QList<DeviceLimit*> limits;
     QList<calibration_t> calCoefs;
     QList<ParameterController*> paramWidgets;
-    QList<binOption_t> checkBoxes;
+    QList<binOption_t> binOptions;
     QMap<QString, doubleMaskCommand_t> stateButtons;
     QList<leds_t> leds;
     bool hasLaser;
