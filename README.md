@@ -2,7 +2,7 @@
 Software to control Maiman Electronics laser drivers.
 
 ## Features
-- Configurable GUI. Adding a new device without rebuilding code [Config file manual](Docs/DBConfig - manual.pdf)
+- Configurable GUI. Adding a new device without rebuilding code [Config file manual](Docs/DBConfig-manual.pdf)
 - Export and import device's state and configuration
 - Setting limits
 - Setting calibrations coefficients
