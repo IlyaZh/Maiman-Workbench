@@ -17,46 +17,46 @@
   </CommonIDDevices>
 
 
-  <Device id="10" name="SF6100 v1" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6100-1.jpg</image>
-      <description>Input Voltage Range (Vin): 12-55 Volts
+  <Device id="10" name="SF6100 v1" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6100-1.jpg</Image>
+      <Description>Input Voltage Range (Vin): 12-55 Volts
 Output Current Range (I): 0-20 Аmps
 Output Voltage (0.73*Vin max) (V): 5-40 Volts
 Minimum Current Set-Point Step Size: 0.1 Amps
 Rise Time: less then 800μs
 Fall Time: less then 200μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/archive</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/archive</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="10"/>
-      <command code="0301" divider="10" interval="100"/>
-      <command code="0302" divider="10" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0704" interval="10"/>
-      <command code="0800"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="10"/>
+      <Command code="0301" divider="10" interval="100"/>
+      <Command code="0302" divider="10" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0704" interval="10"/>
+      <Command code="0800"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
-    <limits>
-    <!--  <limit bottomCode="0" minCode="0201" min="2" maxCode="0203" upperCode="1500" max="1500" divider="10" unit="ms" show="both">Max. Duration</limit>
-      <limit upperCode="0306" maxCode="0302" min="5" divider="100" unit="А" show="max">Max. Current</limit>
-      <limit upperCode="0406" max="0102" min="0101" bottomCode="0405" divider="10" unit="V" show="max">Max. Frequency</limit> -->
-    </limits>
+    <Limits>
+    <!--  <Limit bottomCode="0" minCode="0201" min="2" maxCode="0203" upperCode="1500" max="1500" divider="10" unit="ms" show="both">Max. Duration</Limit>
+      <Limit upperCode="0306" maxCode="0302" min="5" divider="100" unit="А" show="max">Max. Current</Limit>
+      <Limit upperCode="0406" max="0102" min="0101" bottomCode="0405" divider="10" unit="V" show="max">Max. Frequency</Limit> -->
+    </Limits>
     <!--  калибровка -->
-    <calibrationKoefs>
-    </calibrationKoefs> <!-- Сделать бы так, чтобы при отсутствии параметра кнопка в меню не появлялась-->
+    <CalibrationKoefs>
+    </CalibrationKoefs> <!-- Сделать бы так, чтобы при отсутствии параметра кнопка в меню не появлялась-->
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
     (deg) - в проге заменяется на символ градуса
@@ -65,80 +65,80 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     real - измеренный параметр
     Параметры с value "участвуют" в hide controls.
      -->
-    <paramControls>
-      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
-      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
-      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="10">Current</param>
-      <param unit=" " real="0701" divider="1">Serial Number</param>
-      <param unit="V" real="0407" divider="10">Voltage</param>
-    </paramControls>
+    <ParamControls>
+      <Param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</Param>
+      <Param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</Param>
+      <Param unit="A" min="0301" max="0302" value="0300" real="0307" divider="10">Current</Param>
+      <Param unit=" " real="0701" divider="1">Serial Number</Param>
+      <Param unit="V" real="0407" divider="10">Voltage</Param>
+    </ParamControls>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <specialParams>
-      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
-      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
-      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</specParam>
-    </specialParams>
+    <BinaryOptions>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</CheckBox>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
-    <buttons>
-      <button name="laser" mask="0002" code="0700" onCommand="0008" offCommand="0010"/>
-    </buttons>
-    <leds>
-      <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
-      </led>
-      <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-      </led>
-	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
-      </led>
-    </leds>
+    <Buttons>
+      <Button name="laser" mask="0002" code="0700" onCommand="0008" offCommand="0010"/>
+    </Buttons>
+    <Leds>
+      <Led label="Laser">
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </Led>
+      <Led label="IntLock">
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+      </Led>
+	  <Led label="Error">
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+      </Led>
+    </Leds>
   </Device>
 
 
-  <Device id="11" name="SF6015 v1" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6015-1.jpg</image>
-      <description>Input Voltage Range (Vin): 10-14 Volts
+  <Device id="11" name="SF6015 v1" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6015-1.jpg</Image>
+      <Description>Input Voltage Range (Vin): 10-14 Volts
 Output Current Range (I): 0-15 Аmps
 Output Voltage (0.75*Vin max) (V): 0.5-10 Volts
 Minimum Current Set-Point Step Size: 0.1 Amps
 Rise Time: less then 1,200μs
 Fall Time: less then 200μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/archive</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/archive</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="10"/>
-      <command code="0301" divider="10" interval="100"/>
-      <command code="0302" divider="10" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0704" interval="10"/>
-      <command code="0800"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="10"/>
+      <Command code="0301" divider="10" interval="100"/>
+      <Command code="0302" divider="10" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0704" interval="10"/>
+      <Command code="0800"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
-    <limits>
-      <limit bottomCode="0" minCode="0201" min="2" maxCode="0203" upperCode="1500" max="1500" divider="10" unit="ms" show="max">Max. Duration</limit>
-      <limit upperCode="0306" maxCode="0302" min="5" divider="100" unit="А" show="max">Max. Current</limit>
-      <limit upperCode="0406" maxCode="0102" minCode="0101" bottomCode="0405" divider="10" unit="V" show="max">Max. Frequency</limit>
-    </limits>
+    <Limits>
+      <Limit bottomCode="0" minCode="0201" min="2" maxCode="0203" upperCode="1500" max="1500" divider="10" unit="ms" show="max">Max. Duration</Limit>
+      <Limit upperCode="0306" maxCode="0302" min="5" divider="100" unit="А" show="max">Max. Current</Limit>
+      <Limit upperCode="0406" maxCode="0102" minCode="0101" bottomCode="0405" divider="10" unit="V" show="max">Max. Frequency</Limit>
+    </Limits>
     <!--  калибровка -->
-    <calibrationKoefs>
-    </calibrationKoefs> <!-- Сделать бы так, чтобы при отсутствии параметра кнопка в меню не появлялась-->
+    <CalibrationKoefs>
+    </CalibrationKoefs> <!-- Сделать бы так, чтобы при отсутствии параметра кнопка в меню не появлялась-->
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
     (deg) - в проге заменяется на символ градуса
@@ -147,80 +147,80 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     real - измеренный параметр
     Параметры с value "участвуют" в hide controls.
      -->
-    <paramControls>
-      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
-      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
-      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="10">Current</param>
-      <param unit=" " real="0701" divider="1">Serial Number</param>
-      <param unit="V" real="0407" divider="10">Voltage</param>
-    </paramControls>
+    <ParamControls>
+      <Param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</Param>
+      <Param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</Param>
+      <Param unit="A" min="0301" max="0302" value="0300" real="0307" divider="10">Current</Param>
+      <Param unit=" " real="0701" divider="1">Serial Number</Param>
+      <Param unit="V" real="0407" divider="10">Voltage</Param>
+    </ParamControls>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <specialParams>
-      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
-      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
-      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</specParam>
-    </specialParams>
+    <BinaryOptions>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</CheckBox>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
-    <buttons>
-      <button name="laser" mask="0002" code="0700" onCommand="0008" offCommand="0010"/>
-    </buttons>
-    <leds>
-      <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
-      </led>
-      <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-      </led>
-	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
-      </led>
-    </leds>
+    <Buttons>
+      <Button name="laser" mask="0002" code="0700" onCommand="0008" offCommand="0010"/>
+    </Buttons>
+    <Leds>
+      <Led label="Laser">
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </Led>
+      <Led label="IntLock">
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+      </Led>
+	  <Led label="Error">
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+      </Led>
+    </Leds>
   </Device>
 
 
-  <Device id="12" name="SF6030 v1" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6030-1.jpg</image>
-      <description>Input Voltage Range (Vin): 10-14 Volts
+  <Device id="12" name="SF6030 v1" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6030-1.jpg</Image>
+      <Description>Input Voltage Range (Vin): 10-14 Volts
 Output Current Range (I): 0-30 Аmps
 Output Voltage (0.75*Vin max) (V): 0.5-10 Volts
 Minimum Current Set-Point Step Size: 0.1 Amps
 Rise Time: less then 1,200μs
 Fall Time: less then 200μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/archive</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/archive</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="10"/>
-      <command code="0301" divider="10" interval="100"/>
-      <command code="0302" divider="10" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0704" interval="10"/>
-      <command code="0800"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="10"/>
+      <Command code="0301" divider="10" interval="100"/>
+      <Command code="0302" divider="10" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0704" interval="10"/>
+      <Command code="0800"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
-    <limits>
-    <!--  <limit bottom="0" minCode="0201" min="2" maxCode="0203" upper="1500" max="1500" divider="10" unit="ms" show="max">Max. Duration</limit>
-      <limit upperCode="0306" maxCode="0302" min="5" divider="100" unit="А" show="max">Max. Current</limit>
-      <limit upperCode="0406" maxCode="0102" minCode="0101" bottomCode="0405" divider="10" unit="V" show="max">Max. Frequency</limit> -->
-    </limits>
+    <Limits>
+    <!--  <Limit bottom="0" minCode="0201" min="2" maxCode="0203" upper="1500" max="1500" divider="10" unit="ms" show="max">Max. Duration</Limit>
+      <Limit upperCode="0306" maxCode="0302" min="5" divider="100" unit="А" show="max">Max. Current</Limit>
+      <Limit upperCode="0406" maxCode="0102" minCode="0101" bottomCode="0405" divider="10" unit="V" show="max">Max. Frequency</Limit> -->
+    </Limits>
     <!--  калибровка -->
-    <calibrationKoefs>
-    </calibrationKoefs> <!-- Сделать бы так, чтобы при отсутствии параметра кнопка в меню не появлялась-->
+    <CalibrationKoefs>
+    </CalibrationKoefs> <!-- Сделать бы так, чтобы при отсутствии параметра кнопка в меню не появлялась-->
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
     (deg) - в проге заменяется на символ градуса
@@ -229,87 +229,87 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     real - измеренный параметр
     Параметры с value "участвуют" в hide controls.
      -->
-    <paramControls>
-      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
-      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
-      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="10">Current</param>
-      <param unit=" " real="0701" divider="1">Serial Number</param>
-      <param unit="V" real="0407" divider="10">Voltage</param>
-    </paramControls>
+    <ParamControls>
+      <Param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</Param>
+      <Param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</Param>
+      <Param unit="A" min="0301" max="0302" value="0300" real="0307" divider="10">Current</Param>
+      <Param unit=" " real="0701" divider="1">Serial Number</Param>
+      <Param unit="V" real="0407" divider="10">Voltage</Param>
+    </ParamControls>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <specialParams>
-      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
-      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
-      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</specParam>
-    </specialParams>
+    <BinaryOptions>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="3">Ignore IntLock</CheckBox>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
-    <buttons>
-      <button name="laser" mask="0002" code="0700" onCommand="0008" offCommand="0010"/>
-    </buttons>
-    <leds>
-      <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
-      </led>
-      <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-      </led>
-	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
-      </led>
-    </leds>
+    <Buttons>
+      <Button name="laser" mask="0002" code="0700" onCommand="0008" offCommand="0010"/>
+    </Buttons>
+    <Leds>
+      <Led label="Laser">
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </Led>
+      <Led label="IntLock">
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+      </Led>
+	  <Led label="Error">
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+      </Led>
+    </Leds>
   </Device>
 
 
-  <Device id="13" name="SF6100 v2" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6100-2.jpg</image>
-      <description>Input Voltage Range (Vin): 12-55 Volts
+  <Device id="13" name="SF6100 v2" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6100-2.jpg</Image>
+      <Description>Input Voltage Range (Vin): 12-55 Volts
 Output Current Range (I): 0-25 Аmps
 Output Voltage (0.73*Vin max) (V): 1-40 Volts
 Minimum Current Set-Point Step Size: 0.01 Amps
 Rise Time: less then 300μs
 Fall Time: less then 50μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-20a-40v-sf6100</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-20a-40v-sf6100</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="100"/>
-      <command code="0301" divider="100" interval="100"/>
-      <command code="0302" divider="100" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="030E" divider="100" interval="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0702" interval="100"/>
-      <command code="0800"/>
-      <command code="0A05" divider="10" interval="100"/>
-      <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10"/>
-      <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="100"/>
+      <Command code="0301" divider="100" interval="100"/>
+      <Command code="0302" divider="100" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="030E" divider="100" interval="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0702" interval="100"/>
+      <Command code="0800"/>
+      <Command code="0A05" divider="10" interval="100"/>
+      <Command code="0A06" divider="10" interval="100"/>
+      <Command code="0AE4" divider="10" interval="10"/>
+      <Command code="0B0E" divider="1" interval="100"/>
+      <Command code="0AF4" divider="10" interval="10"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
-    <limits>
-    <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max duration</limit>
-      <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
-      <limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</limit> -->
-    </limits>
+    <Limits>
+    <!--   <Limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max duration</Limit>
+      <Limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</Limit>
+      <Limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</Limit> -->
+    </Limits>
     <!--  калибровка -->
-    <calibrationKoefs>
-      <calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</calibrate>
-    </calibrationKoefs>
+    <CalibrationKoefs>
+      <Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
+    </CalibrationKoefs>
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
     (deg) - в проге заменяется на символ градуса
@@ -318,92 +318,92 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     real - измеренный параметр
     Параметры с value "участвуют" в hide controls.
      -->
-    <paramControls>
-      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
-      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
-      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</param>
-      <param unit=" " real="0701" divider="1">Serial Number</param>
-      <param unit="V" real="0407" divider="10">Voltage</param>
-	  <param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</param>
-	  <param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</param>
-    </paramControls>
+    <ParamControls>
+      <Param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</Param>
+      <Param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</Param>
+      <Param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</Param>
+      <Param unit=" " real="0701" divider="1">Serial Number</Param>
+      <Param unit="V" real="0407" divider="10">Voltage</Param>
+	  <Param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</Param>
+	  <Param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</Param>
+    </ParamControls>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <specialParams>
-      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
-      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
-      <specParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</specParam>
-      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</specParam>
-    </specialParams>
+    <BinaryOptions>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="4000" offCommand="8000" mask="0040">Ignore LD Overheat Block</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080">Ignore IntLock</CheckBox>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
-    <buttons>
-      <button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
-    </buttons>
-    <leds>
-      <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
-      </led>
-      <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
-      </led>
-	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
-      </led>
-    </leds>
+    <Buttons>
+      <Button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
+    </Buttons>
+    <Leds>
+      <Led label="Laser">
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </Led>
+      <Led label="IntLock">
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
+      </Led>
+	  <Led label="Error">
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+      </Led>
+    </Leds>
   </Device>
 
 
-  <Device id="14" name="SF6015 v2" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6015-2.jpg</image>
-      <description>Input Voltage Range (Vin): 10-14 Volts
+  <Device id="14" name="SF6015 v2" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6015-2.jpg</Image>
+      <Description>Input Voltage Range (Vin): 10-14 Volts
 Output Current Range (I): 0-15 Аmps
 Output Voltage (0.75*Vin max) (V): 1-10 Volts
 Minimum Current Set-Point Step Size: 0.01 Amps
 Rise Time: less then 500μs
 Fall Time: less then 1,200μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-15a-10v-sf6015</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-15a-10v-sf6015</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="100"/>
-      <command code="0301" divider="100" interval="100"/>
-      <command code="0302" divider="100" interval="100"/>
-      <command code="0306" divider="100" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="030E" divider="100" interval="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0702" interval="100"/>
-      <command code="0800"/>
-      <command code="0A05" divider="10" interval="100"/>
-      <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10" isSigned="" />
-      <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10" isSigned="" />
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="100"/>
+      <Command code="0301" divider="100" interval="100"/>
+      <Command code="0302" divider="100" interval="100"/>
+      <Command code="0306" divider="100" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="030E" divider="100" interval="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0702" interval="100"/>
+      <Command code="0800"/>
+      <Command code="0A05" divider="10" interval="100"/>
+      <Command code="0A06" divider="10" interval="100"/>
+      <Command code="0AE4" divider="10" interval="10" isSigned="" />
+      <Command code="0B0E" divider="1" interval="100"/>
+      <Command code="0AF4" divider="10" interval="10" isSigned="" />
+    </Commands>
     <!-- доступные для регулирования пределы -->
-    <limits>
-       <limit minCode="0201" maxCode="0202" upper="1500" divider="10" unit="мс" show="max">Max duration</limit>
-      <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
-      <limit upper="200" max="198" min="15" bottom="10" divider="10" unit="V" show="both">Voltage</limit>
-    </limits>
+    <Limits>
+      <Limit minCode="0201" maxCode="0202" upper="1500" divider="10" unit="мс" show="max">Max duration</Limit>
+      <Limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</Limit>
+      <Limit upper="200" max="198" min="15" bottom="10" divider="10" unit="V" show="both">Voltage</Limit>
+    </Limits>
     <!--  калибровка -->
-    <calibrationKoefs>
-      <calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</calibrate>
-    </calibrationKoefs>
+    <CalibrationKoefs>
+      <Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
+    </CalibrationKoefs>
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
     (deg) - в проге заменяется на символ градуса
@@ -412,91 +412,91 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     real - измеренный параметр
     Параметры с value "участвуют" в hide controls.
      -->
-    <paramControls>
-      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
-      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
-      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</param>
-      <param unit=" " real="0701" divider="1">Serial Number</param>
-      <param unit="V" real="0407" divider="10">Voltage</param>
-	  <param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</param>
-	  <param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</param>
-    </paramControls>
+    <ParamControls>
+      <Param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</Param>
+      <Param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</Param>
+      <Param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</Param>
+      <Param unit=" " real="0701" divider="1">Serial Number</Param>
+      <Param unit="V" real="0407" divider="10">Voltage</Param>
+	  <Param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</Param>
+	  <Param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</Param>
+    </ParamControls>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <specialParams>
-      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
-      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
-      <specParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</specParam>
-      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</specParam>
-    </specialParams>
+    <BinaryOptions>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="4000" offCommand="8000" mask="0040">Ignore LD Overheat Block</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080">Ignore IntLock</CheckBox>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
-    <buttons>
-      <button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
-    </buttons>
-    <leds>
-      <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
-      </led>
-      <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
-      </led>
-	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
-      </led>
-    </leds>
+    <Buttons>
+      <Button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
+    </Buttons>
+    <Leds>
+      <Led label="Laser">
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </Led>
+      <Led label="IntLock">
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
+      </Led>
+	  <Led label="Error">
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+      </Led>
+    </Leds>
   </Device>
 
 
-  <Device id="15" name="SF6030 v2" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6030-2.jpg</image>
-      <description>Input Voltage Range (Vin): 10-14 Volts
+  <Device id="15" name="SF6030 v2" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6030-2.jpg</Image>
+      <Description>Input Voltage Range (Vin): 10-14 Volts
 Output Current Range (I): 0-30 Аmps
 Output Voltage (0.75*Vin max) (V): 1-10 Volts
 Minimum Current Set-Point Step Size: 0.01 Amps
 Rise Time: less then 700μs
 Fall Time: less then 1,500μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-30a-10v-sf6030</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-30a-10v-sf6030</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="100"/>
-      <command code="0301" divider="100" interval="100"/>
-      <command code="0302" divider="100" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="030E" divider="100" interval="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0702" interval="100"/>
-      <command code="0800"/>
-      <command code="0A05" divider="10" interval="100"/>
-      <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10"/>
-      <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="100"/>
+      <Command code="0301" divider="100" interval="100"/>
+      <Command code="0302" divider="100" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="030E" divider="100" interval="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0702" interval="100"/>
+      <Command code="0800"/>
+      <Command code="0A05" divider="10" interval="100"/>
+      <Command code="0A06" divider="10" interval="100"/>
+      <Command code="0AE4" divider="10" interval="10"/>
+      <Command code="0B0E" divider="1" interval="100"/>
+      <Command code="0AF4" divider="10" interval="10"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
-    <limits>
-    <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max>Max duration</limit>
-      <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
-      <limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</limit> -->
-    </limits>
+    <Limits>
+    <!--   <Limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max>Max duration</Limit>
+      <Limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</Limit>
+      <Limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</Limit> -->
+    </Limits>
     <!--  калибровка -->
-    <calibrationKoefs>
-      <calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</calibrate>
-    </calibrationKoefs>
+    <CalibrationKoefs>
+      <Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
+    </CalibrationKoefs>
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
     (deg) - в проге заменяется на символ градуса
@@ -505,91 +505,91 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     real - измеренный параметр
     Параметры с value "участвуют" в hide controls.
      -->
-    <paramControls>
-      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
-      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
-      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</param>
-      <param unit=" " real="0701" divider="1">Serial Number</param>
-      <param unit="V" real="0407" divider="10">Voltage</param>
-	  <param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</param>
-	  <param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</param>
-    </paramControls>
+    <ParamControls>
+      <Param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</Param>
+      <Param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</Param>
+      <Param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</Param>
+      <Param unit=" " real="0701" divider="1">Serial Number</Param>
+      <Param unit="V" real="0407" divider="10">Voltage</Param>
+	  <Param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</Param>
+	  <Param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</Param>
+    </ParamControls>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <specialParams>
-      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
-      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
-      <specParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</specParam>
-      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</specParam>
-    </specialParams>
+    <BinaryOptions>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</CheckBox>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
-    <buttons>
-      <button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
-    </buttons>
-    <leds>
-      <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
-      </led>
-      <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
-      </led>
-	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
-     </led>
-    </leds>
+    <Buttons>
+      <Button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
+    </Buttons>
+    <Leds>
+      <Led label="Laser">
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </Led>
+      <Led label="IntLock">
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
+      </Led>
+	  <Led label="Error">
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+     </Led>
+    </Leds>
   </Device>
 
 
-	<Device id="16" name="SF6040" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6040.jpg</image>
-      <description>Input Voltage Range (Vin): 12-55 Volts
+	<Device id="16" name="SF6040" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6040.jpg</Image>
+      <Description>Input Voltage Range (Vin): 12-55 Volts
 Output Current Range (I): 0-10 Аmps
 Output Voltage (0.73*Vin max) (V): 5-40 Volts
 Minimum Current Set-Point Step Size: 0.01 Amps
 Rise Time: less then 100μs
 Fall Time: less then 80μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/product-page/high-power-laser-diode-driver-oem-cw-10a-40v-sf6040</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/product-page/high-power-laser-diode-driver-oem-cw-10a-40v-sf6040</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="100"/>
-      <command code="0301" divider="100" interval="100"/>
-      <command code="0302" divider="100" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="030E" divider="100" interval="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0702" interval="100"/>
-      <command code="0800"/>
-      <command code="0A05" divider="10" interval="100"/>
-      <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10"/>
-      <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="100"/>
+      <Command code="0301" divider="100" interval="100"/>
+      <Command code="0302" divider="100" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="030E" divider="100" interval="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0702" interval="100"/>
+      <Command code="0800"/>
+      <Command code="0A05" divider="10" interval="100"/>
+      <Command code="0A06" divider="10" interval="100"/>
+      <Command code="0AE4" divider="10" interval="10"/>
+      <Command code="0B0E" divider="1" interval="100"/>
+      <Command code="0AF4" divider="10" interval="10"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
-    <limits>
-    <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max. duration</limit>
-      <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
-      <limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</limit> -->
-    </limits>
+    <Limits>
+    <!--   <Limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max. duration</Limit>
+      <Limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</Limit>
+      <Limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</Limit> -->
+    </Limits>
     <!--  калибровка -->
-    <calibrationKoefs>
-      <calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</calibrate>
-    </calibrationKoefs>
+    <CalibrationKoefs>
+      <Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
+    </CalibrationKoefs>
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
     (deg) - в проге заменяется на символ градуса
@@ -598,91 +598,91 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     real - измеренный параметр
     Параметры с value "участвуют" в hide controls.
      -->
-    <paramControls>
-      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
-      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
-      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</param>
-      <param unit=" " real="0701" divider="1">Serial Number</param>
-      <param unit="V" real="0407" divider="10">Voltage</param>
-	  <param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</param>
-	  <param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</param>
-    </paramControls>
+    <ParamControls>
+      <Param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</Param>
+      <Param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</Param>
+      <Param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</Param>
+      <Param unit=" " real="0701" divider="1">Serial Number</Param>
+      <Param unit="V" real="0407" divider="10">Voltage</Param>
+	  <Param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</Param>
+	  <Param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</Param>
+    </ParamControls>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <specialParams>
-      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
-      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
-      <specParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</specParam>
-      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</specParam>
-    </specialParams>
+    <BinaryOptions>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</CheckBox>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
-    <buttons>
-      <button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
-    </buttons>
-    <leds>
-      <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
-      </led>
-      <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
-      </led>
-	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
-      </led>
-    </leds>
+    <Buttons>
+      <Button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
+    </Buttons>
+    <Leds>
+      <Led label="Laser">
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </Led>
+      <Led label="IntLock">
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
+      </Led>
+	  <Led label="Error">
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+      </Led>
+    </Leds>
   </Device>
 
 
-  <Device id="17" name="SF6090" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6090.jpg</image>
-      <description>Input Voltage Range (Vin): 10-14 Volts
+  <Device id="17" name="SF6090" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6090.jpg</Image>
+      <Description>Input Voltage Range (Vin): 10-14 Volts
 Output Current Range (I): 0-100 Аmps
 Output Voltage (0.75*Vin max) (V): 1-10 Volts
 Minimum Current Set-Point Step Size: 0.03 Amps
 Rise Time: less then 1,200μs
 Fall Time: less then 1,800μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-100a-10v-sf6090</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-100a-10v-sf6090</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="100"/>
-      <command code="0301" divider="100" interval="100"/>
-      <command code="0302" divider="100" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="030E" divider="100" interval="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0702" interval="100"/>
-      <command code="0800"/>
-      <command code="0A05" divider="10" interval="100"/>
-      <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10"/>
-      <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="100"/>
+      <Command code="0301" divider="100" interval="100"/>
+      <Command code="0302" divider="100" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="030E" divider="100" interval="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0702" interval="100"/>
+      <Command code="0800"/>
+      <Command code="0A05" divider="10" interval="100"/>
+      <Command code="0A06" divider="10" interval="100"/>
+      <Command code="0AE4" divider="10" interval="10"/>
+      <Command code="0B0E" divider="1" interval="100"/>
+      <Command code="0AF4" divider="10" interval="10"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
-    <limits>
-    <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max duration</limit>
-      <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
-      <limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</limit> -->
-    </limits>
+    <Limits>
+    <!--   <Limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max duration</Limit>
+      <Limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</Limit>
+      <Limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</Limit> -->
+    </Limits>
     <!--  калибровка -->
-    <calibrationKoefs>
-      <calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</calibrate>
-    </calibrationKoefs>
+    <CalibrationKoefs>
+      <Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
+    </CalibrationKoefs>
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
     (deg) - в проге заменяется на символ градуса
@@ -691,89 +691,89 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     real - измеренный параметр
     Параметры с value "участвуют" в hide controls.
      -->
-    <paramControls>
-      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
-      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
-      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</param>
-      <param unit=" " real="0701" divider="1">Serial Number</param>
-      <param unit="V" real="0407" divider="10">Voltage</param>
-      <param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</param>
-    </paramControls>
+    <ParamControls>
+      <Param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</Param>
+      <Param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</Param>
+      <Param unit="A" min="0301" max="0302" value="0300" real="0307" divider="100">Current</Param>
+      <Param unit=" " real="0701" divider="1">Serial Number</Param>
+      <Param unit="V" real="0407" divider="10">Voltage</Param>
+      <Param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</Param>
+    </ParamControls>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <specialParams>
-      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
-      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
-      <specParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</specParam>
-      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</specParam>
-    </specialParams>
+    <BinaryOptions>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</CheckBox>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
-    <buttons>
-      <button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
-    </buttons>
-    <leds>
-      <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
-      </led>
-      <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
-      </led>
-	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
-      </led>
-    </leds>
+    <Buttons>
+      <Button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
+    </Buttons>
+    <Leds>
+      <Led label="Laser">
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </Led>
+      <Led label="IntLock">
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
+      </Led>
+	  <Led label="Error">
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+      </Led>
+    </Leds>
   </Device>
 
-  <Device id="18" name="SF6250" stopCommandDelayMs="300" minStopCommandDelayMs="0" maxStopCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
-    <content>
-      <image>SF6090.jpg</image>
-      <description>Input Voltage Range (Vin): 10-14 Volts
+  <Device id="18" name="SF6250" stopCommandDelayMs="300" minCommandDelayMs="0" maxCommandDelayMs="1000">  <!-- ID - hex число, stopCommandDelay - десятичное -->  <!-- Описание устройства -->
+    <Content>
+      <Image>SF6090.jpg</Image>
+      <Description>Input Voltage Range (Vin): 10-14 Volts
 Output Current Range (I): 0-250 Аmps
 Output Voltage (0.75*Vin max) (V): 1-10 Volts
 Minimum Current Set-Point Step Size: 0.1 Amps
 Rise Time: less then 1,200μs
 Fall Time: less then 1,800μs
 Current Stability: less then 0.2%
-Current Setpoint Absolute Accuracy: less then 1%</description>
-      <link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-100a-10v-sf6090</link>
-    </content>
+Current Setpoint Absolute Accuracy: less then 1%</Description>
+      <Link>https://www.maimanelectronics.com/product-page/laser-diode-driver-cw-100a-10v-sf6090</Link>
+    </Content>
     <!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
-    <commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
-      <command code="0100" divider="10"/>
-      <command code="0101" divider="10" interval="100"/>
-      <command code="0102" divider="10" interval="100"/>
-      <command code="0200" divider="10"/>
-      <command code="0201" divider="10"/>
-      <command code="0202" divider="10"/>
-      <command code="0300" divider="10"/>
-      <command code="0301" divider="10" interval="100"/>
-      <command code="0302" divider="10" interval="100"/>
-      <command code="0307" divider="10"/>
-      <command code="030E" divider="100" interval="10"/>
-      <command code="0407" divider="10"/>
-      <command code="0700"/>
-      <command code="0701" interval="100"/>
-      <command code="0702" interval="100"/>
-      <command code="0800"/>
-      <command code="0A05" divider="10" interval="100"/>
-      <command code="0A06" divider="10" interval="100"/>
-      <command code="0AE4" divider="10" interval="10"/>
-      <command code="0B0E" divider="1" interval="100"/>
-      <command code="0AF4" divider="10" interval="10"/>
-    </commands>
+    <Commands>    <!-- Числа все Hex, кроме делителя - он десятичный. -->
+      <Command code="0100" divider="10"/>
+      <Command code="0101" divider="10" interval="100"/>
+      <Command code="0102" divider="10" interval="100"/>
+      <Command code="0200" divider="10"/>
+      <Command code="0201" divider="10"/>
+      <Command code="0202" divider="10"/>
+      <Command code="0300" divider="10"/>
+      <Command code="0301" divider="10" interval="100"/>
+      <Command code="0302" divider="10" interval="100"/>
+      <Command code="0307" divider="10"/>
+      <Command code="030E" divider="100" interval="10"/>
+      <Command code="0407" divider="10"/>
+      <Command code="0700"/>
+      <Command code="0701" interval="100"/>
+      <Command code="0702" interval="100"/>
+      <Command code="0800"/>
+      <Command code="0A05" divider="10" interval="100"/>
+      <Command code="0A06" divider="10" interval="100"/>
+      <Command code="0AE4" divider="10" interval="10"/>
+      <Command code="0B0E" divider="1" interval="100"/>
+      <Command code="0AF4" divider="10" interval="10"/>
+    </Commands>
     <!-- доступные для регулирования пределы -->
-    <limits>
-    <!--   <limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max duration</limit>
-      <limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</limit>
-      <limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</limit> -->
-    </limits>
+    <Limits>
+    <!--   <Limit upperCode="0205" minCode="0201" maxCode="0203" divider="10" unit="мс" show="max">Max duration</Limit>
+      <Limit upperCode="0306" maxCode="0302" min="0.3" divider="100" unit="А" show="max">Max current</Limit>
+      <Limit upperCode="0406" maxCode="0402" minCode="0401" bottomCode="0405" divider="10" unit="V" show="both">Voltage</Limit> -->
+    </Limits>
     <!--  калибровка -->
-    <calibrationKoefs>
-      <calibrate code="030E" min="9500" max="10500" divider="100">Current calibration</calibrate>
-    </calibrationKoefs>
+    <CalibrationKoefs>
+      <Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
+    </CalibrationKoefs>
     <!-- список выводимых параметров.
     регистр необходимо соблюдать
     (deg) - в проге заменяется на символ градуса
@@ -782,40 +782,40 @@ Current Setpoint Absolute Accuracy: less then 1%</description>
     real - измеренный параметр
     Параметры с value "участвуют" в hide controls.
      -->
-    <paramControls>
-      <param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</param>
-      <param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</param>
-      <param unit="A" min="0301" max="0302" value="0300" real="0307" divider="10">Current</param>
-      <param unit=" " real="0701" divider="1">Serial Number</param>
-      <param unit="V" real="0407" divider="10">Voltage</param>
-	  <param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</param>
-      <param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</param>
-    </paramControls>
+    <ParamControls>
+      <Param unit="Hz" min="0101" max="0102" value="0100" divider="10">Frequency</Param>
+      <Param unit="ms" min="0201" max="0202" value="0200" divider="10">Duration</Param>
+      <Param unit="A" min="0301" max="0302" value="0300" real="0307" divider="10">Current</Param>
+      <Param unit=" " real="0701" divider="1">Serial Number</Param>
+      <Param unit="V" real="0407" divider="10">Voltage</Param>
+	  <Param unit="(deg)" isTemperature="1" real="0AF4" divider="10">Driver Temperature</Param>
+      <Param unit="(deg)" isTemperature="1" real="0AE4" divider="10">NTC Temperature</Param>
+    </ParamControls>
     <!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
     хотя можно попробовтаь комбинировать, но насколько синхронно это будет работать есть сомнения -->
-    <specialParams>
-      <specParam code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</specParam>
-      <specParam code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</specParam>
-      <specParam code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</specParam>
-      <specParam code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</specParam>
-    </specialParams>
+    <BinaryOptions>
+      <CheckBox code="0700" onCommand="0020" offCommand="0040" mask="0004" id="1">Internal Current Set</CheckBox>
+      <CheckBox code="0700" onCommand="0400" offCommand="0200" mask="0010" id="2">Internal Enable</CheckBox>
+      <CheckBox code="0700" onCommand="4000" offCommand="8000" mask="0040" id="3">Ignore LD Overheat Block</CheckBox>
+      <CheckBox code="0700" onCommand="2000" offCommand="1000" mask="0080" id="4">Ignore IntLock</CheckBox>
+    </BinaryOptions>
     <!-- кнопочки доступные в программе. Аналогично чекбоксам, только тут чисто по протоколу -->
-    <buttons>
-      <button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
-    </buttons>
-    <leds>
-      <led label="Laser">
-        <ledMask command="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
-      </led>
-      <led label="IntLock">
-        <ledMask command="0800" mask="0002" maskColor="#ffff00">Interlock</ledMask>
-        <ledMask command="0800" mask="0020" maskColor="#ff0000">LD Overheat</ledMask>
-      </led>
-	  <led label="Error">
-        <ledMask command="0800" mask="0010" maskColor="#ffff00">Overheat warning</ledMask>
-        <ledMask command="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</ledMask>
-      </led>
-    </leds>
+    <Buttons>
+      <Button name="laser" mask="02" code="0700" onCommand="0008" offCommand="0010"/>
+    </Buttons>
+    <Leds>
+      <Led label="Laser">
+        <LedMask code="0700" mask="0002" maskColor="#00ff00" defaultColor="#171717"/>
+      </Led>
+      <Led label="IntLock">
+        <LedMask code="0800" mask="0002" maskColor="#ffff00">Interlock</LedMask>
+        <LedMask code="0800" mask="0020" maskColor="#ff0000">LD Overheat</LedMask>
+      </Led>
+	  <Led label="Error">
+        <LedMask code="0800" mask="0010" maskColor="#ffff00">Overheat warning</LedMask>
+        <LedMask code="0800" mask="0008" maskColor="#ff0000">Over current or Overheat</LedMask>
+      </Led>
+    </Leds>
   </Device>
 </Config>

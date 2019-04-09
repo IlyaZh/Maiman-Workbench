@@ -27,7 +27,9 @@ void AboutDeviceDialog::setInfo(const device_t& device) {
     ui->nameLabel->setText(device.devName);
 
     ui->descriptionLabel->setText(device.description);
-    QString link = QString("<a href=\"%1\" style=\"color: #fff;\">Product page</a>").arg(device.link);
+    QString link = QString("");
+    if(!device.link.isEmpty())
+        link = QString("<a href=\"%1\" style=\"color: #fff;\">Product page</a>").arg(device.link);
     ui->linkLabel->setText(link);
 
     if(device.hasLaser) {
@@ -44,7 +46,7 @@ void AboutDeviceDialog::setInfo(const device_t& device) {
 
     ui->comPortDelaySpinBox->setMinimum(device.minCommDelay);
     ui->comPortDelaySpinBox->setMaximum(device.maxCommDelay);
-    ui->comPortDelaySpinBox->setValue(settings.getComCommandsDelay());
+    ui->comPortDelaySpinBox->setValue(qBound(device.minCommDelay, settings.getComCommandsDelay(), device.maxCommDelay));
     QString limitsStr = QString("From %1 to %2 ms").arg(QString::number(device.minCommDelay)).arg(QString::number(device.maxCommDelay));
     ui->comPortDelayLimitsLabel->setText(limitsStr);
 

@@ -14,7 +14,7 @@ const QList<QVariant> AppSettings::getRecentOpenFiles() { return settings->value
 QString AppSettings::getLastSaveDirectory() { return settings->value("lastUsedDirectory", QDir::homePath()).toString(); }
 quint32 AppSettings::getLastSelectedDeviceId() { return settings->value("userSettings/lastSelectedDeviceId", DEFAULT_DEV_ID).toUInt(); }
 bool AppSettings::getHideControlsFlag() { return settings->value("userSettings/HideControlsFlag", false).toBool(); }
-int AppSettings::getComCommandsDelay() { return settings->value("userSettings/comPort/commandsDelay", COM_COMMAND_SEND_DELAY).toInt(); }
+uint AppSettings::getComCommandsDelay() { return settings->value("userSettings/comPort/commandsDelay", COM_COMMAND_SEND_DELAY).toUInt(); }
 QPoint AppSettings::getWindowPosition() { return settings->value("window/position", WINDOW_DEFAULT_POSITION).toPoint(); }
 int AppSettings::getComStopBits() { return settings->value("userSettings/comPort/stopBits", 1).toInt(); }
 
@@ -26,7 +26,7 @@ void AppSettings::setComPort(QString port) { settings->setValue("userSettings/co
 
 void AppSettings::setComAutoconnectFlag(bool flag) { settings->setValue("userSettings/comPort/autoConnect", flag); }
 
-void AppSettings::setComCommandsDelay(int delayMs) { settings->setValue("userSettings/comPort/commandsDelay", delayMs); }
+void AppSettings::setComCommandsDelay(uint delayMs) { settings->setValue("userSettings/comPort/commandsDelay", delayMs); }
 
 void AppSettings::setTemperatureSymbol(QString tempSymbol) { settings->setValue("userSettings/temperatureSymbol", tempSymbol); }
 

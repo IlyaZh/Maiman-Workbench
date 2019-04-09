@@ -613,14 +613,14 @@ void MainWindow::setupParameterHandlers() {
         // Вынеси в commondefines список параметров
         // Формирование и вывод на экран панели режимов
         QSignalMapper* cbSignalMapper = new QSignalMapper(this);
-        if(!devConfig.binaryOptions.empty()) {
+        if(!devConfig.binOptions.empty()) {
             QVBoxLayout *vlayout = new QVBoxLayout();
-            for(int i = 0; i < devConfig.binaryOptions.count(); i++) {
-                QCheckBox *tmpCheckBox = devConfig.binaryOptions.at(i).cbPtr;
-                tmpCheckBox->setStyleSheet("QCheckBox {font-family: \"Share Tech Mono\"; border: none; color: #fff;} ");
-                vlayout->addWidget(tmpCheckBox);
-                connect(tmpCheckBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
-                cbSignalMapper->setMapping(tmpCheckBox, devConfig.binaryOptions.at(i).label);
+            foreach(binOption_t binOption, devConfig.binOptions) {
+                QCheckBox* checkBox = binOption.checkBox;
+                checkBox->setStyleSheet("QCheckBox {font-family: \"Share Tech Mono\"; border: none; color: #fff;} ");
+                vlayout->addWidget(checkBox);
+                connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
+                cbSignalMapper->setMapping(checkBox, binOption.label);
             }
             connect(cbSignalMapper, SIGNAL(mapped(QString)), this, SLOT(spcialParameterSlot(QString)));
             ui->specialParamBox->setLayout(vlayout);
@@ -656,8 +656,8 @@ void MainWindow::clearAllRegulators() {
     }
 
 
-    foreach(specParams_t item, devConfig.binaryOptions) {
-         delete item.cbPtr;
+    foreach(binOption_t item, devConfig.binOptions) {
+         delete item.checkBox;
     }
 
 
@@ -671,7 +671,7 @@ void MainWindow::clearAllRegulators() {
     devConfig.image = "";
     devConfig.link = "";
     devConfig.paramWidgets.clear();
-    devConfig.binaryOptions.clear();
+    devConfig.binOptions.clear();
     devConfig.stateButtons.clear();
     devConfig.leds.clear();
 
@@ -690,8 +690,8 @@ void MainWindow::setRegulatorsEnable(bool state) {
         item->setEnableState(state);
     }
 
-    for(qint8 i = 0; i < devConfig.binaryOptions.count(); i++) {
-        devConfig.binaryOptions.at(i).cbPtr->setEnabled(state);
+    for(qint8 i = 0; i < devConfig.binOptions.count(); i++) {
+        devConfig.binOptions.at(i).checkBox->setEnabled(state);
     }
 
     comSetDataTransfer(state);
@@ -841,14 +841,14 @@ void MainWindow::readComData_Slot(QByteArray str) {
                 setLedState(commandStr, value);
 
                 // Обработка галочек
-                foreach(specParams_t binaryOption, devConfig.binaryOptions) {
+                foreach(binOption_t binaryOption, devConfig.binOptions) {
                     if(binaryOption.mask == 0) continue;
 
                     if(commandStr == binaryOption.code) {
                         if(value & binaryOption.mask) {
-                            binaryOption.cbPtr->setChecked(true);
+                            binaryOption.checkBox->setChecked(true);
                         } else {
-                            binaryOption.cbPtr->setChecked(false);
+                            binaryOption.checkBox->setChecked(false);
                         }
                     }
                 }
@@ -1056,9 +1056,9 @@ void MainWindow::triggComAutoConnectSlot(bool state) {
 void MainWindow::triggTemperatureSymbolSlot(QString str) {
     settings.setTemperatureSymbol(str);
 
-    for(QList<ParameterController*>::const_iterator i = devConfig.paramWidgets.constBegin(); i != devConfig.paramWidgets.constEnd(); i++) {
-        if((*i)->isTemperature()) {
-            (*i)->temperatureIsChanged(str);
+    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
+        if(parameterController->isTemperature()) {
+            parameterController->temperatureIsChanged(str);
         }
     }
 
@@ -1322,15 +1322,15 @@ void MainWindow::updateWindow() {
 void MainWindow::spcialParameterSlot(QString paramLabel) {
     int i = 0;
     QString tmpQuery = QString(COM_WRITE_PREFIX);
-    specParams_t obj;
+    binOption_t obj;
 
-    for(i = 0; i < devConfig.binaryOptions.count(); i++)
-        if(paramLabel.compare(devConfig.binaryOptions.at(i).label, Qt::CaseInsensitive) == 0) break;
+    for(i = 0; i < devConfig.binOptions.count(); i++)
+        if(paramLabel.compare(devConfig.binOptions.at(i).label, Qt::CaseInsensitive) == 0) break;
 
-    obj = devConfig.binaryOptions.at(i);
+    obj = devConfig.binOptions.at(i);
     tmpQuery += obj.code + QString(" ");
 
-    if(obj.cbPtr->isChecked()) {
+    if(obj.checkBox->isChecked()) {
         tmpQuery += obj.onCommand;
     } else {
         tmpQuery += obj.offCommand;
