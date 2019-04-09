@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.1] - 2019-04-xx
 ### Changed
-- Change some syntax for limits into xml config.
+- Change some syntax for limits into xml config. Read more in the manual []
 - Add SignedCommand subclass for Command. It uses for display signed values.
 - When user stop the device, the software use an extra delay. It didn't occure when user stop the TEC. This problem was fixed. TEC stopping is also going with extra delay.
 ### Fixed
