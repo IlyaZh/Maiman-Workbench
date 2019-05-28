@@ -9,6 +9,7 @@
 #include "parametercontroller.h"
 #include "command.h"
 #include "devicelimit.h"
+#include <QtMath>
 
 typedef struct {
     QString code;

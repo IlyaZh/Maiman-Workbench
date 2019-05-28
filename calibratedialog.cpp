@@ -26,7 +26,7 @@ void CalibrateDialog::setStruct(const calibration_t &calibrationData) {
     ui->valueSlider->setMinimum(calibrationData.min);
     ui->valueSlider->setMaximum(calibrationData.max);
     ui->valueDoubleSpinBox->setSingleStep(1.0/calibrationData.divider);
-    ui->valueDoubleSpinBox->setDecimals(qRound(log10(calibrationData.divider)));
+    ui->valueDoubleSpinBox->setDecimals(qRound(0.43429*qLn(calibrationData.divider)));
     ui->valueDoubleSpinBox->setMinimum(static_cast<double>(calibrationData.min)/calibrationData.divider);
     ui->valueDoubleSpinBox->setMaximum(static_cast<double>(calibrationData.max)/calibrationData.divider);
 }

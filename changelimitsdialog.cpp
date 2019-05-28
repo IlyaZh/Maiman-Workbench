@@ -1,5 +1,6 @@
 #include "changelimitsdialog.h"
 #include "ui_changelimitsdialog.h"
+#include "math.h"
 
 ChangeLimitsDialog::ChangeLimitsDialog(QWidget *parent) :
     QDialog(parent),

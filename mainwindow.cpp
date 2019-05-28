@@ -1229,7 +1229,7 @@ void MainWindow::comSetDataTransfer(bool state) {
 }
 
 void MainWindow::showConsoleSlot(bool state) {
-    ui->hideConsoleButton->setChecked(~state);
+    ui->hideConsoleButton->setChecked(!state);
     ui->consoleGroupBox->setVisible(state);
 
     updateWindow();

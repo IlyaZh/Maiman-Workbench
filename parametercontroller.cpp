@@ -1,4 +1,5 @@
 #include "parametercontroller.h"
+#include "math.h"
 
 ParameterController::ParameterController(QString titleStr, QString unitStr, QString minComm, QString maxComm, QString valueComm, QString realComm, double divider, double realDivider, bool isTemperature, QWidget *parent) : QWidget(parent)
 {
