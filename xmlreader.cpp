@@ -246,8 +246,8 @@ void xmlReader::parseLedMask(leds_t* ledPtr) {
     ledMask.activeColor = LEDS_DEFAULT_ACTIVE_COLOR;
     ledMask.defaultColor = LEDS_DEFAULT_COLOR;
     QXmlStreamAttributes attrib = xml.attributes();
-    if(attrib.hasAttribute("command")) {
-        ledMask.command = attrib.value("command").toString();
+    if(attrib.hasAttribute("code")) {
+        ledMask.command = attrib.value("code").toString();
     }
     if(attrib.hasAttribute("mask")) {
         ledMask.mask = attrib.value("mask").toUInt(nullptr, 16);
