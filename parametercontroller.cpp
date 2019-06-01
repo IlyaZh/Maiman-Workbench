@@ -18,6 +18,8 @@ ParameterController::ParameterController(QString titleStr, QString unitStr, QStr
     setTitle(titleStr);
     setUnit(unitStr);
 
+    if(realComm.isEmpty()) hideRealValue(true);
+
     setEditLineDefaultState();
     QMetaObject::connectSlotsByName(this);
 
@@ -259,7 +261,7 @@ bool ParameterController::getEnableState() {
 void ParameterController::setRealValue(double value) {
     realValue = value;
 
-    ui_measuredValueBar->setValue(qBound(qRound(min*divider), qRound(realValue*realDivider), qRound(max*divider)));
+    ui_measuredValueBar->setValue(static_cast<int>(qRound(qBound(min, realValue, max)*divider)));
     ui_measuredValueBar->setStyleSheet(" QProgressBar { \
                                      border: 1px solid rgb(25,25,25); \
                                      background: rgb(25,25,25); \
