@@ -275,7 +275,7 @@ void xmlReader::parseParam() {
     minCode = maxCode = valueCode = realCode = "";
 
     if(attrib.hasAttribute("isTemperature")) {
-        isTemperatureFlag = (attrib.value("isTemperature").toUInt() == 1) ? true : false;
+        isTemperatureFlag = (attrib.value("isTemperature").toUInt() == 0) ? false : true;
     }
 
     if(attrib.hasAttribute("unit")) {
