@@ -192,6 +192,7 @@ void xmlReader::parseCommands() {
         QXmlStreamAttributes attrib = xml.attributes();
 
         QString code = (attrib.hasAttribute("code")) ? attrib.value("code").toString() : "";
+        if(code.isEmpty()) continue;
 
         double divider = (attrib.hasAttribute("divider")) ? attrib.value("divider").toDouble() : 1;
 
