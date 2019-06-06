@@ -35,6 +35,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 
 void MainWindow::setConnections() {
+    return;
     // Нажатие кнопки соединения\отключения COM-порта
     connect(ui->comPortConnectButton, SIGNAL(released()), this, SLOT(comPortConnectButton_slot()));
     // Отправка сообщений введённых в консоли по нажатию Enter
@@ -191,7 +192,7 @@ void MainWindow::setupWindow() {
 
     comPortIntervalCounter = 1;
 
-    if(!debugMode) showConsoleSlot(false);
+    if(debugMode == false) showConsoleSlot(false);
 }
 
 void MainWindow::setupMenuPort() {
@@ -636,7 +637,7 @@ void MainWindow::setupParameterHandlers() {
     ui->laserButton->setVisible(devConfig.hasLaser);
     ui->tecButton->setVisible(devConfig.hasTEC);
 
-//    updateWindow();
+    updateWindow();
 }
 
 void MainWindow::clearAllRegulators() {
@@ -1315,7 +1316,8 @@ void MainWindow::updateWindow() {
     ui->centralWidget->adjustSize();
     ui->actualParameters->layout()->update();
     this->adjustSize();
-    this->setMaximumSize(this->size());
+//    qDebug() << this->size();
+//    this->setMinimumSize(this->size());
 }
 
 
