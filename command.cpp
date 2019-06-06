@@ -17,7 +17,7 @@ double Command::getConvertedValue() {
 }
 
 quint16 Command::getRawValue() {
-    return rawValue;
+    return rawValue.toUInt();
 }
 
 double Command::getDivider() {
@@ -30,9 +30,9 @@ bool Command::isSignedValue() {
 
 // SLOTS are declared below
 
-void Command::setRawValue(quint16 value) {
-    rawValue = value;
-    this->value = static_cast<double>(rawValue) / Divider;
+void Command::setRawValue(quint16 _value) {
+    rawValue.setValue(_value);
+    this->value = rawValue.toDouble() / Divider;
 }
 
 quint8 Command::getInterval() {

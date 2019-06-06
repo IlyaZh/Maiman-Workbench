@@ -25,7 +25,7 @@ protected:
     QString Code;
     double Divider;
     bool isTemperature;
-    quint16 rawValue;
+    QVariant rawValue;
     double value;
     quint8 interval;
 };
