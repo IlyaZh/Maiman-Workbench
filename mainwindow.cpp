@@ -35,7 +35,6 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 
 void MainWindow::setConnections() {
-    return;
     // Нажатие кнопки соединения\отключения COM-порта
     connect(ui->comPortConnectButton, SIGNAL(released()), this, SLOT(comPortConnectButton_slot()));
     // Отправка сообщений введённых в консоли по нажатию Enter
@@ -1311,10 +1310,11 @@ void MainWindow::toogleCompactModeSlot(bool state) {
 }
 
 void MainWindow::updateWindow() {
+    return;
     ui->parametersGroupBox->adjustSize();
-    ui->parametersGroupBox->layout()->update();
+//    ui->parametersGroupBox->layout()->update();
     ui->centralWidget->adjustSize();
-    ui->actualParameters->layout()->update();
+//    ui->actualParameters->layout()->update();
     this->adjustSize();
 //    qDebug() << this->size();
 //    this->setMinimumSize(this->size());
