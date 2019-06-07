@@ -15,6 +15,7 @@ double SignedCommand::getConvertedValue() {
 
 void SignedCommand::setRawValue(quint16 value) {
     rawValue.setValue(value);
-//    this->value = -(~(static_cast<int>(rawValue)-1)) / Divider;
-    this->value = rawValue.toDouble() / Divider;
+//    this->value = -(~(static_cast<int>(rawValue.toInt()-1))) / Divider;
+    this->value = static_cast<double>(value) / Divider;
+//    this->value = rawValue.toDouble() / Divider;
 }

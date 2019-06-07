@@ -33,6 +33,10 @@ void xmlReader::setConfigFile(QString file) {
 bool xmlReader::readFile() {
     file = new QFile();
     file->setFileName(filePath);
+    if(!file->exists()) {
+        emit errorHandler("CONFIG: " + file->errorString());
+        return false;
+    }
     if(!file->open(QIODevice::ReadOnly)) {
         emit errorHandler("CONFIG: " + file->errorString());
         return false;
