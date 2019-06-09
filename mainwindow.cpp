@@ -955,7 +955,7 @@ void MainWindow::selectedDeviceSlot(QString userSelectedDevice) {
             devID = devStruct.id;
             settings.setLastSelectedDeviceId(devID);
             loadDeviceConfig(devID);
-
+            serialPort->clearQueue();
             break;
         }
     }
