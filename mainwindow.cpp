@@ -1310,14 +1310,9 @@ void MainWindow::toogleCompactModeSlot(bool state) {
 }
 
 void MainWindow::updateWindow() {
-    return;
     ui->parametersGroupBox->adjustSize();
-//    ui->parametersGroupBox->layout()->update();
     ui->centralWidget->adjustSize();
-//    ui->actualParameters->layout()->update();
     this->adjustSize();
-//    qDebug() << this->size();
-//    this->setMinimumSize(this->size());
 }
 
 

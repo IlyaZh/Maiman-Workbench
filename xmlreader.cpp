@@ -203,7 +203,7 @@ void xmlReader::parseCommands() {
         quint8 interval = (attrib.hasAttribute("interval")) ? attrib.value("interval").toUInt() : 1;
         interval = qBound(MIN_COM_INTERVAL_COUNTER, interval, MAX_COM_INTERVAL_COUNTER);
 
-        bool isSigned = (attrib.hasAttribute("isSigned")) ? true : false;
+        bool isSigned = attrib.hasAttribute("isSigned");
 
         if(isSigned) {
             device->commands.insert(code, new SignedCommand(code, divider, interval));
