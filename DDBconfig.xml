@@ -407,7 +407,7 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 			<Command code="0800"/>
 			<Command code="0A05" divider="10" interval="100"/>
 			<Command code="0A06" divider="10" interval="100"/>
-			<Command code="0AE4" divider="10" interval="10"/>
+			<Command code="0AE4" divider="10" interval="10" isSigned=""/>
 			<Command code="0B0E" divider="1" interval="100"/>
 			<Command code="0AF4" divider="10" interval="10"/>
 		</Commands>
