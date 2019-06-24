@@ -636,6 +636,8 @@ void MainWindow::setupParameterHandlers() {
     ui->laserButton->setVisible(devConfig.hasLaser);
     ui->tecButton->setVisible(devConfig.hasTEC);
 
+    if(isDeviceLoaded && portIsOpen) prepareToSendNextCommand();
+
     updateWindow();
 }
 
@@ -995,7 +997,7 @@ void MainWindow::loadConfigFinished(bool isDeviceFound) {
         writeToConsole(tr("CONFIG: Config is loaded successful!"));
 
         setRegulatorsEnable(true);
-        prepareToSendNextCommand();
+//        prepareToSendNextCommand();
     } else {
         emit writeToConsoleError(tr("CONFIG: The device hasn't found!"));
     }
@@ -1195,10 +1197,11 @@ void MainWindow::sendNextComCommand() {
             requestAllCommands = false;
         }
 
-        if((*currCommandItt)->getInterval() == 0)
+        if((*currCommandItt)->getInterval() == 0) {
             needToSend = false;
-        else
+        } else {
             needToSend = ((comPortIntervalCounter % (*currCommandItt)->getInterval()) == 0);
+        }
 
         if(needToSend || requestAllCommands) {
             cycleOn = false;
