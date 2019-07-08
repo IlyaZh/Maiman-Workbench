@@ -14,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    settings.setLastSelectedDeviceId(0);
     delete ui;
 }
 
@@ -138,6 +137,7 @@ void MainWindow::setupWindow() {
     setWindowIcon(QIcon(":/images/logo-minimal.png"));
 
     loadWindowSettings();
+    settings.setLastSelectedDeviceId(0);
 
     // Временно скрываем меню help
     ui->actionHelp->setVisible(false);
