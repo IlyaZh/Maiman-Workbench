@@ -18,18 +18,24 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-//    if(maybeSave()) {
+    if(waitingForStop) {
+        waitingForStop = false;
+        event->accept();
+    } else {
         saveWindowSettings();
         // Остановка источника (реализуй)
-        if(portIsOpen && isDeviceLoaded) {
+        if(!serialPort->isOpen()) serialPort->setPortState(true);
+        if(serialPort->isOpen()) {
             sendDataToPort(DEVICE_STOP_COMMAND);
             serialPort->close();
-
+            waitingForStop = true;
+            event->ignore();
+        } else {
+            // Сообщение предупреждение!!
         }
-        event->accept();
-//    } else {
-//        event->ignore();
-//    }
+
+
+    }
 }
 
 
@@ -131,6 +137,8 @@ void MainWindow::setConnections() {
 }
 
 void MainWindow::setupWindow() {
+    waitingForStop = false;
+
     devID = 0;
     loadFont();
     setWindowTitle(appTitle);
@@ -1233,7 +1241,7 @@ void MainWindow::comSetDataTransfer(bool state) {
 }
 
 void MainWindow::showConsoleSlot(bool state) {
-    ui->hideConsoleButton->setChecked(!state);
+    ui->hideConsoleButton->setChecked(state);
     ui->consoleGroupBox->setVisible(state);
 
     updateWindow();

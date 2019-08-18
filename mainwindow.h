@@ -154,6 +154,7 @@ private:
     QFont systemFont;
     SelectDeviceDialog *selectDeviceDialog;
     quint16 devID;
+    bool waitingForStop;
 
 signals:
 //    void writeToLogSignal(QString);
