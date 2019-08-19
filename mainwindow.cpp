@@ -535,6 +535,7 @@ void MainWindow::saveSettingsSlot() {
 
 
         foreach(Command* commPtr, devConfig.commands) {
+            if(commPtr->getCode() == DEVICE_STATUS_COMMAND) continue;
             if(commPtr->getCode() == DURATION_COMMAND && !freqIsForward) {
                 durationIsForward = true;
                 continue;
@@ -554,6 +555,53 @@ void MainWindow::saveSettingsSlot() {
                 }
             }
         }
+
+        if(devConfig.commands.contains(DEVICE_STATUS_COMMAND)) {
+            // debug
+            Command* cmd = devConfig.commands.value(DEVICE_STATUS_COMMAND);
+
+            currentLine.clear();
+            if(cmd->getRawValue() & CURRENT_EXT_INT_MASK) {
+                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x0020, 4, 16, QChar('0'));
+            } else {
+                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x0040, 4, 16, QChar('0'));
+            }
+            dataOut << currentLine.toUpper() << endl;
+
+            currentLine.clear();
+            if(cmd->getRawValue() & START_EXT_INT_MASK) {
+                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x0200, 4, 16, QChar('0'));
+            } else {
+                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x0400, 4, 16, QChar('0'));
+            }
+            dataOut << currentLine.toUpper() << endl;
+
+            currentLine.clear();
+            if(cmd->getRawValue() & BLOCK_THERMO_MASK) {
+                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x2000, 4, 16, QChar('0'));
+            } else {
+                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x1000, 4, 16, QChar('0'));
+            }
+            dataOut << currentLine.toUpper() << endl;
+
+            currentLine.clear();
+            if(cmd->getRawValue() & BLOCK_USE_IGNORE_MASK) {
+                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x8000, 4, 16, QChar('0'));
+            } else {
+                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x4000, 4, 16, QChar('0'));
+            }
+            dataOut << currentLine.toUpper() << endl;
+
+            currentLine.clear();
+            if(cmd->getRawValue() & START_STOP_MASK) {
+                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x0008, 4, 16, QChar('0'));
+            } else {
+                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x0010, 4, 16, QChar('0'));
+            }
+            dataOut << currentLine.toUpper() << endl;
+        }
+
+
         file->close();
 
         autoSendNextCommand = tmpAutoSend;
