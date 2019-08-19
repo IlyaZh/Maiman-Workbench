@@ -18,23 +18,40 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    if(waitingForStop) {
-        waitingForStop = false;
+    if(waitingForStop == closeWindow_t::APPROVE_CLOSE) {
+        waitingForStop = closeWindow_t::NONE_CLOSE;
         event->accept();
     } else {
         saveWindowSettings();
-        // Остановка источника (реализуй)
-        if(!serialPort->isOpen()) serialPort->setPortState(true);
-        if(serialPort->isOpen()) {
-            sendDataToPort(DEVICE_STOP_COMMAND);
-            serialPort->close();
-            waitingForStop = true;
-            event->ignore();
+        if(devConfig.laserOn) {
+            // Остановка источника (реализуй)
+            if(!serialPort->isOpen()) serialPort->setPortState(true);
+            if(serialPort->isOpen()) {
+                sendDataToPort(DEVICE_STOP_COMMAND);
+                serialPort->close();
+                waitingForStop = closeWindow_t::CONDITION_CLOSE;
+                event->ignore();
+            } else {
+                // Сообщение предупреждение!!
+                QMessageBox alertBox;
+                alertBox.setText("LASER IS ON!");
+                alertBox.setIcon(QMessageBox::Warning);
+                alertBox.setInformativeText("LASER IS ON! Software tried to STOP it unsuccessfully! Do you want to exit software anymore?");
+                alertBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                alertBox.setDefaultButton(QMessageBox::No);
+                int ret = alertBox.exec();
+                switch (ret) {
+                    case QMessageBox::Yes:
+                    event->accept();
+                    break;
+                case QMessageBox::No:
+                    event->ignore();
+                    break;
+                }
+            }
         } else {
-            // Сообщение предупреждение!!
+            event->accept();
         }
-
-
     }
 }
 
@@ -137,7 +154,7 @@ void MainWindow::setConnections() {
 }
 
 void MainWindow::setupWindow() {
-    waitingForStop = false;
+    waitingForStop = closeWindow_t::NONE_CLOSE;
 
     devID = 0;
     loadFont();
@@ -513,10 +530,29 @@ void MainWindow::saveSettingsSlot() {
         QString currentLine = QString("DEVICE:%1").arg(devID, 4, 16, QChar('0'));
         dataOut << currentLine.toUpper() << endl;
 
+        bool freqIsForward = false;
+        bool durationIsForward = false;
+
+
         foreach(Command* commPtr, devConfig.commands) {
+            if(commPtr->getCode() == DURATION_COMMAND && !freqIsForward) {
+                durationIsForward = true;
+                continue;
+            }
+
+
             currentLine.clear();
             currentLine = QString("%1:%2").arg((*commPtr).getCode()).arg((*commPtr).getRawValue(), 4, 16, QChar('0'));
             dataOut << currentLine.toUpper() << endl;
+
+            if(commPtr->getCode() == FREQUENCY_COMMAND) {
+                freqIsForward = true;
+                if(durationIsForward) {
+                    currentLine.clear();
+                    currentLine = QString("%1:%2").arg(DURATION_COMMAND).arg(devConfig.commands.value(DURATION_COMMAND)->getRawValue(), 4, 16, QChar('0'));
+                    dataOut << currentLine.toUpper() << endl;
+                }
+            }
         }
         file->close();
 
@@ -867,8 +903,14 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     if(devConfig.hasLaser) {
                         if(currentCommand->getRawValue() & START_STOP_MASK) {
                             ui->laserButton->setChecked(true);
+                            devConfig.laserOn = true;
                         } else {
                             ui->laserButton->setChecked(false);
+                            devConfig.laserOn = false;
+                            if(waitingForStop == closeWindow_t::CONDITION_CLOSE) {
+                                waitingForStop = closeWindow_t::APPROVE_CLOSE;
+                                this->close();
+                            }
                         }
                     }
                 } else

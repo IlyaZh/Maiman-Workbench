@@ -75,6 +75,7 @@ typedef struct {
     QList<leds_t> leds;
     bool hasLaser;
     bool hasTEC;
+    bool laserOn;
     bool startTECwithLaser;
     uint stopCommandDelay;
     uint minCommDelay;

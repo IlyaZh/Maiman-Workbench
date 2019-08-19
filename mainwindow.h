@@ -52,6 +52,7 @@ public:
     void closeEvent(QCloseEvent *event);
 //    void resizeEvent(QResizeEvent *event);
     typedef enum {CLEAR_ALL_DATA, CLEAR_ONLY_WIDGETS} clearParamsOptions_t;
+    typedef enum {NONE_CLOSE, CONDITION_CLOSE, APPROVE_CLOSE} closeWindow_t;
 
 private slots:
     void comPortConnectButton_slot();
@@ -154,7 +155,7 @@ private:
     QFont systemFont;
     SelectDeviceDialog *selectDeviceDialog;
     quint16 devID;
-    bool waitingForStop;
+    closeWindow_t waitingForStop;
 
 signals:
 //    void writeToLogSignal(QString);

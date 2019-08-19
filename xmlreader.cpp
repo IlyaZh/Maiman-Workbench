@@ -11,6 +11,7 @@ void xmlReader::setDeviceOptions(device_t &device, quint16 dev_id) {
     this->device = &device;
     device.hasLaser = false;
     device.hasTEC = false;
+    device.laserOn = false;
     device.startTECwithLaser = false;
     deviceId = dev_id;
     device.stopCommandDelay = STOP_COMMAND_DELAY_DEFAULT;

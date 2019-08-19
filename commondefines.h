@@ -24,6 +24,8 @@ const QPoint WINDOW_DEFAULT_POSITION = QPoint(-1, -1);
 
 const QString DEVICE_STATUS_COMMAND = "0700";
 const QString TEC_STATUS_COMMAND = "0A1A";
+const QString FREQUENCY_COMMAND = "0100";
+const QString DURATION_COMMAND = "0200";
 
 const quint8 MAJOR_VERSION = 1;
 const quint8 MINOR_VERSION = 0;
