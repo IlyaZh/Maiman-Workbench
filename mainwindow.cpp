@@ -28,7 +28,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
             if(!serialPort->isOpen()) serialPort->setPortState(true);
             if(serialPort->isOpen()) {
                 sendDataToPort(DEVICE_STOP_COMMAND);
-                serialPort->close();
+//                serialPort->close();
                 waitingForStop = closeWindow_t::CONDITION_CLOSE;
                 event->ignore();
             } else {
@@ -548,6 +548,9 @@ void MainWindow::saveSettingsSlot() {
 
             if(commPtr->getCode() == FREQUENCY_COMMAND) {
                 freqIsForward = true;
+                currentLine.clear();
+                currentLine = QString("%1:%2").arg(FREQUENCY_COMMAND).arg(devConfig.commands.value(FREQUENCY_COMMAND)->getRawValue(), 4, 16, QChar('0'));
+                dataOut << currentLine.toUpper() << endl;
                 if(durationIsForward) {
                     currentLine.clear();
                     currentLine = QString("%1:%2").arg(DURATION_COMMAND).arg(devConfig.commands.value(DURATION_COMMAND)->getRawValue(), 4, 16, QChar('0'));
@@ -557,7 +560,6 @@ void MainWindow::saveSettingsSlot() {
         }
 
         if(devConfig.commands.contains(DEVICE_STATUS_COMMAND)) {
-            // debug
             Command* cmd = devConfig.commands.value(DEVICE_STATUS_COMMAND);
 
             currentLine.clear();
