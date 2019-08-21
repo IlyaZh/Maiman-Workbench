@@ -53,6 +53,7 @@ public:
 //    void resizeEvent(QResizeEvent *event);
     typedef enum {CLEAR_ALL_DATA, CLEAR_ONLY_WIDGETS} clearParamsOptions_t;
     typedef enum {NONE_CLOSE, CONDITION_CLOSE, APPROVE_CLOSE} closeWindow_t;
+    const QString saveParFilenamePrefix = "checkboxes_";
 
 private slots:
     void comPortConnectButton_slot();
@@ -108,6 +109,8 @@ private slots:
     void selectedDeviceSlot(QString);
     void setComOneStopBit();
     void setComTwoStopBits();
+    void saveCheckboxes();
+    void loadCheckboxes();
 
 private:
     Ui::MainWindow *ui;
@@ -122,6 +125,7 @@ private:
     void saveWindowSettings();
     void loadWindowSettings();
     bool maybeSave();
+    bool isCheckboxesFileExist();
 //    void setupIndicators();
 //    bool selectDevice();
     void updateWindow();
@@ -156,6 +160,8 @@ private:
     SelectDeviceDialog *selectDeviceDialog;
     quint16 devID;
     closeWindow_t waitingForStop;
+    QPushButton* saveBtn;
+    QPushButton* loadBtn;
 
 signals:
 //    void writeToLogSignal(QString);

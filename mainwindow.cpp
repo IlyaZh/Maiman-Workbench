@@ -216,6 +216,8 @@ void MainWindow::setupWindow() {
 
     comPortIntervalCounter = 1;
 
+    saveBtn = loadBtn = nullptr;
+
     if(debugMode == false) showConsoleSlot(false);
 }
 
@@ -470,8 +472,6 @@ void MainWindow::readSettingsFile(QString fileName) {
                 writeToConsole("Load config file \"" + fileName + "\" for devID: " + QString::number(devID));
             } else {
                 QString msgForSend = COM_WRITE_PREFIX + parse.at(0) + QString(" ") + parse.at(1);
-//                sendToPort(msgForSend);
-//                writeToConsole(msgForSend, CONSOLE_INFO_COLOR);
                 sendDataToPort(msgForSend);
             }
         }
@@ -548,9 +548,6 @@ void MainWindow::saveSettingsSlot() {
 
             if(commPtr->getCode() == FREQUENCY_COMMAND) {
                 freqIsForward = true;
-                currentLine.clear();
-                currentLine = QString("%1:%2").arg(FREQUENCY_COMMAND).arg(devConfig.commands.value(FREQUENCY_COMMAND)->getRawValue(), 4, 16, QChar('0'));
-                dataOut << currentLine.toUpper() << endl;
                 if(durationIsForward) {
                     currentLine.clear();
                     currentLine = QString("%1:%2").arg(DURATION_COMMAND).arg(devConfig.commands.value(DURATION_COMMAND)->getRawValue(), 4, 16, QChar('0'));
@@ -704,7 +701,6 @@ void MainWindow::setupParameterHandlers() {
         // Вывод значений в окне параметров
         ui->actualParameters->setLayout(actualParamsGLayout);
 
-        // Вынеси в commondefines список параметров
         // Формирование и вывод на экран панели режимов
         QSignalMapper* cbSignalMapper = new QSignalMapper(this);
         if(!devConfig.binOptions.empty()) {
@@ -716,6 +712,26 @@ void MainWindow::setupParameterHandlers() {
                 connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
                 cbSignalMapper->setMapping(checkBox, binOption.label);
             }
+            if(saveBtn != nullptr) {
+                saveBtn->disconnect();
+                delete saveBtn;
+            }
+            saveBtn = new QPushButton("Save", ui->specialParamBox);
+            saveBtn->setStyleSheet("QPushButton {\n	color: rgb(255, 255, 255);\n	background-color: rgb(51, 51, 51);\n	border: 1px solid #999999;\n	border-radius: 4px;\n	padding: 4px;\n}");
+            connect(saveBtn, SIGNAL(clicked()), this, SLOT(saveCheckboxes()));
+            vlayout->addWidget(saveBtn);
+
+            if(isCheckboxesFileExist()) {
+                if(loadBtn != nullptr) {
+                    loadBtn->disconnect();
+                    delete loadBtn;
+                }
+                loadBtn = new QPushButton("Load", ui->specialParamBox);
+                loadBtn->setStyleSheet("QPushButton {\n	color: rgb(255, 255, 255);\n	background-color: rgb(51, 51, 51);\n	border: 1px solid #999999;\n	border-radius: 4px;\n	padding: 4px;\n}");
+                connect(loadBtn, SIGNAL(clicked()), this, SLOT(loadCheckboxes()));
+                vlayout->addWidget(loadBtn);
+            }
+
             connect(cbSignalMapper, SIGNAL(mapped(QString)), this, SLOT(spcialParameterSlot(QString)));
             ui->specialParamBox->setLayout(vlayout);
         }
@@ -733,6 +749,77 @@ void MainWindow::setupParameterHandlers() {
     if(isDeviceLoaded && portIsOpen) prepareToSendNextCommand();
 
     updateWindow();
+}
+
+bool MainWindow::isCheckboxesFileExist() {
+    bool state = false;
+    QFile *file = new QFile(QString("%1%2%3").arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
+    if(file->exists()) {
+        state = true;
+    }
+    file->deleteLater();
+    return state;
+}
+
+void MainWindow::loadCheckboxes() {
+    if(devConfig.binOptions.isEmpty()) return;
+
+    QFile *file = new QFile(QString("%1%2%3").arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
+    if(file->open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(file);
+        while(!in.atEnd()) {
+            QStringList values = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseSensitive);
+            if(values.length() == 2) {
+                QString msgForSend = COM_WRITE_PREFIX + values.at(0) + QString(" ") + values.at(1);
+                sendDataToPort(msgForSend);
+            } else {
+                writeToConsoleError("Binary options config load error.");
+            }
+        }
+    }
+    if(file->error()) {
+        writeToConsoleError(file->errorString());
+    }
+    file->close();
+    file->deleteLater();
+}
+
+void MainWindow::saveCheckboxes() {
+    if(devConfig.binOptions.isEmpty()) return;
+
+    QFile *file = new QFile(QString("%1%2%3").arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
+    file->open(QIODevice::WriteOnly | QIODevice::Text);
+    if(file->error()) {
+        writeToConsoleError(file->errorString());
+    }
+
+    QTextStream dataOut(file);
+    QString currentLine;
+
+    foreach(binOption_t binOption, devConfig.binOptions) {
+        currentLine.clear();
+        QString value = "";
+        if(binOption.checkBox->isChecked()) {
+            value = binOption.onCommand;
+        } else {
+            value = binOption.offCommand;
+        }
+        currentLine = QString("%1:%2").arg(binOption.code).arg(value);
+        dataOut << currentLine.toUpper() << endl;
+    }
+
+
+
+    file->close();
+
+    if(loadBtn == nullptr) {
+        loadBtn = new QPushButton("Load", ui->specialParamBox);
+        loadBtn->setStyleSheet("QPushButton {\n	color: rgb(255, 255, 255);\n	background-color: rgb(51, 51, 51);\n	border: 1px solid #999999;\n	border-radius: 4px;\n	padding: 4px;\n}");
+        connect(loadBtn, SIGNAL(clicked()), this, SLOT(loadCheckboxes()));
+        ui->specialParamBox->layout()->addWidget(loadBtn);
+    }
+
+    file->deleteLater();
 }
 
 void MainWindow::clearAllRegulators() {
