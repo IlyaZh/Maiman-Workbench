@@ -102,11 +102,11 @@ void comPort::putIntoQueue(QString str) {
     // Удаляем дубликаты
 //    queue2send.removeAll(str);
     // Удаляем запросы той же команды, но с другим значением параметра.
-    for(int i =0; i < queue2send.size(); i++) {
-        if(queue2send.at(i).startsWith(str.left(5), Qt::CaseInsensitive)) {
-            queue2send.removeAt(i);
-        }
-    }
+//    for(int i =0; i < queue2send.size(); i++) {
+//        if(queue2send.at(i).startsWith(str.left(5), Qt::CaseInsensitive)) {
+//            queue2send.removeAt(i);
+//        }
+//    }
 
     // Команды установки параметров добавляем в начало очереди
     if(str.at(0) == COM_WRITE_PREFIX) {

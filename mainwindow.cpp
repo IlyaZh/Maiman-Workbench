@@ -557,47 +557,19 @@ void MainWindow::saveSettingsSlot() {
         }
 
         if(devConfig.commands.contains(DEVICE_STATUS_COMMAND)) {
-            Command* cmd = devConfig.commands.value(DEVICE_STATUS_COMMAND);
 
-            currentLine.clear();
-            if(cmd->getRawValue() & CURRENT_EXT_INT_MASK) {
-                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x0020, 4, 16, QChar('0'));
-            } else {
-                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x0040, 4, 16, QChar('0'));
+            foreach(binOption_t cb, devConfig.binOptions) {
+                currentLine.clear();
+                QString value = "";
+                if(cb.checkBox->isChecked()) {
+                    value = cb.onCommand;
+                } else {
+                    value = cb.offCommand;
+                }
+                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(value);
+                dataOut << currentLine.toUpper() << endl;
             }
-            dataOut << currentLine.toUpper() << endl;
 
-            currentLine.clear();
-            if(cmd->getRawValue() & START_EXT_INT_MASK) {
-                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x0200, 4, 16, QChar('0'));
-            } else {
-                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x0400, 4, 16, QChar('0'));
-            }
-            dataOut << currentLine.toUpper() << endl;
-
-            currentLine.clear();
-            if(cmd->getRawValue() & BLOCK_THERMO_MASK) {
-                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x2000, 4, 16, QChar('0'));
-            } else {
-                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x1000, 4, 16, QChar('0'));
-            }
-            dataOut << currentLine.toUpper() << endl;
-
-            currentLine.clear();
-            if(cmd->getRawValue() & BLOCK_USE_IGNORE_MASK) {
-                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x8000, 4, 16, QChar('0'));
-            } else {
-                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x4000, 4, 16, QChar('0'));
-            }
-            dataOut << currentLine.toUpper() << endl;
-
-            currentLine.clear();
-            if(cmd->getRawValue() & START_STOP_MASK) {
-                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x0008, 4, 16, QChar('0'));
-            } else {
-                currentLine = QString("%1:%2").arg(DEVICE_STATUS_COMMAND).arg(0x0010, 4, 16, QChar('0'));
-            }
-            dataOut << currentLine.toUpper() << endl;
         }
 
 
@@ -753,7 +725,11 @@ void MainWindow::setupParameterHandlers() {
 
 bool MainWindow::isCheckboxesFileExist() {
     bool state = false;
-    QFile *file = new QFile(QString("%1%2%3").arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
+    QDir *dir = new QDir(saveParDir);
+    if(!dir->exists()) {
+        state = false;
+    }
+    QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
     if(file->exists()) {
         state = true;
     }
@@ -764,7 +740,7 @@ bool MainWindow::isCheckboxesFileExist() {
 void MainWindow::loadCheckboxes() {
     if(devConfig.binOptions.isEmpty()) return;
 
-    QFile *file = new QFile(QString("%1%2%3").arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
+    QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
     if(file->open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(file);
         while(!in.atEnd()) {
@@ -787,7 +763,12 @@ void MainWindow::loadCheckboxes() {
 void MainWindow::saveCheckboxes() {
     if(devConfig.binOptions.isEmpty()) return;
 
-    QFile *file = new QFile(QString("%1%2%3").arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
+    QDir *dir = new QDir(saveParDir);
+    if(!dir->exists()) {
+        QDir().mkdir(saveParDir);
+    }
+
+    QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
     file->open(QIODevice::WriteOnly | QIODevice::Text);
     if(file->error()) {
         writeToConsoleError(file->errorString());

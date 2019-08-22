@@ -53,6 +53,7 @@ public:
 //    void resizeEvent(QResizeEvent *event);
     typedef enum {CLEAR_ALL_DATA, CLEAR_ONLY_WIDGETS} clearParamsOptions_t;
     typedef enum {NONE_CLOSE, CONDITION_CLOSE, APPROVE_CLOSE} closeWindow_t;
+    const QString saveParDir = "cfgs/";
     const QString saveParFilenamePrefix = "checkboxes_";
 
 private slots:
