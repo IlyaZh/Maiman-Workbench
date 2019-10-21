@@ -183,6 +183,7 @@ void MainWindow::setupWindow() {
     oldDevID = 0;
     autoSendNextCommand = true;
     requestAllCommands = true;
+    bWasConnectedOnce = false;
 
     loadCommonConfig(availableDevices);
 
@@ -219,6 +220,8 @@ void MainWindow::setupWindow() {
     saveBtn = loadBtn = nullptr;
 
     if(debugMode == false) showConsoleSlot(false);
+
+    devConfig.laserOn = false;
 }
 
 void MainWindow::setupMenuPort() {
@@ -867,6 +870,7 @@ void MainWindow::setRegulatorsEnable(bool state) {
 void MainWindow::getPortNewState(bool state) {
     if (state != portIsOpen) {
         if(state) { // Port is openned now
+            bWasConnectedOnce = true;
             this->writeToConsole(settings.getComPort() + tr(" is open!\n"), CONSOLE_INFO_COLOR);
             ui->comPortConnectButton->setText(settings.getComPort() + QString("   ") + QString::number(settings.getComBaudrate()) + "bps");
             startDeviceIdent();

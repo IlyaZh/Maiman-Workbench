@@ -163,6 +163,7 @@ private:
     closeWindow_t waitingForStop;
     QPushButton* saveBtn;
     QPushButton* loadBtn;
+    bool bWasConnectedOnce;
 
 signals:
 //    void writeToLogSignal(QString);
