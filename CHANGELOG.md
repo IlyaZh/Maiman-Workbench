@@ -6,7 +6,12 @@ All notable changes to this project will be documented in this file.
 - Optimization of the algorithm for receiving data. Fix bug with clearing the buffer the received data timeout
 - Fix bug with the lack of responses from the device when connecting.
 
-## [1.0.1] - 2019-04-xx
+## [1.0.2] - 2019-08-22
+### Added
+- Add abilitiy to save state of device by one click and then load it again. It makes due to device status not saved when the device restarted.
+- Safety fix. If the laser started and you exit the software it will try to stop laser.
+
+## [1.0.1] - 2019-04-20
 ### Changed
 - Change some syntax for limits into xml config.
 - Add SignedCommand subclass for Command. It uses for display signed values.
