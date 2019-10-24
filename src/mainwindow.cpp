@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -18,43 +17,13 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    if(waitingForStop == closeWindow_t::APPROVE_CLOSE) {
-        waitingForStop = closeWindow_t::NONE_CLOSE;
-        event->accept();
+    if(showWarningMessageAndStopLaser()) {
+        event->ignore();
+        // do stopping of laser
     } else {
-        saveWindowSettings();
-        if(devConfig.laserOn) {
-            // Остановка источника (реализуй)
-            if(!serialPort->isOpen()) serialPort->setPortState(true);
-            if(serialPort->isOpen()) {
-                sendDataToPort(DEVICE_STOP_COMMAND);
-//                serialPort->close();
-                waitingForStop = closeWindow_t::CONDITION_CLOSE;
-                event->ignore();
-            } else {
-                // Сообщение предупреждение!!
-                QMessageBox alertBox;
-                alertBox.setText("LASER IS ON!");
-                alertBox.setIcon(QMessageBox::Warning);
-                alertBox.setInformativeText("LASER IS ON! Software tried to STOP it unsuccessfully! Do you want to exit software anymore?");
-                alertBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                alertBox.setDefaultButton(QMessageBox::No);
-                int ret = alertBox.exec();
-                switch (ret) {
-                    case QMessageBox::Yes:
-                    event->accept();
-                    break;
-                case QMessageBox::No:
-                    event->ignore();
-                    break;
-                }
-            }
-        } else {
-            event->accept();
-        }
+        event->accept();
     }
 }
-
 
 void MainWindow::setConnections() {
     // Нажатие кнопки соединения\отключения COM-порта
@@ -154,7 +123,7 @@ void MainWindow::setConnections() {
 }
 
 void MainWindow::setupWindow() {
-    waitingForStop = closeWindow_t::NONE_CLOSE;
+//    waitingForStop = closeWindow_t::NONE_CLOSE;
 
     devID = 0;
     loadFont();
@@ -194,6 +163,7 @@ void MainWindow::setupWindow() {
     ui->actionAutoconnect->setChecked(settings.getComAutoconnectFlag());
     ui->actionSave_settings->setEnabled(false);
     ui->actionLoad_settings->setEnabled(false);
+    ui->actionKeep_checkboxes->setEnabled(false);
     ui->controlsVisibleButton->setChecked(false); //settings.getHideControlsFlag());
     ui->controlsVisibleButton->setText("Hide controls");
 
@@ -223,6 +193,36 @@ void MainWindow::setupWindow() {
 
     devConfig.laserOn = false;
 }
+
+bool MainWindow::showWarningMessageAndStopLaser() {
+    if(!devConfig.laserOn) {
+        return false;
+    }
+
+
+    QMessageBox *alertBox = new QMessageBox();
+    alertBox->setIcon(QMessageBox::Warning);
+    alertBox->setText("The device is still running!");
+    alertBox->setInformativeText("Do you want to exit the app without stop the laser?");
+    alertBox->addButton("OK", QMessageBox::AcceptRole);
+    QPushButton *stopButton = alertBox->addButton("STOP", QMessageBox::RejectRole);
+    alertBox->setDefaultButton(stopButton);
+
+    bool result = false;
+
+    switch(alertBox->exec()) {
+        case QMessageBox::AcceptRole:
+            result = false;
+            break;
+    case QMessageBox::RejectRole:
+        result = true;
+        break;
+    }
+    return result;
+}
+
+void closeSoftware();
+void stopAndCloseSoftware();
 
 void MainWindow::setupMenuPort() {
     // Формирование и вывод в меню списка доступных бауд-рейтов
@@ -884,6 +884,9 @@ void MainWindow::getPortNewState(bool state) {
             settings.setLastSelectedDeviceId(0);
             setLink(false);
             setRegulatorsEnable(false);
+            if(showWarningMessageAndStopLaser()) {
+                // TODO: Do stopping the laser
+            }
         }
         ui->consoleStartStopButton->setEnabled(state);
         ui->consoleStartStopButton->setChecked(!autoSendNextCommand);
@@ -892,6 +895,7 @@ void MainWindow::getPortNewState(bool state) {
     portIsOpen = state;
     ui->comPortConnectButton->setChecked(!portIsOpen);
 
+    ui->actionKeep_checkboxes->setEnabled(portIsOpen);
     ui->actionLoad_settings->setEnabled(portIsOpen);
     foreach (QAction *item, lastFileActions) {
         item->setEnabled(portIsOpen);
@@ -1029,10 +1033,10 @@ void MainWindow::readComData_Slot(QByteArray str) {
                         } else {
                             ui->laserButton->setChecked(false);
                             devConfig.laserOn = false;
-                            if(waitingForStop == closeWindow_t::CONDITION_CLOSE) {
-                                waitingForStop = closeWindow_t::APPROVE_CLOSE;
-                                this->close();
-                            }
+//                            if(waitingForStop == closeWindow_t::CONDITION_CLOSE) {
+//                                waitingForStop = closeWindow_t::APPROVE_CLOSE;
+//                                this->close();
+//                            }
                         }
                     }
                 } else

@@ -613,7 +613,7 @@ color: #fff;</string>
      <x>0</x>
      <y>0</y>
      <width>689</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="font">
@@ -675,6 +675,7 @@ QMenu::item:disabled {
     </property>
     <addaction name="actionLoad_settings"/>
     <addaction name="actionSave_settings"/>
+    <addaction name="actionKeep_checkboxes"/>
     <addaction name="actionExit"/>
     <addaction name="separator"/>
    </widget>
@@ -1045,6 +1046,20 @@ QMenu::item:disabled {
    </property>
    <property name="text">
     <string>Two stop bits</string>
+   </property>
+  </action>
+  <action name="actionKeep_checkboxes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Keep checkboxes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+K</string>
    </property>
   </action>
  </widget>

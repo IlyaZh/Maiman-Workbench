@@ -23,7 +23,6 @@ public:
 
 private:
     Ui::AboutDeviceDialog *ui;
-//    const device_t* dev;
 
 private slots:
     void saveDataAndClose();

@@ -115,6 +115,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    bool showWarningMessageAndStopLaser();
     void setupWindow();
     void setConnections();
     void setupParameterHandlers();
@@ -160,7 +161,7 @@ private:
     QFont systemFont;
     SelectDeviceDialog *selectDeviceDialog;
     quint16 devID;
-    closeWindow_t waitingForStop;
+//    closeWindow_t waitingForStop;
     QPushButton* saveBtn;
     QPushButton* loadBtn;
     bool bWasConnectedOnce;
