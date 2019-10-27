@@ -162,9 +162,8 @@ private:
     SelectDeviceDialog *selectDeviceDialog;
     quint16 devID;
 //    closeWindow_t waitingForStop;
-    QPushButton* saveBtn;
-    QPushButton* loadBtn;
-    bool bWasConnectedOnce;
+//    bool bWasConnectedOnce;
+    bool checkStopAndDisconnect;
 
 signals:
 //    void writeToLogSignal(QString);

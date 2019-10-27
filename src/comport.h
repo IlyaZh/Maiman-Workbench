@@ -26,6 +26,7 @@ public:
     ~comPort();
     void close();
     bool isOpen();
+    void stopAndDisconnect();
 
 
 private:
@@ -42,6 +43,7 @@ private:
     QString lastSentCommand;
     QQueue<QString> queue2send;
     uint stopCommandDelay;
+    bool checkStopWritten;
 
 signals:
     void errorOccuredSignal(QString);

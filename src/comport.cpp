@@ -1,6 +1,6 @@
 #include "comport.h"
 
-comPort::comPort(QObject *parent) : QObject(parent)
+comPort::comPort(QObject *parent) : QObject(parent), serialportinfo(nullptr)
 {
     serialPort = new QSerialPort();
 //    qsettings = new QSettings(QSettings::NativeFormat, QSettings::UserScope, ORG_NAME, APP_NAME);
@@ -8,7 +8,7 @@ comPort::comPort(QObject *parent) : QObject(parent)
 //    isTimeout = false;
 //    bufferSize = 0;
     portIsBusy = false;
-    serialportinfo = nullptr;
+    checkStopWritten = false;
     stopCommandDelay = STOP_COMMAND_DELAY_DEFAULT;
 
     // Таймер таймаута (отсчёт идёт с момента фактической пересылки всей посылки в порт и до прихода ответа от устройства)
@@ -39,6 +39,12 @@ comPort::~comPort() {
 
 bool comPort::isOpen() {
     return serialPort->isOpen();
+}
+
+void comPort::stopAndDisconnect() {
+    clearQueue();
+    putIntoQueue(DEVICE_STOP_COMMAND);
+    checkStopWritten = true;
 }
 
 void comPort::setPortState(bool state) {
@@ -259,6 +265,13 @@ bool comPort::startToSendNextCommand() {
 
 void comPort::waitForNextCommandSlot() {
     portIsBusy = false;
+
+    if(checkStopWritten && lastSentCommand == DEVICE_STOP_COMMAND+QString(COM_END_OF_LINE)) {
+        checkStopWritten = false;
+        setPortState(false);
+        return;
+    }
+
     if(startToSendNextCommand() == false) { // false - команд в очереди нет - даём сигнал об окончании передачи
         emit dataIsSentSignal();
     }

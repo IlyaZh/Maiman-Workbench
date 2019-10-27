@@ -18,6 +18,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     if(showWarningMessageAndStopLaser()) {
+        checkStopAndDisconnect = true;
+        serialPort->stopAndDisconnect();
         event->ignore();
         // do stopping of laser
     } else {
@@ -152,7 +154,8 @@ void MainWindow::setupWindow() {
     oldDevID = 0;
     autoSendNextCommand = true;
     requestAllCommands = true;
-    bWasConnectedOnce = false;
+//    bWasConnectedOnce = false;
+    checkStopAndDisconnect = false;
 
     loadCommonConfig(availableDevices);
 
@@ -195,34 +198,31 @@ void MainWindow::setupWindow() {
 }
 
 bool MainWindow::showWarningMessageAndStopLaser() {
-    if(!devConfig.laserOn) {
-        return false;
-    }
-
-
-    QMessageBox *alertBox = new QMessageBox();
-    alertBox->setIcon(QMessageBox::Warning);
-    alertBox->setText("The device is still running!");
-    alertBox->setInformativeText("Do you want to exit the app without stop the laser?");
-    alertBox->addButton("OK", QMessageBox::AcceptRole);
-    QPushButton *stopButton = alertBox->addButton("STOP", QMessageBox::RejectRole);
-    alertBox->setDefaultButton(stopButton);
-
     bool result = false;
 
-    switch(alertBox->exec()) {
-        case QMessageBox::AcceptRole:
-            result = false;
+    if(devConfig.laserOn) {
+        QMessageBox *alertBox = new QMessageBox(this);
+        alertBox->setIcon(QMessageBox::Warning);
+        alertBox->setText("The device is still running!");
+        alertBox->setInformativeText("Do you want to exit the app without stop the laser?");
+        alertBox->addButton("OK", QMessageBox::AcceptRole);
+        QPushButton *stopButton = alertBox->addButton("STOP", QMessageBox::RejectRole);
+        alertBox->setDefaultButton(stopButton);
+
+        switch(alertBox->exec()) {
+            case QMessageBox::AcceptRole:
+                result = false;
+                break;
+        case QMessageBox::RejectRole:
+            result = true;
             break;
-    case QMessageBox::RejectRole:
-        result = true;
-        break;
+        }
     }
     return result;
 }
 
-void closeSoftware();
-void stopAndCloseSoftware();
+//void closeSoftware();
+//void stopAndCloseSoftware();
 
 void MainWindow::setupMenuPort() {
     // Формирование и вывод в меню списка доступных бауд-рейтов
@@ -870,7 +870,7 @@ void MainWindow::setRegulatorsEnable(bool state) {
 void MainWindow::getPortNewState(bool state) {
     if (state != portIsOpen) {
         if(state) { // Port is openned now
-            bWasConnectedOnce = true;
+//            bWasConnectedOnce = true;
             this->writeToConsole(settings.getComPort() + tr(" is open!\n"), CONSOLE_INFO_COLOR);
             ui->comPortConnectButton->setText(settings.getComPort() + QString("   ") + QString::number(settings.getComBaudrate()) + "bps");
             startDeviceIdent();
@@ -880,12 +880,13 @@ void MainWindow::getPortNewState(bool state) {
             //emit writeToLogSignal(tr("COM: ") + COM_CURRENT_PORT + tr(" is close!\n"));
             ui->comPortConnectButton->setText(tr("Disconnected"));
             devID = 0;
-            isDeviceLoaded = false;
             settings.setLastSelectedDeviceId(0);
-            setLink(false);
             setRegulatorsEnable(false);
-            if(showWarningMessageAndStopLaser()) {
-                // TODO: Do stopping the laser
+            setLink(false);
+            isDeviceLoaded = false;
+            devConfig.laserOn = false;
+            if(checkStopAndDisconnect) {
+                QApplication::exit();
             }
         }
         ui->consoleStartStopButton->setEnabled(state);
@@ -918,7 +919,16 @@ void MainWindow::startDeviceIdent() {
 
 void MainWindow::comPortConnectButton_slot()
 {
-    serialPort->setPortState(!portIsOpen);
+    if(portIsOpen) {
+        if(showWarningMessageAndStopLaser()) {
+            serialPort->stopAndDisconnect();
+        } else {
+            serialPort->setPortState(!portIsOpen);
+        }
+    } else {
+        serialPort->setPortState(!portIsOpen);
+    }
+
 }
 
 void MainWindow::comPortConsoleSend_Slot() {
@@ -943,130 +953,129 @@ void MainWindow::readComData_Slot(QByteArray str) {
     prefix = str.at(0);
     command = commandStr.toUInt(nullptr, 16);
     value = valueStr.toUInt(nullptr, 16);
-
-    // Проверка первого символа в посылке
-    if(prefix == COM_ANSWER_PREFIX) { // Если это ответ
-        this->writeToConsole("<- "+str, CONSOLE_RECEIVE_COLOR);
-        if(command == IDENTIFY_DEVICE_COMMAND) {
-            if(value == COMMON_OLD_DEVICES_VALUE) {
-                if(devID == 0) {
-//                    devID = settings.getLastSelectedDeviceId();
-                    bool isCommonDevice = false;
-                    foreach(availableDev_t devStruct, availableDevices) {
-                        if(devStruct.id == devID) {
-                            isCommonDevice = true;
-                            break;
+        // Проверка первого символа в посылке
+        if(prefix == COM_ANSWER_PREFIX) { // Если это ответ
+            this->writeToConsole("<- "+str, CONSOLE_RECEIVE_COLOR);
+            if(command == IDENTIFY_DEVICE_COMMAND) {
+                if(value == COMMON_OLD_DEVICES_VALUE) {
+                    if(devID == 0) {
+    //                    devID = settings.getLastSelectedDeviceId();
+                        bool isCommonDevice = false;
+                        foreach(availableDev_t devStruct, availableDevices) {
+                            if(devStruct.id == devID) {
+                                isCommonDevice = true;
+                                break;
+                            }
                         }
-                    }
 
-                    if(!isCommonDevice) {
-                        writeToConsole("Please, select deivce model.");
-                        reselectDevice();
+                        if(!isCommonDevice) {
+                            writeToConsole("Please, select deivce model.");
+                            reselectDevice();
+                        }
+                    } else {
+                        setRegulatorsEnable(true);
+                        ui->devNameLabel->setText(devConfig.devName);
+                        ui->devSelectButton->setVisible(true);
+                        ui->devAboutButton->setVisible(true);
+                        oldDevID = devID;
                     }
                 } else {
-                    setRegulatorsEnable(true);
-                    ui->devNameLabel->setText(devConfig.devName);
-                    ui->devSelectButton->setVisible(true);
-                    ui->devAboutButton->setVisible(true);
-                    oldDevID = devID;
+                    devID = value;
+                    if(devID == oldDevID && isDeviceLoaded) {
+                        setRegulatorsEnable(true);
+                        ui->devNameLabel->setText(devConfig.devName);
+                        ui->devSelectButton->setVisible(true);
+                        ui->devAboutButton->setVisible(true);
+                        oldDevID = devID;
+                    } else {
+                        clearAllRegulators();
+                        loadDeviceConfig(devID);
+                    }
                 }
+
             } else {
-                devID = value;
-                if(devID == oldDevID && isDeviceLoaded) {
-                    setRegulatorsEnable(true);
-                    ui->devNameLabel->setText(devConfig.devName);
-                    ui->devSelectButton->setVisible(true);
-                    ui->devAboutButton->setVisible(true);
-                    oldDevID = devID;
-                } else {
-                    clearAllRegulators();
-                    loadDeviceConfig(devID);
-                }
-            }
-
-        } else {
-            if (devConfig.commands.contains(commandStr)) {
-                Command* currentCommand = devConfig.commands.value(commandStr);
-                currentCommand->setRawValue(value);
-                // Обработка крутилок и информеров основных параметров
-                foreach(ParameterController* parameterController, devConfig.paramWidgets) {
-                    double newValue;
-                    newValue  = currentCommand->getConvertedValue();
+                if (devConfig.commands.contains(commandStr)) {
+                    Command* currentCommand = devConfig.commands.value(commandStr);
+                    currentCommand->setRawValue(value);
+                    // Обработка крутилок и информеров основных параметров
+                    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
+                        double newValue;
+                        newValue  = currentCommand->getConvertedValue();
 
 
-                    if(parameterController->isTemperature() && settings.getTemperatureSymbol() == "F") {
-                        newValue = convertCelToFar(newValue);
-                    }
+                        if(parameterController->isTemperature() && settings.getTemperatureSymbol() == "F") {
+                            newValue = convertCelToFar(newValue);
+                        }
 
-                    if(parameterController->getMaxComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        parameterController->setMax(newValue);
-                    } else if(parameterController->getMinComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        parameterController->setMin(newValue);
-                    } else if(parameterController->getRealComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        parameterController->setRealValue(newValue);
-                    } else if(parameterController->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                        parameterController->setSentValue(newValue);
-                    }
-                }
-
-                // Обработка LEDS
-                setLedState(commandStr, value);
-
-                // Обработка галочек
-                foreach(binOption_t binaryOption, devConfig.binOptions) {
-                    if(binaryOption.mask == 0) continue;
-
-                    if(commandStr == binaryOption.code) {
-                        if(value & binaryOption.mask) {
-                            binaryOption.checkBox->setChecked(true);
-                        } else {
-                            binaryOption.checkBox->setChecked(false);
+                        if(parameterController->getMaxComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                            parameterController->setMax(newValue);
+                        } else if(parameterController->getMinComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                            parameterController->setMin(newValue);
+                        } else if(parameterController->getRealComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                            parameterController->setRealValue(newValue);
+                        } else if(parameterController->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                            parameterController->setSentValue(newValue);
                         }
                     }
-                }
 
-                if(commandStr == DEVICE_STATUS_COMMAND) {
-                    if(devConfig.hasLaser) {
-                        if(currentCommand->getRawValue() & START_STOP_MASK) {
-                            ui->laserButton->setChecked(true);
-                            devConfig.laserOn = true;
-                        } else {
-                            ui->laserButton->setChecked(false);
-                            devConfig.laserOn = false;
-//                            if(waitingForStop == closeWindow_t::CONDITION_CLOSE) {
-//                                waitingForStop = closeWindow_t::APPROVE_CLOSE;
-//                                this->close();
-//                            }
-                        }
-                    }
-                } else
-                    if(commandStr == TEC_STATUS_COMMAND) {
-                        if(devConfig.hasTEC) {
-                            if(currentCommand->getRawValue() & START_STOP_MASK) {
-                                ui->tecButton->setChecked(true);
+                    // Обработка LEDS
+                    setLedState(commandStr, value);
+
+                    // Обработка галочек
+                    foreach(binOption_t binaryOption, devConfig.binOptions) {
+                        if(binaryOption.mask == 0) continue;
+
+                        if(commandStr == binaryOption.code) {
+                            if(value & binaryOption.mask) {
+                                binaryOption.checkBox->setChecked(true);
                             } else {
-                                ui->tecButton->setChecked(false);
+                                binaryOption.checkBox->setChecked(false);
                             }
                         }
                     }
-            }
-        }
-    } else if (prefix == COM_ERROR_PREFIX) {
-        this->writeToConsoleError("<- "+str);
-        switch(command) {
-        case ERROR_BUFFER_OVERLOAD:
-        case ERROR_WRONG_COMMAND:
-            writeToConsoleError("[Error]:" + commErrorsDescription[command] + QString(" ") + str);
-            break;
-        default:
-            writeToConsoleError("[Error]: " + str);
-        }
-        startDeviceIdent();
-    } else { // Неизвестный ответ
-        this->writeToConsoleError(str);
-    }
 
-    prepareToSendNextCommand();
+                    if(commandStr == DEVICE_STATUS_COMMAND) {
+                        if(devConfig.hasLaser) {
+                            if(currentCommand->getRawValue() & START_STOP_MASK) {
+                                ui->laserButton->setChecked(true);
+                                devConfig.laserOn = true;
+                            } else {
+                                ui->laserButton->setChecked(false);
+                                devConfig.laserOn = false;
+    //                            if(waitingForStop == closeWindow_t::CONDITION_CLOSE) {
+    //                                waitingForStop = closeWindow_t::APPROVE_CLOSE;
+    //                                this->close();
+    //                            }
+                            }
+                        }
+                    } else
+                        if(commandStr == TEC_STATUS_COMMAND) {
+                            if(devConfig.hasTEC) {
+                                if(currentCommand->getRawValue() & START_STOP_MASK) {
+                                    ui->tecButton->setChecked(true);
+                                } else {
+                                    ui->tecButton->setChecked(false);
+                                }
+                            }
+                        }
+                }
+            }
+        } else if (prefix == COM_ERROR_PREFIX) {
+            this->writeToConsoleError("<- "+str);
+            switch(command) {
+            case ERROR_BUFFER_OVERLOAD:
+            case ERROR_WRONG_COMMAND:
+                writeToConsoleError("[Error]:" + commErrorsDescription[command] + QString(" ") + str);
+                break;
+            default:
+                writeToConsoleError("[Error]: " + str);
+            }
+            startDeviceIdent();
+        } else { // Неизвестный ответ
+            this->writeToConsoleError(str);
+        }
+
+        prepareToSendNextCommand();
 
 }
 
