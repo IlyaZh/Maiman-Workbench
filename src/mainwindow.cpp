@@ -190,8 +190,6 @@ void MainWindow::setupWindow() {
 
     comPortIntervalCounter = 1;
 
-    saveBtn = loadBtn = nullptr;
-
     if(debugMode == false) showConsoleSlot(false);
 
     devConfig.laserOn = false;
@@ -687,25 +685,6 @@ void MainWindow::setupParameterHandlers() {
                 connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
                 cbSignalMapper->setMapping(checkBox, binOption.label);
             }
-            if(saveBtn != nullptr) {
-                saveBtn->disconnect();
-                delete saveBtn;
-            }
-            saveBtn = new QPushButton("Save", ui->specialParamBox);
-            saveBtn->setStyleSheet("QPushButton {\n	color: rgb(255, 255, 255);\n	background-color: rgb(51, 51, 51);\n	border: 1px solid #999999;\n	border-radius: 4px;\n	padding: 4px;\n}");
-            connect(saveBtn, SIGNAL(clicked()), this, SLOT(saveCheckboxes()));
-            vlayout->addWidget(saveBtn);
-
-            if(isCheckboxesFileExist()) {
-                if(loadBtn != nullptr) {
-                    loadBtn->disconnect();
-                    delete loadBtn;
-                }
-                loadBtn = new QPushButton("Load", ui->specialParamBox);
-                loadBtn->setStyleSheet("QPushButton {\n	color: rgb(255, 255, 255);\n	background-color: rgb(51, 51, 51);\n	border: 1px solid #999999;\n	border-radius: 4px;\n	padding: 4px;\n}");
-                connect(loadBtn, SIGNAL(clicked()), this, SLOT(loadCheckboxes()));
-                vlayout->addWidget(loadBtn);
-            }
 
             connect(cbSignalMapper, SIGNAL(mapped(QString)), this, SLOT(spcialParameterSlot(QString)));
             ui->specialParamBox->setLayout(vlayout);
@@ -740,6 +719,7 @@ bool MainWindow::isCheckboxesFileExist() {
     return state;
 }
 
+// TODO: LOOK THIS SHIT
 void MainWindow::loadCheckboxes() {
     if(devConfig.binOptions.isEmpty()) return;
 
@@ -763,6 +743,7 @@ void MainWindow::loadCheckboxes() {
     file->deleteLater();
 }
 
+// TODO: LOOK THIS SHIT
 void MainWindow::saveCheckboxes() {
     if(devConfig.binOptions.isEmpty()) return;
 
@@ -795,13 +776,6 @@ void MainWindow::saveCheckboxes() {
 
 
     file->close();
-
-    if(loadBtn == nullptr) {
-        loadBtn = new QPushButton("Load", ui->specialParamBox);
-        loadBtn->setStyleSheet("QPushButton {\n	color: rgb(255, 255, 255);\n	background-color: rgb(51, 51, 51);\n	border: 1px solid #999999;\n	border-radius: 4px;\n	padding: 4px;\n}");
-        connect(loadBtn, SIGNAL(clicked()), this, SLOT(loadCheckboxes()));
-        ui->specialParamBox->layout()->addWidget(loadBtn);
-    }
 
     file->deleteLater();
 }
