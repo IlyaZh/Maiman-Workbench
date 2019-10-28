@@ -14,7 +14,6 @@ VERSION = 1.0.1
 
 
 SOURCES += main.cpp\
-    checkboxesparser.cpp \
         mainwindow.cpp \
     comport.cpp \
     consolelogger.cpp \
@@ -33,7 +32,6 @@ SOURCES += main.cpp\
     signedcommand.cpp
 
 HEADERS  += mainwindow.h \
-    checkboxesparser.h \
     commondefines.h \
     comport.h \
     consolelogger.h \

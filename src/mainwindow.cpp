@@ -154,7 +154,7 @@ void MainWindow::setupWindow() {
     oldDevID = 0;
     autoSendNextCommand = true;
     requestAllCommands = true;
-//    bWasConnectedOnce = false;
+    bWasConnectedOnce = false;
     checkStopAndDisconnect = false;
 
     loadCommonConfig(availableDevices);
@@ -844,7 +844,7 @@ void MainWindow::setRegulatorsEnable(bool state) {
 void MainWindow::getPortNewState(bool state) {
     if (state != portIsOpen) {
         if(state) { // Port is openned now
-//            bWasConnectedOnce = true;
+            bWasConnectedOnce = true;
             this->writeToConsole(settings.getComPort() + tr(" is open!\n"), CONSOLE_INFO_COLOR);
             ui->comPortConnectButton->setText(settings.getComPort() + QString("   ") + QString::number(settings.getComBaudrate()) + "bps");
             startDeviceIdent();
@@ -1005,6 +1005,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
                             } else {
                                 binaryOption.checkBox->setChecked(false);
                             }
+                            saveCheckboxes();
                         }
                     }
 
@@ -1341,6 +1342,14 @@ void MainWindow::setLink(bool state) {
 void MainWindow::sendNextComCommand() {
     if(devConfig.commands.isEmpty() || !isDeviceLoaded) return;
 
+    if(!bWasConnectedOnce) {
+        if(isCheckboxesFileExist()) {
+            loadCheckboxes();
+        }
+        bWasConnectedOnce = true;
+        return;
+    }
+
     bool needToSend = true;
     bool cycleOn = true;
 
@@ -1496,7 +1505,6 @@ void MainWindow::spcialParameterSlot(QString paramLabel) {
         tmpQuery += obj.offCommand;
     }
     sendDataToPort(tmpQuery);
-
 }
 
 void MainWindow::loadFont() {
