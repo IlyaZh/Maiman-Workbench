@@ -38,7 +38,7 @@ bool xmlReader::readFile() {
         emit errorHandler("CONFIG: " + file->errorString());
         return false;
     }
-    if(!file->open(QIODevice::ReadOnly)) {
+    if(!file->open(QIODevice::ReadOnly | QIODevice::Text)) {
         emit errorHandler("CONFIG: " + file->errorString());
         return false;
     }
@@ -59,7 +59,7 @@ void xmlReader::parseCommonConfig(QString fileName, QList<availableDev_t>& devic
     QXmlStreamAttributes attrib = xml.attributes();
     QStringRef xname = xml.name();
 
-    while(!xml.atEnd()) {
+    while(!xml.atEnd() && !xml.hasError()) {
         QXmlStreamReader::TokenType token = xml.readNext();
         qDebug() << xml.lineNumber() << xml.text() << xml.tokenString() << xml.name();
         xname = xml.name();
