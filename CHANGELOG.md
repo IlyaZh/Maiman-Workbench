@@ -2,7 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [1.0.3] - 2019-10-29
+### Added
+- Showing suestion message about laser state if user tries to close an app or disconnect when the laser on
+- Checkboxes saved when user change its value and load when user connects to device
 ### Changed
+- Refactoring of some issues
 - Optimization of the algorithm for receiving data. Fix bug with clearing the buffer the received data timeout
 - Fix bug with the lack of responses from the device when connecting.
 
