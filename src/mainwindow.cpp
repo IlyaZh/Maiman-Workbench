@@ -226,9 +226,7 @@ void MainWindow::setupMenuPort() {
     // Формирование и вывод в меню списка доступных бауд-рейтов
     ui->menuSelectBaudrate->clear();
 //    QSignalMapper* signalMapper = new QSignalMapper(this);
-    qDebug() << "bauds";
     foreach (quint32 BR, comBaudRates) {
-        qDebug() << BR;
         QAction *newAct = new QAction(QString::number(BR), this);
         newAct->setCheckable(true);
         if(settings.getComBaudrate() == BR) {
@@ -706,8 +704,15 @@ void MainWindow::setupParameterHandlers() {
                 QCheckBox* checkBox = binOption.checkBox;
                 checkBox->setStyleSheet("QCheckBox {font-family: \"Share Tech Mono\"; border: none; color: #fff;} ");
                 vlayout->addWidget(checkBox);
-                connect(checkBox, &QCheckBox::clicked, [this, &binOption]{
-                    this->spcialParameterSlot(binOption.label);
+
+                // TODO: test it
+                connect(checkBox, &QCheckBox::clicked, [&]{
+                    QString command = binOption.offCommand;
+                    if(binOption.checkBox->isChecked()) {
+                        command = binOption.onCommand;
+                    }
+                    QString sQuery = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(binOption.code).arg(command);
+                    this->sendDataToPort(sQuery);
                 });
 //                connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
 //                cbSignalMapper->setMapping(checkBox, binOption.label);
@@ -1518,24 +1523,24 @@ void MainWindow::updateWindow() {
 }
 
 
-void MainWindow::spcialParameterSlot(QString paramLabel) {
-    int i = 0;
-    QString tmpQuery = QString(COM_WRITE_PREFIX);
-    binOption_t obj;
+//void MainWindow::spcialParameterSlot(QString paramLabel) {
+//    int i = 0;
+//    QString tmpQuery = QString(COM_WRITE_PREFIX);
+//    binOption_t obj;
 
-    for(i = 0; i < devConfig.binOptions.count(); i++)
-        if(paramLabel.compare(devConfig.binOptions.at(i).label, Qt::CaseInsensitive) == 0) break;
+//    for(i = 0; i < devConfig.binOptions.count(); i++)
+//        if(paramLabel.compare(devConfig.binOptions.at(i).label, Qt::CaseInsensitive) == 0) break;
 
-    obj = devConfig.binOptions.at(i);
-    tmpQuery += obj.code + QString(" ");
+//    obj = devConfig.binOptions.at(i);
+//    tmpQuery += obj.code + QString(" ");
 
-    if(obj.checkBox->isChecked()) {
-        tmpQuery += obj.onCommand;
-    } else {
-        tmpQuery += obj.offCommand;
-    }
-    sendDataToPort(tmpQuery);
-}
+//    if(obj.checkBox->isChecked()) {
+//        tmpQuery += obj.onCommand;
+//    } else {
+//        tmpQuery += obj.offCommand;
+//    }
+//    sendDataToPort(tmpQuery);
+//}
 
 void MainWindow::loadFont() {
     QFontDatabase::addApplicationFont(":/font/ShareTechMono.ttf");

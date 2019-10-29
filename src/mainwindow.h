@@ -16,6 +16,7 @@
 #include <QDir>
 #include <QDesktopServices>
 #include <QMessageBox>
+//#include <QSignalMapper>
 //#include <QInputDialog>
 #include <QListIterator>
 #include <QBoxLayout>
@@ -91,7 +92,7 @@ private slots:
     void hideControlsButtonSlot(bool);
     void loadDeviceConfig(quint16 id = 0);
     void loadCommonConfig(QList<availableDev_t>& deviceList);
-    void spcialParameterSlot(QString);
+//    void spcialParameterSlot(QString);
 //    void paramPrepareToSendCommand(QString);
     //void setLastSentCommand(QString);
     void comSetDataTransfer(bool state);
