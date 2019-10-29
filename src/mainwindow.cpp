@@ -41,6 +41,12 @@ void MainWindow::setConnections() {
     connect(ui->actionSave_settings, SIGNAL(triggered(bool)), this, SLOT(saveSettingsSlot()));
     // Выход из программы
     connect(ui->actionExit, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
+    connect(ui->actionKeep_checkboxes, &QAction::triggered, [this](bool flag){
+        if(flag) {
+            this->saveCheckboxes();
+        }
+        settings.setKeepCheckboxesFlag(flag);
+    });
 
     // Выбор количества стоп-бит
     connect(ui->actionOne_stop_bit, SIGNAL(toggled(bool)), this, SLOT(setComOneStopBit()));
@@ -174,6 +180,7 @@ void MainWindow::setupWindow() {
     setupMenuPort();
     refreshMenuFile();
     ui->actionExit->setShortcut(QKeySequence("ALT+F4"));
+    ui->actionKeep_checkboxes->setChecked(settings.getKeepCheckboxesFlag());
 
 //    ui->devImageLabel->setVisible(false);
     ui->devNameLabel->setVisible(false);
@@ -263,17 +270,18 @@ void MainWindow::refreshMenuPort() {
     if(!portList.isEmpty()) {
         ui->menuSelectPort->clear();
 //        QSignalMapper* signalMapper = new QSignalMapper(this);
-        foreach (QString str, portList) {
-            QAction *newAct = new QAction(str, this);
+        foreach (QString port, portList) {
+            QAction *newAct = new QAction(port, this);
             newAct->setCheckable(true);
-            if(QString::compare(settings.getComPort(), str, Qt::CaseInsensitive) == 0) {
+            if(QString::compare(settings.getComPort(), port, Qt::CaseInsensitive) == 0) {
                 newAct->setChecked(true);
             } else {
                 newAct->setChecked(false);
             }
             ui->menuSelectPort->addAction(newAct);
-            connect(newAct, &QAction::triggered, [this, str]{
-                this->changePortSlot(str);
+            connect(newAct, &QAction::triggered, [this, port]{
+                settings.setComPort(port);
+                refreshMenuPort();
             });
 //            signalMapper->setMapping(newAct, str);
 //            connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
@@ -701,18 +709,18 @@ void MainWindow::setupParameterHandlers() {
         if(!devConfig.binOptions.empty()) {
             QVBoxLayout *vlayout = new QVBoxLayout();
             foreach(binOption_t binOption, devConfig.binOptions) {
-                QCheckBox* checkBox = binOption.checkBox;
-                checkBox->setStyleSheet("QCheckBox {font-family: \"Share Tech Mono\"; border: none; color: #fff;} ");
-                vlayout->addWidget(checkBox);
+                binOption.checkBox->setStyleSheet("QCheckBox {font-family: \"Share Tech Mono\"; border: none; color: #fff;} ");
+                vlayout->addWidget(binOption.checkBox);
 
                 // TODO: test it
-                connect(checkBox, &QCheckBox::clicked, [&]{
-                    QString command = binOption.offCommand;
+                connect(binOption.checkBox, &QCheckBox::clicked, [=]{
+                    QString commandStr = binOption.offCommand;
                     if(binOption.checkBox->isChecked()) {
-                        command = binOption.onCommand;
+                        commandStr = binOption.onCommand;
                     }
-                    QString sQuery = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(binOption.code).arg(command);
+                    QString sQuery = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(binOption.code).arg(commandStr);
                     this->sendDataToPort(sQuery);
+                    saveCheckboxes();
                 });
 //                connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
 //                cbSignalMapper->setMapping(checkBox, binOption.label);
@@ -1036,9 +1044,6 @@ void MainWindow::readComData_Slot(QByteArray str) {
                             } else {
                                 binaryOption.checkBox->setChecked(false);
                             }
-                            if(ui->actionKeep_checkboxes->isChecked()) {
-                                saveCheckboxes();
-                            }
                         }
                     }
 
@@ -1240,10 +1245,10 @@ void MainWindow::changeBaudRateSlot(int BR) {
     refreshMenuBaud();
 }
 
-void MainWindow::changePortSlot(QString port) {
-    settings.setComPort(port);
-    refreshMenuPort();
-}
+//void MainWindow::changePortSlot(QString port) {
+//    settings.setComPort(port);
+//    refreshMenuPort();
+//}
 
 void MainWindow::triggComAutoConnectSlot(bool state) {
     settings.setComAutoconnectFlag(state);
@@ -1523,24 +1528,24 @@ void MainWindow::updateWindow() {
 }
 
 
-//void MainWindow::spcialParameterSlot(QString paramLabel) {
-//    int i = 0;
-//    QString tmpQuery = QString(COM_WRITE_PREFIX);
-//    binOption_t obj;
+void MainWindow::spcialParameterSlot(QString paramLabel) {
+    int i = 0;
+    QString tmpQuery = QString(COM_WRITE_PREFIX);
+    binOption_t obj;
 
-//    for(i = 0; i < devConfig.binOptions.count(); i++)
-//        if(paramLabel.compare(devConfig.binOptions.at(i).label, Qt::CaseInsensitive) == 0) break;
+    for(i = 0; i < devConfig.binOptions.count(); i++)
+        if(paramLabel.compare(devConfig.binOptions.at(i).label, Qt::CaseInsensitive) == 0) break;
 
-//    obj = devConfig.binOptions.at(i);
-//    tmpQuery += obj.code + QString(" ");
+    obj = devConfig.binOptions.at(i);
+    tmpQuery += obj.code + QString(" ");
 
-//    if(obj.checkBox->isChecked()) {
-//        tmpQuery += obj.onCommand;
-//    } else {
-//        tmpQuery += obj.offCommand;
-//    }
-//    sendDataToPort(tmpQuery);
-//}
+    if(obj.checkBox->isChecked()) {
+        tmpQuery += obj.onCommand;
+    } else {
+        tmpQuery += obj.offCommand;
+    }
+    sendDataToPort(tmpQuery);
+}
 
 void MainWindow::loadFont() {
     QFontDatabase::addApplicationFont(":/font/ShareTechMono.ttf");

@@ -13,7 +13,7 @@ QString updateUrl;
 //QPointer<QSettings> qsettings = new QSettings(QSettings::NativeFormat, QSettings::UserScope, ORG_NAME, APP_NAME);
 //quint16 devID = 0;
 AppSettings settings;
-bool debugMode = false;
+bool debugMode = true; //false;
 
 int main(int argc, char *argv[])
 {

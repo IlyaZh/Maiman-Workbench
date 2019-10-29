@@ -27,6 +27,8 @@ public:
     bool getHideControlsFlag();
     QPoint getWindowPosition();
     int getComStopBits();
+    bool getKeepCheckboxesFlag();
+    void setKeepCheckboxesFlag(bool flag);
 //    QSize getWindowSize();
 
 private:

@@ -70,7 +70,7 @@ private slots:
     void comPortTimeout();
     void comPortError(QString);
     void changeBaudRateSlot(int BR);
-    void changePortSlot(QString port);
+//    void changePortSlot(QString port);
     void triggComAutoConnectSlot(bool state);
     void triggTemperatureSymbolSlot(QString);
     void refreshMenuView();
@@ -92,7 +92,7 @@ private slots:
     void hideControlsButtonSlot(bool);
     void loadDeviceConfig(quint16 id = 0);
     void loadCommonConfig(QList<availableDev_t>& deviceList);
-//    void spcialParameterSlot(QString);
+    void spcialParameterSlot(QString);
 //    void paramPrepareToSendCommand(QString);
     //void setLastSentCommand(QString);
     void comSetDataTransfer(bool state);
