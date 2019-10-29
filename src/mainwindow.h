@@ -10,7 +10,6 @@
 #include <QThread>
 #include <QWidget>
 #include <QCheckBox>
-#include <QSignalMapper>
 #include <QList>
 #include <QFile>
 #include <QFileDialog>

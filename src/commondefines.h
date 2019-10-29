@@ -29,7 +29,7 @@ const QString DURATION_COMMAND = "0200";
 
 const quint8 MAJOR_VERSION = 1;
 const quint8 MINOR_VERSION = 0;
-const quint8 PATCH_VERSION = 1;
+const quint8 PATCH_VERSION = 2;
 
 extern bool debugMode;
 
@@ -114,7 +114,8 @@ const QString UPDATE_LIST_URL = "http://maiman.online/soft-upd.txt";
 enum action {READ = 1, WRITE = 2};
 extern QLocale wlocale;
 extern QString updateUrl;
-const QString appTitle = APP_NAME_TITLE + QString(" V") + QString::number(MAJOR_VERSION) + "." + QString::number(MINOR_VERSION);
+const QString appTitle = QString("%1 v.%2.%3.%4").arg(APP_NAME_TITLE).arg(MAJOR_VERSION).arg(MINOR_VERSION).arg(PATCH_VERSION);
+
 extern quint16 devID;
 
 

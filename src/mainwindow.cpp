@@ -225,7 +225,7 @@ bool MainWindow::showWarningMessageAndStopLaser() {
 void MainWindow::setupMenuPort() {
     // Формирование и вывод в меню списка доступных бауд-рейтов
     ui->menuSelectBaudrate->clear();
-    QSignalMapper* signalMapper = new QSignalMapper(this);
+//    QSignalMapper* signalMapper = new QSignalMapper(this);
     foreach (quint32 BR, comBaudRates) {
         QAction *newAct = new QAction(QString::number(BR), this);
         newAct->setCheckable(true);
@@ -235,10 +235,13 @@ void MainWindow::setupMenuPort() {
             newAct->setChecked(false);
         }
         ui->menuSelectBaudrate->addAction(newAct);
-        signalMapper->setMapping(newAct, BR);
-        connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
+        connect(newAct, &QAction::triggered, this, [=]{
+            this->changeBaudRateSlot(BR);
+        });
+//        signalMapper->setMapping(newAct, BR);
+//        connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
     }
-    connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(changeBaudRateSlot(int)));
+//    connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(changeBaudRateSlot(int)));
 
     refreshMenuPort();
     refreshMenuBaud();
@@ -259,7 +262,7 @@ void MainWindow::refreshMenuPort() {
     QStringList portList = getAvailablePorts();
     if(!portList.isEmpty()) {
         ui->menuSelectPort->clear();
-        QSignalMapper* signalMapper = new QSignalMapper(this);
+//        QSignalMapper* signalMapper = new QSignalMapper(this);
         foreach (QString str, portList) {
             QAction *newAct = new QAction(str, this);
             newAct->setCheckable(true);
@@ -269,10 +272,13 @@ void MainWindow::refreshMenuPort() {
                 newAct->setChecked(false);
             }
             ui->menuSelectPort->addAction(newAct);
-            signalMapper->setMapping(newAct, str);
-            connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
+            connect(newAct, &QAction::triggered, this, [=]{
+                this->changePortSlot(str);
+            });
+//            signalMapper->setMapping(newAct, str);
+//            connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
         }
-        connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(changePortSlot(QString)));
+//        connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(changePortSlot(QString)));
     }
     // кнопка обновления портов
     QAction *refreshPortAct = new QAction(tr("Refresh list"), this);
@@ -325,7 +331,7 @@ void MainWindow::refreshMenuCalibrate() {
         ui->menuCalibrate->menuAction()->setVisible(true);
     }
 
-    QSignalMapper* signalMapper = new QSignalMapper(this);
+//    QSignalMapper* signalMapper = new QSignalMapper(this);
 
     if(!menuCalibrateActions.isEmpty()) {
         ui->menuCalibrate->clear();
@@ -339,10 +345,13 @@ void MainWindow::refreshMenuCalibrate() {
         newAction->setText(item.title);
         ui->menuCalibrate->addAction(newAction);
         menuCalibrateActions.append(newAction);
-        signalMapper->setMapping(newAction, item.title);
-        connect(newAction, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
+        connect(newAction, &QAction::triggered, this, [=]{
+            this->openCalibrateWindow(item.title);
+        });
+//        signalMapper->setMapping(newAction, item.title);
+//        connect(newAction, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
     }
-    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(openCalibrateWindow(QString)));
+//    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(openCalibrateWindow(QString)));
 }
 
 
@@ -366,7 +375,7 @@ void MainWindow::refreshMenuLimits() {
     } else {
         ui->menuLimits->menuAction()->setVisible(true);
     }
-    QSignalMapper* signalMapper = new QSignalMapper(this);
+//    QSignalMapper* signalMapper = new QSignalMapper(this);
 
     if(!menuLimitsActions.isEmpty()) {
         ui->menuLimits->clear();
@@ -380,10 +389,13 @@ void MainWindow::refreshMenuLimits() {
         newAction->setText(limit->getTitle());
         ui->menuLimits->addAction(newAction);
         menuLimitsActions.append(newAction);
-        signalMapper->setMapping(newAction, limit->getTitle());
-        connect(newAction, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
+        connect(newAction, &QAction::triggered, this, [=]{
+            this->openLimitsWindow(limit->getTitle());
+        });
+//        signalMapper->setMapping(newAction, limit->getTitle());
+//        connect(newAction, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
     }
-    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(openLimitsWindow(QString)));
+//    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(openLimitsWindow(QString)));
 }
 
 void MainWindow::openLimitsWindow(QString name) {
@@ -416,7 +428,7 @@ void MainWindow::refreshMenuFile() {
     }
     lastFileActions.clear();
 
-    QSignalMapper* signalMapper = new QSignalMapper(this);
+//    QSignalMapper* signalMapper = new QSignalMapper(this);
     ui->menuFile->addSeparator();
     foreach(QVariant listVar, settings.getRecentOpenFiles()) {
         QString fileName = listVar.toString();
@@ -427,13 +439,16 @@ void MainWindow::refreshMenuFile() {
         }
 
         QAction *newAct = new QAction(fileName, ui->menuFile);
-        signalMapper->setMapping(newAct, fileName);
-        connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
+        connect(newAct, &QAction::triggered, this, [=]{
+            this->readSettingsFile(fileName);
+        });
+//        signalMapper->setMapping(newAct, fileName);
+//        connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
         newAct->setEnabled(link);
         lastFileActions.prepend(newAct);
         ui->menuFile->addAction(newAct);
     }
-    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(readSettingsFile(QString)));
+//    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(readSettingsFile(QString)));
 }
 
 
@@ -594,12 +609,19 @@ void MainWindow::saveSettingsSlot() {
 }
 
 void MainWindow::setupMenuView() {
-    QSignalMapper* signalMapper = new QSignalMapper(this);
-    signalMapper->setMapping(ui->actionTemperature_in_C, "C");
-    signalMapper->setMapping(ui->actionTemperature_in_F, "F");
-    connect(ui->actionTemperature_in_C, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
-    connect(ui->actionTemperature_in_F, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
-    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(triggTemperatureSymbolSlot(QString)));
+//    QSignalMapper* signalMapper = new QSignalMapper(this);
+//    signalMapper->setMapping(ui->actionTemperature_in_C, "C");
+//    signalMapper->setMapping(ui->actionTemperature_in_F, "F");
+//    connect(ui->actionTemperature_in_C, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
+//    connect(ui->actionTemperature_in_F, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
+//    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(triggTemperatureSymbolSlot(QString)));
+
+    connect(ui->actionTemperature_in_C, &QAction::triggered, this, [=]{
+        this->triggTemperatureSymbolSlot("C");
+    });
+    connect(ui->actionTemperature_in_F, &QAction::triggered, this, [=]{
+        this->triggTemperatureSymbolSlot("F");
+    });
 
     refreshMenuView();
 }
@@ -675,18 +697,20 @@ void MainWindow::setupParameterHandlers() {
         ui->actualParameters->setLayout(actualParamsGLayout);
 
         // Формирование и вывод на экран панели режимов
-        QSignalMapper* cbSignalMapper = new QSignalMapper(this);
+//        QSignalMapper* cbSignalMapper = new QSignalMapper(this);
         if(!devConfig.binOptions.empty()) {
             QVBoxLayout *vlayout = new QVBoxLayout();
             foreach(binOption_t binOption, devConfig.binOptions) {
                 QCheckBox* checkBox = binOption.checkBox;
                 checkBox->setStyleSheet("QCheckBox {font-family: \"Share Tech Mono\"; border: none; color: #fff;} ");
                 vlayout->addWidget(checkBox);
-                connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
-                cbSignalMapper->setMapping(checkBox, binOption.label);
+                connect(checkBox, &QCheckBox::clicked, this, [=]{
+                    this->spcialParameterSlot(binOption.label);
+                });
+//                connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
+//                cbSignalMapper->setMapping(checkBox, binOption.label);
             }
-
-            connect(cbSignalMapper, SIGNAL(mapped(QString)), this, SLOT(spcialParameterSlot(QString)));
+//            connect(cbSignalMapper, SIGNAL(mapped(QString)), this, SLOT(spcialParameterSlot(QString)));
             ui->specialParamBox->setLayout(vlayout);
         }
     }
@@ -1005,7 +1029,9 @@ void MainWindow::readComData_Slot(QByteArray str) {
                             } else {
                                 binaryOption.checkBox->setChecked(false);
                             }
-                            saveCheckboxes();
+                            if(ui->actionKeep_checkboxes->isChecked()) {
+                                saveCheckboxes();
+                            }
                         }
                     }
 
@@ -1342,12 +1368,14 @@ void MainWindow::setLink(bool state) {
 void MainWindow::sendNextComCommand() {
     if(devConfig.commands.isEmpty() || !isDeviceLoaded) return;
 
-    if(!bWasConnectedOnce) {
-        if(isCheckboxesFileExist()) {
-            loadCheckboxes();
+    if(ui->actionKeep_checkboxes->isChecked()) {
+        if(!bWasConnectedOnce) {
+            if(isCheckboxesFileExist()) {
+                loadCheckboxes();
+            }
+            bWasConnectedOnce = true;
+            return;
         }
-        bWasConnectedOnce = true;
-        return;
     }
 
     bool needToSend = true;
