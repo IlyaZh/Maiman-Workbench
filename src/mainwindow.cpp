@@ -235,7 +235,7 @@ void MainWindow::setupMenuPort() {
             newAct->setChecked(false);
         }
         ui->menuSelectBaudrate->addAction(newAct);
-        connect(newAct, &QAction::triggered, this, [=]{
+        connect(newAct, &QAction::triggered, [=]{
             this->changeBaudRateSlot(BR);
         });
 //        signalMapper->setMapping(newAct, BR);
@@ -272,7 +272,7 @@ void MainWindow::refreshMenuPort() {
                 newAct->setChecked(false);
             }
             ui->menuSelectPort->addAction(newAct);
-            connect(newAct, &QAction::triggered, this, [=]{
+            connect(newAct, &QAction::triggered, [=]{
                 this->changePortSlot(str);
             });
 //            signalMapper->setMapping(newAct, str);
@@ -345,7 +345,7 @@ void MainWindow::refreshMenuCalibrate() {
         newAction->setText(item.title);
         ui->menuCalibrate->addAction(newAction);
         menuCalibrateActions.append(newAction);
-        connect(newAction, &QAction::triggered, this, [=]{
+        connect(newAction, &QAction::triggered, [=]{
             this->openCalibrateWindow(item.title);
         });
 //        signalMapper->setMapping(newAction, item.title);
@@ -389,7 +389,7 @@ void MainWindow::refreshMenuLimits() {
         newAction->setText(limit->getTitle());
         ui->menuLimits->addAction(newAction);
         menuLimitsActions.append(newAction);
-        connect(newAction, &QAction::triggered, this, [=]{
+        connect(newAction, &QAction::triggered,[=]{
             this->openLimitsWindow(limit->getTitle());
         });
 //        signalMapper->setMapping(newAction, limit->getTitle());
@@ -439,7 +439,7 @@ void MainWindow::refreshMenuFile() {
         }
 
         QAction *newAct = new QAction(fileName, ui->menuFile);
-        connect(newAct, &QAction::triggered, this, [=]{
+        connect(newAct, &QAction::triggered, [=]{
             this->readSettingsFile(fileName);
         });
 //        signalMapper->setMapping(newAct, fileName);
@@ -616,10 +616,10 @@ void MainWindow::setupMenuView() {
 //    connect(ui->actionTemperature_in_F, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
 //    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(triggTemperatureSymbolSlot(QString)));
 
-    connect(ui->actionTemperature_in_C, &QAction::triggered, this, [=]{
+    connect(ui->actionTemperature_in_C, &QAction::triggered, [=]{
         this->triggTemperatureSymbolSlot("C");
     });
-    connect(ui->actionTemperature_in_F, &QAction::triggered, this, [=]{
+    connect(ui->actionTemperature_in_F, &QAction::triggered, [=]{
         this->triggTemperatureSymbolSlot("F");
     });
 
@@ -704,7 +704,7 @@ void MainWindow::setupParameterHandlers() {
                 QCheckBox* checkBox = binOption.checkBox;
                 checkBox->setStyleSheet("QCheckBox {font-family: \"Share Tech Mono\"; border: none; color: #fff;} ");
                 vlayout->addWidget(checkBox);
-                connect(checkBox, &QCheckBox::clicked, this, [=]{
+                connect(checkBox, &QCheckBox::clicked, [=]{
                     this->spcialParameterSlot(binOption.label);
                 });
 //                connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
