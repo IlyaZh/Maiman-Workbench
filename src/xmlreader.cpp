@@ -59,8 +59,9 @@ void xmlReader::parseCommonConfig(QString fileName, QList<availableDev_t>& devic
     QXmlStreamAttributes attrib = xml.attributes();
     QStringRef xname = xml.name();
 
-    while(!xml.atEnd() && !xml.hasError()) {
+    while(!xml.atEnd()) {
         QXmlStreamReader::TokenType token = xml.readNext();
+        qDebug() << xml.lineNumber() << xml.text() << xml.tokenString() << xml.name();
         xname = xml.name();
         if(token == QXmlStreamReader::StartElement) {
             if(xname == "CIDD") {
@@ -78,16 +79,23 @@ void xmlReader::parseCommonConfig(QString fileName, QList<availableDev_t>& devic
                 if(attrib.hasAttribute("value")) {
                     uint value = attrib.value("value").toUInt();
                     bauds->append(value);
+                    qDebug() << "parse bauds " << value;
                 }
             }
         } else if(token == QXmlStreamReader::EndElement) {
+            qDebug() << "end elemenet" << xname;
             // Завершаем цикл чтения по прошествию соответствующего закрывающего тэга
             if(xname == "CommonIDDevices") break;
             if(xname == "Config") break;
         }
+
+        if(xml.hasError()) {
+            qDebug() << xml.errorString();
+            emit errorHandler("Program CONFIG: " + xml.errorString());
+            break;
+        }
     }
 
-    if(xml.hasError()) emit errorHandler("Program CONFIG: " + xml.errorString());
     emit endOfLoadingProgramConfig(!xml.hasError());
 
     file->close();

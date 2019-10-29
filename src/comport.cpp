@@ -189,7 +189,7 @@ void comPort::needToRead() {
 
    if(buffer.contains(COM_END_OF_LINE)) {
            if(buffer.size() > READ_COM_COMMAND_LENGTH) {
-               emit errorOccuredSignal("Unexpected length of answer: " + buffer);
+               emit errorOccuredSignal("Unexpected length of answer: " + QString(buffer));
                portIsBusy = false;
                return;
            }
@@ -208,7 +208,7 @@ void comPort::needToRead() {
    }
 
    if(buffer.size() > READ_COM_COMMAND_LENGTH*2) {
-       emit errorOccuredSignal("Unexpected length of answer: " + buffer);
+       emit errorOccuredSignal("Unexpected length of answer: " + QString(buffer));
        portIsBusy = false;
        return;
    }

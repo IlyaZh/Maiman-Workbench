@@ -226,7 +226,9 @@ void MainWindow::setupMenuPort() {
     // Формирование и вывод в меню списка доступных бауд-рейтов
     ui->menuSelectBaudrate->clear();
 //    QSignalMapper* signalMapper = new QSignalMapper(this);
+    qDebug() << "bauds";
     foreach (quint32 BR, comBaudRates) {
+        qDebug() << BR;
         QAction *newAct = new QAction(QString::number(BR), this);
         newAct->setCheckable(true);
         if(settings.getComBaudrate() == BR) {
@@ -235,7 +237,7 @@ void MainWindow::setupMenuPort() {
             newAct->setChecked(false);
         }
         ui->menuSelectBaudrate->addAction(newAct);
-        connect(newAct, &QAction::triggered, [=]{
+        connect(newAct, &QAction::triggered, [this, BR]{
             this->changeBaudRateSlot(BR);
         });
 //        signalMapper->setMapping(newAct, BR);
@@ -272,7 +274,7 @@ void MainWindow::refreshMenuPort() {
                 newAct->setChecked(false);
             }
             ui->menuSelectPort->addAction(newAct);
-            connect(newAct, &QAction::triggered, [=]{
+            connect(newAct, &QAction::triggered, [this, str]{
                 this->changePortSlot(str);
             });
 //            signalMapper->setMapping(newAct, str);
@@ -345,7 +347,7 @@ void MainWindow::refreshMenuCalibrate() {
         newAction->setText(item.title);
         ui->menuCalibrate->addAction(newAction);
         menuCalibrateActions.append(newAction);
-        connect(newAction, &QAction::triggered, [=]{
+        connect(newAction, &QAction::triggered, [this, &item]{
             this->openCalibrateWindow(item.title);
         });
 //        signalMapper->setMapping(newAction, item.title);
@@ -389,7 +391,7 @@ void MainWindow::refreshMenuLimits() {
         newAction->setText(limit->getTitle());
         ui->menuLimits->addAction(newAction);
         menuLimitsActions.append(newAction);
-        connect(newAction, &QAction::triggered,[=]{
+        connect(newAction, &QAction::triggered,[this, limit]{
             this->openLimitsWindow(limit->getTitle());
         });
 //        signalMapper->setMapping(newAction, limit->getTitle());
@@ -439,7 +441,7 @@ void MainWindow::refreshMenuFile() {
         }
 
         QAction *newAct = new QAction(fileName, ui->menuFile);
-        connect(newAct, &QAction::triggered, [=]{
+        connect(newAct, &QAction::triggered, [this, fileName]{
             this->readSettingsFile(fileName);
         });
 //        signalMapper->setMapping(newAct, fileName);
@@ -616,10 +618,10 @@ void MainWindow::setupMenuView() {
 //    connect(ui->actionTemperature_in_F, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
 //    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(triggTemperatureSymbolSlot(QString)));
 
-    connect(ui->actionTemperature_in_C, &QAction::triggered, [=]{
+    connect(ui->actionTemperature_in_C, &QAction::triggered, [this]{
         this->triggTemperatureSymbolSlot("C");
     });
-    connect(ui->actionTemperature_in_F, &QAction::triggered, [=]{
+    connect(ui->actionTemperature_in_F, &QAction::triggered, [this]{
         this->triggTemperatureSymbolSlot("F");
     });
 
@@ -704,7 +706,7 @@ void MainWindow::setupParameterHandlers() {
                 QCheckBox* checkBox = binOption.checkBox;
                 checkBox->setStyleSheet("QCheckBox {font-family: \"Share Tech Mono\"; border: none; color: #fff;} ");
                 vlayout->addWidget(checkBox);
-                connect(checkBox, &QCheckBox::clicked, [=]{
+                connect(checkBox, &QCheckBox::clicked, [this, &binOption]{
                     this->spcialParameterSlot(binOption.label);
                 });
 //                connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
