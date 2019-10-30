@@ -162,7 +162,7 @@ private:
     SelectDeviceDialog *selectDeviceDialog;
     quint16 devID;
 //    closeWindow_t waitingForStop;
-    bool bWasConnectedOnce;
+    bool bNeedSetCheckboxes;
     bool checkStopAndDisconnect;
 
 signals:

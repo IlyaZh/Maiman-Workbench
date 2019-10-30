@@ -160,7 +160,7 @@ void MainWindow::setupWindow() {
     oldDevID = 0;
     autoSendNextCommand = true;
     requestAllCommands = true;
-    bWasConnectedOnce = false;
+    bNeedSetCheckboxes = false;
     checkStopAndDisconnect = false;
 
     loadCommonConfig(availableDevices);
@@ -760,6 +760,7 @@ bool MainWindow::isCheckboxesFileExist() {
 
 // TODO: LOOK THIS SHIT
 void MainWindow::loadCheckboxes() {
+    qDebug() << "loadCheckboxes()";
     if(devConfig.binOptions.isEmpty()) return;
 
     QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
@@ -769,6 +770,7 @@ void MainWindow::loadCheckboxes() {
             QStringList values = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseSensitive);
             if(values.length() == 2) {
                 QString msgForSend = COM_WRITE_PREFIX + values.at(0) + QString(" ") + values.at(1);
+                qDebug() << msgForSend;
                 sendDataToPort(msgForSend);
             } else {
                 writeToConsoleError("Binary options config load error.");
@@ -883,7 +885,6 @@ void MainWindow::setRegulatorsEnable(bool state) {
 void MainWindow::getPortNewState(bool state) {
     if (state != portIsOpen) {
         if(state) { // Port is openned now
-            bWasConnectedOnce = true;
             this->writeToConsole(settings.getComPort() + tr(" is open!\n"), CONSOLE_INFO_COLOR);
             ui->comPortConnectButton->setText(settings.getComPort() + QString("   ") + QString::number(settings.getComBaudrate()) + "bps");
             startDeviceIdent();
@@ -1196,6 +1197,7 @@ void MainWindow::loadConfigFinished(bool isDeviceFound) {
         writeToConsole(tr("CONFIG: Config is loaded successful!"));
 
         setRegulatorsEnable(true);
+        bNeedSetCheckboxes = true;
 //        prepareToSendNextCommand();
     } else {
         emit writeToConsoleError(tr("CONFIG: The device hasn't found!"));
@@ -1381,11 +1383,11 @@ void MainWindow::sendNextComCommand() {
     if(devConfig.commands.isEmpty() || !isDeviceLoaded) return;
 
     if(ui->actionKeep_checkboxes->isChecked()) {
-        if(!bWasConnectedOnce) {
+        if(bNeedSetCheckboxes) {
             if(isCheckboxesFileExist()) {
                 loadCheckboxes();
             }
-            bWasConnectedOnce = true;
+            bNeedSetCheckboxes = false;
             return;
         }
     }
