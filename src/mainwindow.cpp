@@ -770,17 +770,18 @@ void MainWindow::loadCheckboxes() {
             QStringList values = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseSensitive);
             if(values.length() == 2) {
                 QString msgForSend = COM_WRITE_PREFIX + values.at(0) + QString(" ") + values.at(1);
-                qDebug() << msgForSend;
+//                qDebug() << msgForSend;
                 sendDataToPort(msgForSend);
             } else {
                 writeToConsoleError("Binary options config load error.");
             }
         }
+        file->close();
     }
     if(file->error()) {
         writeToConsoleError(file->errorString());
     }
-    file->close();
+
     file->deleteLater();
 }
 
@@ -1382,20 +1383,20 @@ void MainWindow::setLink(bool state) {
 void MainWindow::sendNextComCommand() {
     if(devConfig.commands.isEmpty() || !isDeviceLoaded) return;
 
-    if(ui->actionKeep_checkboxes->isChecked()) {
-        if(bNeedSetCheckboxes) {
-            if(isCheckboxesFileExist()) {
-                loadCheckboxes();
-            }
-            bNeedSetCheckboxes = false;
-            return;
-        }
-    }
-
     bool needToSend = true;
     bool cycleOn = true;
 
     while(cycleOn) {
+
+        if(ui->actionKeep_checkboxes->isChecked()) {
+            if(bNeedSetCheckboxes) {
+                if(isCheckboxesFileExist()) {
+                    loadCheckboxes();
+                }
+                bNeedSetCheckboxes = false;
+                continue;
+            }
+        }
 
         if(currCommandItt == nullptr) {
             currCommandItt = devConfig.commands.constBegin();

@@ -44,6 +44,7 @@ private:
     QQueue<QString> queue2send;
     uint stopCommandDelay;
     bool checkStopWritten;
+    QList<QByteArray> splitCommands;
 
 signals:
     void errorOccuredSignal(QString);
