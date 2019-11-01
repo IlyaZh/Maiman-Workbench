@@ -210,10 +210,14 @@ void xmlReader::parseCommands() {
 
         bool isSigned = attrib.hasAttribute("isSigned");
 
+        bool isTemperature = attrib.hasAttribute("isTemperature");
+        QString unit = (attrib.hasAttribute("unit")) ? attrib.value("unit").toString() : "" ;
+        unit.replace("(deg)", QString::fromRawData(new QChar('\260'), 1));
+
         if(isSigned) {
-            device->commands.insert(code, new SignedCommand(code, divider, interval));
+            device->commands.insert(code, new SignedCommand(code, unit, divider, interval, isTemperature));
         } else {
-            device->commands.insert(code, new Command(code, divider, interval));
+            device->commands.insert(code, new Command(code, unit, divider, interval, isTemperature));
         }
 
     }
@@ -278,20 +282,9 @@ void xmlReader::parseLedMask(leds_t* ledPtr) {
 void xmlReader::parseParam() {
     QXmlStreamAttributes attrib = xml.attributes();
 
-    bool isTemperatureFlag = false;
-    QString unit = "";
     QString title = "no name";
     QString minCode, maxCode, valueCode, realCode;
     minCode = maxCode = valueCode = realCode = "";
-
-    if(attrib.hasAttribute("isTemperature")) {
-        isTemperatureFlag = (attrib.value("isTemperature").toUInt() == 0) ? false : true;
-    }
-
-    if(attrib.hasAttribute("unit")) {
-        unit = attrib.value("unit").toString();
-        unit.replace("(deg)", QString::fromRawData(new QChar('\260'), 1));
-    }
 
     if(attrib.hasAttribute("min")) {
         minCode = attrib.value("min").toString();
@@ -311,10 +304,12 @@ void xmlReader::parseParam() {
 
     title = xml.readElementText();
 
-    double divider = (device->commands.contains(valueCode)) ? device->commands.value(valueCode)->getDivider() : 1;
-    double realDivider = (device->commands.contains(realCode)) ? device->commands.value(realCode)->getDivider() : 1;
+    Command* minComm = device->commands.value(minCode, nullptr);
+    Command* maxComm = device->commands.value(maxCode, nullptr);
+    Command* valueComm = device->commands.value(valueCode, nullptr);
+    Command* realComm = device->commands.value(realCode, nullptr);
 
-    ParameterController* parameterController = new ParameterController(title, unit, minCode, maxCode, valueCode, realCode, divider, realDivider, isTemperatureFlag);
+    ParameterController* parameterController = new ParameterController(title, minComm, maxComm, valueComm, realComm);
 
     device->paramWidgets.append(parameterController);
 

@@ -39,14 +39,15 @@ void MainWindow::setConnections() {
     connect(ui->actionLoad_settings, SIGNAL(triggered(bool)), this, SLOT(loadSettingsSlot()));
     // Сохранение параметров для меня file->save settings
     connect(ui->actionSave_settings, SIGNAL(triggered(bool)), this, SLOT(saveSettingsSlot()));
-    // Выход из программы
-    connect(ui->actionExit, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
+    // Галочка KeepCheckboxes для (не) сохранения состояния источника
     connect(ui->actionKeep_checkboxes, &QAction::triggered, [this](bool flag){
         if(flag) {
             this->saveCheckboxes();
         }
         settings.setKeepCheckboxesFlag(flag);
     });
+    // Выход из программы
+    connect(ui->actionExit, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
 
     // Выбор количества стоп-бит
     connect(ui->actionOne_stop_bit, SIGNAL(toggled(bool)), this, SLOT(setComOneStopBit()));
@@ -412,13 +413,13 @@ void MainWindow::openLimitsWindow(QString name) {
             changeLimitsDialog->setData(*limit);
             foreach(Command* param, devConfig.commands) {
                 if(param->getCode().compare(limit->getUpperLimitCode()) == 0) {
-                    changeLimitsDialog->setAbsMax(param->getConvertedValue());
+                    changeLimitsDialog->setAbsMax(param->getValue());
                 } else if(param->getCode().compare(limit->getBottomLimitCode()) == 0) {
-                    changeLimitsDialog->setAbsMin(param->getConvertedValue());
+                    changeLimitsDialog->setAbsMin(param->getValue());
                 } else if(param->getCode().compare(limit->getMaxCode()) == 0) {
-                    changeLimitsDialog->setMax(param->getConvertedValue());
+                    changeLimitsDialog->setMax(param->getValue());
                 } else if(param->getCode().compare(limit->getMinCode()) == 0) {
-                    changeLimitsDialog->setMin(param->getConvertedValue());
+                    changeLimitsDialog->setMin(param->getValue());
                 }
             }
 
@@ -674,10 +675,12 @@ void MainWindow::setupParameterHandlers() {
             actualParamsGLayout->addWidget(parameterController->loadTextWidget(), row, 0);
             row++;
 
-            if(!parameterController->getValueComm().isEmpty()) { // Вывод "крутилок-таскалок" для параметров
-                // Сокрытие\показ дополнительных полей если параметр доступен только для записи или для чтения\записи
-                parameterController->hideRealValue(parameterController->getRealComm().isEmpty());
-
+            if(parameterController->isOnlyMeasured()) { // Вывод значений в окно параметров
+//                actualParamsGLayout->removeWidget((*itemPtr)->loadTextWidget());
+//                actualParamsGLayout->addWidget((*itemPtr)->loadTextWidget(), row, 0);
+//                row++;
+               parameterController->loadTextWidget()->setVisible(true);
+            } else { // Вывод "крутилок-таскалок" для параметров
                 if(settings.getCompactModeFlag()) {
                     parameterController->loadCompactWidget()->setVisible(true);
                     parameterController->loadWidget()->setVisible(false);
@@ -690,11 +693,6 @@ void MainWindow::setupParameterHandlers() {
                 layoutparams->addWidget(parameterController->loadCompactWidget(), rowcol+1, 0);
                 parameterController->loadTextWidget()->setVisible(false);
                 rowcol++;
-            } else { // Вывод значений в окно параметров
-//                actualParamsGLayout->removeWidget((*itemPtr)->loadTextWidget());
-//                actualParamsGLayout->addWidget((*itemPtr)->loadTextWidget(), row, 0);
-//                row++;
-                parameterController->loadTextWidget()->setVisible(true);
             }
         }
 
@@ -1009,25 +1007,25 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     Command* currentCommand = devConfig.commands.value(commandStr);
                     currentCommand->setRawValue(value);
                     // Обработка крутилок и информеров основных параметров
-                    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
-                        double newValue;
-                        newValue  = currentCommand->getConvertedValue();
+//                    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
+//                        double newValue;
+//                        newValue  = currentCommand->getValue();
 
 
-                        if(parameterController->isTemperature() && settings.getTemperatureSymbol() == "F") {
-                            newValue = convertCelToFar(newValue);
-                        }
+//                        if(parameterController->isTemperature() && settings.getTemperatureSymbol() == "F") {
+//                            newValue = convertCelToFar(newValue);
+//                        }
 
-                        if(parameterController->getMaxComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                            parameterController->setMax(newValue);
-                        } else if(parameterController->getMinComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                            parameterController->setMin(newValue);
-                        } else if(parameterController->getRealComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                            parameterController->setRealValue(newValue);
-                        } else if(parameterController->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-                            parameterController->setSentValue(newValue);
-                        }
-                    }
+//                        if(parameterController->getMaxComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+//                            parameterController->setMax(newValue);
+//                        } else if(parameterController->getMinComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+//                            parameterController->setMin(newValue);
+//                        } else if(parameterController->getRealComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+//                            parameterController->setRealValue(newValue);
+//                        } else if(parameterController->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+//                            parameterController->setSentValue(newValue);
+//                        }
+//                    }
 
                     // Обработка LEDS
                     setLedState(commandStr, value);
@@ -1256,9 +1254,14 @@ void MainWindow::triggComAutoConnectSlot(bool state) {
 void MainWindow::triggTemperatureSymbolSlot(QString str) {
     settings.setTemperatureSymbol(str);
 
-    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
-        if(parameterController->isTemperature()) {
-            parameterController->temperatureIsChanged(str);
+//    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
+//        if(parameterController->isTemperature()) {
+//            parameterController->temperatureIsChanged(str);
+//        }
+//    }
+    foreach(Command* cmd, devConfig.commands) {
+        if(cmd->isTemperature()) {
+            cmd->setTemperatureUnit(str);
         }
     }
 
@@ -1339,7 +1342,7 @@ void MainWindow::hideControlsButtonSlot(bool state) {
     }
 
     for(QList<ParameterController*>::iterator p = devConfig.paramWidgets.begin(); p != devConfig.paramWidgets.end(); p++) {
-        if((*p)->getPinState() == false && !(*p)->getValueComm().isEmpty()) {
+        if((*p)->getPinState() == false && !(*p)->isOnlyMeasured()) {
             if(settings.getCompactModeFlag()) {
                 (*p)->loadCompactWidget()->setVisible(!state);
             } else {
@@ -1347,11 +1350,11 @@ void MainWindow::hideControlsButtonSlot(bool state) {
             }
 
             if (state) { // скрыть крутилки
-                if (!(*p)->getRealComm().isEmpty()) {
+                if (!(*p)->isOnlyMeasured()) {
                     (*p)->loadTextWidget()->setVisible(true);
                 }
             } else { // показать крутилки
-                if (!(*p)->getRealComm().isEmpty()) {
+                if (!(*p)->isOnlyMeasured()) {
                     (*p)->loadTextWidget()->setVisible(false);
                 }
             }
