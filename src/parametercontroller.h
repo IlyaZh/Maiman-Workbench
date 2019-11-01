@@ -3,9 +3,7 @@
 
 #include "commondefines.h"
 
-#include "appsettings.h"
 #include "command.h"
-extern AppSettings settings;
 
 #include <QWidget>
 #include <QUiLoader>

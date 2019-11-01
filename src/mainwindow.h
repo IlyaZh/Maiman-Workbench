@@ -35,8 +35,7 @@
 #include "aboutdevicedialog.h"
 #include "calibratedialog.h"
 #include "selectdevicedialog.h"
-
-extern AppSettings settings;
+#include "appsettings.h"
 
 namespace Ui {
 class MainWindow;
@@ -143,7 +142,7 @@ private:
     QMap<QString, Command*>::const_iterator currCommandItt;
     quint16 oldDevID;
     bool link;
-    QPointer<comPort> serialPort;
+    QPointer<ComPort> serialPort;
     QPointer<BitsLayout> bitsLayout;
     QPointer<QGridLayout> actualParamsGLayout;
     QList<QLabel*> actualParamsLabels;
@@ -164,6 +163,7 @@ private:
 //    closeWindow_t waitingForStop;
     bool bNeedSetCheckboxes;
     bool checkStopAndDisconnect;
+    AppSettings *settings;
 
 signals:
 //    void writeToLogSignal(QString);

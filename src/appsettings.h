@@ -28,7 +28,6 @@ public:
     QPoint getWindowPosition();
     int getComStopBits();
     bool getKeepCheckboxesFlag();
-    void setKeepCheckboxesFlag(bool flag);
 //    QSize getWindowSize();
 
 private:
@@ -50,6 +49,7 @@ public slots:
     void removeRecentOpenFiles(QString str);
     void setWindowPosition(QPoint);
     void setComStopBits(int);
+    void setKeepCheckboxesFlag(bool flag);
 //    void setWindowSize(QSize);
 };
 

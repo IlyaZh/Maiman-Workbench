@@ -44,7 +44,7 @@ void MainWindow::setConnections() {
         if(flag) {
             this->saveCheckboxes();
         }
-        settings.setKeepCheckboxesFlag(flag);
+        settings->setKeepCheckboxesFlag(flag);
     });
     // Выход из программы
     connect(ui->actionExit, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
@@ -95,7 +95,7 @@ void MainWindow::setConnections() {
     QObject::connect(serialPort, SIGNAL(errorOccuredSignal(QString)), this, SLOT(comPortError(QString)));
 
     // Если установленно "автоподключение", то устанавливаем связь с ком-портом при запуске программы
-    if(settings.getComAutoconnectFlag()) serialPort->setPortState(true);
+    if(settings->getComAutoconnectFlag()) serialPort->setPortState(true);
 
     // Обработка нажатия кнопки начала\остановки авторассылки команд
     connect(ui->consoleStartStopButton, SIGNAL(clicked(bool)), this, SLOT(comSetDataTransfer(bool)));
@@ -132,7 +132,7 @@ void MainWindow::setConnections() {
 }
 
 void MainWindow::setupWindow() {
-//    waitingForStop = closeWindow_t::NONE_CLOSE;
+    settings = new AppSettings(this);
 
     devID = 0;
     loadFont();
@@ -140,19 +140,19 @@ void MainWindow::setupWindow() {
     setWindowIcon(QIcon(":/images/logo-minimal.png"));
 
     loadWindowSettings();
-    settings.setLastSelectedDeviceId(0);
+    settings->setLastSelectedDeviceId(0);
 
     // Временно скрываем меню help
     ui->actionHelp->setVisible(false);
 
     // Определение вспомогательных классов
     logger = new consoleLogger();
-    serialPort = new comPort();
+    serialPort = new ComPort(settings, this);
     changeLimitsDialog = new ChangeLimitsDialog(this);
     calibrateDialog = new CalibrateDialog(this);
     xml = new xmlReader(this);
     actualParamsGLayout = new QGridLayout();
-    aboutDeviceDialog = new AboutDeviceDialog(this);
+    aboutDeviceDialog = new AboutDeviceDialog(settings, this);
     bitsLayout = new BitsLayout(ui->bitMaskBox);
     ui->bitMaskBox->setLayout(bitsLayout->getLayout());
     selectDeviceDialog = new SelectDeviceDialog(this);
@@ -170,18 +170,18 @@ void MainWindow::setupWindow() {
     portIsOpen = false;
     isDeviceLoaded = false;
 
-    ui->actionAutoconnect->setChecked(settings.getComAutoconnectFlag());
+    ui->actionAutoconnect->setChecked(settings->getComAutoconnectFlag());
     ui->actionSave_settings->setEnabled(false);
     ui->actionLoad_settings->setEnabled(false);
     ui->actionKeep_checkboxes->setEnabled(false);
-    ui->controlsVisibleButton->setChecked(false); //settings.getHideControlsFlag());
+    ui->controlsVisibleButton->setChecked(false); //settings->getHideControlsFlag());
     ui->controlsVisibleButton->setText("Hide controls");
 
     setupMenuView();
     setupMenuPort();
     refreshMenuFile();
     ui->actionExit->setShortcut(QKeySequence("ALT+F4"));
-    ui->actionKeep_checkboxes->setChecked(settings.getKeepCheckboxesFlag());
+    ui->actionKeep_checkboxes->setChecked(settings->getKeepCheckboxesFlag());
 
 //    ui->devImageLabel->setVisible(false);
     ui->devNameLabel->setVisible(false);
@@ -237,7 +237,7 @@ void MainWindow::setupMenuPort() {
     foreach (quint32 BR, comBaudRates) {
         QAction *newAct = new QAction(QString::number(BR), this);
         newAct->setCheckable(true);
-        if(settings.getComBaudrate() == BR) {
+        if(settings->getComBaudrate() == BR) {
             newAct->setChecked(true);
         } else {
             newAct->setChecked(false);
@@ -274,14 +274,14 @@ void MainWindow::refreshMenuPort() {
         foreach (QString port, portList) {
             QAction *newAct = new QAction(port, this);
             newAct->setCheckable(true);
-            if(QString::compare(settings.getComPort(), port, Qt::CaseInsensitive) == 0) {
+            if(QString::compare(settings->getComPort(), port, Qt::CaseInsensitive) == 0) {
                 newAct->setChecked(true);
             } else {
                 newAct->setChecked(false);
             }
             ui->menuSelectPort->addAction(newAct);
             connect(newAct, &QAction::triggered, [this, port]{
-                settings.setComPort(port);
+                settings->setComPort(port);
                 refreshMenuPort();
             });
 //            signalMapper->setMapping(newAct, str);
@@ -296,7 +296,7 @@ void MainWindow::refreshMenuPort() {
     connect(refreshPortAct, SIGNAL(triggered(bool)), this, SLOT(refreshMenuPort()));
 
     foreach (QAction *act, ui->menuSelectPort->actions()) {
-        if(QString::compare(settings.getComPort(), act->text(), Qt::CaseInsensitive) == 0) {
+        if(QString::compare(settings->getComPort(), act->text(), Qt::CaseInsensitive) == 0) {
             act->setChecked(true);
         } else {
             act->setChecked(false);
@@ -306,7 +306,7 @@ void MainWindow::refreshMenuPort() {
 
 void MainWindow::refreshMenuBaud() {
     foreach (QAction *act, ui->menuSelectBaudrate->actions()) {
-        if(settings.getComBaudrate() == act->text().toUInt()) {
+        if(settings->getComBaudrate() == act->text().toUInt()) {
             act->setChecked(true);
         } else {
             act->setChecked(false);
@@ -317,13 +317,13 @@ void MainWindow::refreshMenuBaud() {
 void MainWindow::refreshMenuStopBits() {
     foreach (QAction *act, ui->menuStop_bits->actions()) {
         if(act->text() == "One stop bit") {
-            if(settings.getComStopBits() == 1) {
+            if(settings->getComStopBits() == 1) {
                 act->setChecked(true);
             } else {
                 act->setChecked(false);
             }
         } else if(act->text() == "Two stop bits") {
-            if(settings.getComStopBits() == 2) {
+            if(settings->getComStopBits() == 2) {
                 act->setChecked(true);
             } else {
                 act->setChecked(false);
@@ -335,32 +335,32 @@ void MainWindow::refreshMenuStopBits() {
 void MainWindow::refreshMenuCalibrate() {
     if(devConfig.calCoefs.isEmpty()) {
         ui->menuCalibrate->menuAction()->setVisible(false);
-        return;
     } else {
         ui->menuCalibrate->menuAction()->setVisible(true);
+
+
+    //    QSignalMapper* signalMapper = new QSignalMapper(this);
+
+        if(!menuCalibrateActions.isEmpty()) {
+            ui->menuCalibrate->clear();
+            menuCalibrateActions.clear();
+        }
+
+        ui->menuCalibrate->setEnabled(true);
+
+        foreach(calibration_t item, devConfig.calCoefs) {
+            QAction *newAction = new QAction();
+            newAction->setText(item.title);
+            ui->menuCalibrate->addAction(newAction);
+            menuCalibrateActions.append(newAction);
+            connect(newAction, &QAction::triggered, [this, &item]{
+                this->openCalibrateWindow(item.title);
+            });
+    //        signalMapper->setMapping(newAction, item.title);
+    //        connect(newAction, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
+        }
+    //    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(openCalibrateWindow(QString)));
     }
-
-//    QSignalMapper* signalMapper = new QSignalMapper(this);
-
-    if(!menuCalibrateActions.isEmpty()) {
-        ui->menuCalibrate->clear();
-        menuCalibrateActions.clear();
-    }
-
-    ui->menuCalibrate->setEnabled(true);
-
-    foreach(calibration_t item, devConfig.calCoefs) {
-        QAction *newAction = new QAction();
-        newAction->setText(item.title);
-        ui->menuCalibrate->addAction(newAction);
-        menuCalibrateActions.append(newAction);
-        connect(newAction, &QAction::triggered, [this, &item]{
-            this->openCalibrateWindow(item.title);
-        });
-//        signalMapper->setMapping(newAction, item.title);
-//        connect(newAction, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
-    }
-//    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(openCalibrateWindow(QString)));
 }
 
 
@@ -368,9 +368,6 @@ void MainWindow::openCalibrateWindow(QString name) {
     foreach(const calibration_t item, devConfig.calCoefs) {
         if(item.title == name) {
             calibrateDialog->setStruct(item);
-            if(devConfig.commands.contains(item.code)) {
-                calibrateDialog->setValue(devConfig.commands.value(item.code)->getRawValue());
-            }
             calibrateDialog->show();
             break;
         }
@@ -408,24 +405,10 @@ void MainWindow::refreshMenuLimits() {
 }
 
 void MainWindow::openLimitsWindow(QString name) {
-    foreach(DeviceLimit* limit, devConfig.limits) {
-        if(limit->getTitle() == name) {
-            changeLimitsDialog->setData(*limit);
-            foreach(Command* param, devConfig.commands) {
-                if(param->getCode().compare(limit->getUpperLimitCode()) == 0) {
-                    changeLimitsDialog->setAbsMax(param->getValue());
-                } else if(param->getCode().compare(limit->getBottomLimitCode()) == 0) {
-                    changeLimitsDialog->setAbsMin(param->getValue());
-                } else if(param->getCode().compare(limit->getMaxCode()) == 0) {
-                    changeLimitsDialog->setMax(param->getValue());
-                } else if(param->getCode().compare(limit->getMinCode()) == 0) {
-                    changeLimitsDialog->setMin(param->getValue());
-                }
-            }
-
-            changeLimitsDialog->show();
-            break;
-        }
+    DeviceLimit* limit = devConfig.limits.value(name, nullptr);
+    if(limit != nullptr) {
+        changeLimitsDialog->setData(limit);
+        changeLimitsDialog->show();
     }
 }
 
@@ -439,11 +422,11 @@ void MainWindow::refreshMenuFile() {
 
 //    QSignalMapper* signalMapper = new QSignalMapper(this);
     ui->menuFile->addSeparator();
-    foreach(QVariant listVar, settings.getRecentOpenFiles()) {
+    foreach(QVariant listVar, settings->getRecentOpenFiles()) {
         QString fileName = listVar.toString();
         // Проверка существует ли файл.
         if(!QFile::exists(fileName)) {
-            settings.removeRecentOpenFiles(fileName);
+            settings->removeRecentOpenFiles(fileName);
             continue;
         }
 
@@ -464,7 +447,7 @@ void MainWindow::refreshMenuFile() {
 
 void MainWindow::readSettingsFile(QString fileName) {
     if(!QFile::exists(fileName)) {
-        settings.removeRecentOpenFiles(fileName);
+        settings->removeRecentOpenFiles(fileName);
         refreshMenuFile();
         writeToConsoleError("Settings file \"" + fileName + "\" is not exist.");
         QMessageBox::warning(this, tr("Settings file wasn't loaded"), "Settings file \"" + fileName + "\" is not exist.", QMessageBox::Ok);
@@ -508,16 +491,16 @@ void MainWindow::readSettingsFile(QString fileName) {
 }
 
 void MainWindow::loadSettingsSlot() {
-    QString lastDir = settings.getLastSaveDirectory();
+    QString lastDir = settings->getLastSaveDirectory();
     QDir dir = QDir(lastDir);
     if(!dir.exists()) lastDir = QDir::homePath();
 
     QFileDialog *fd = new QFileDialog();
     fd->setDirectory(lastDir);
     fd->setFileMode(QFileDialog::ExistingFile);
-    QString filename = fd->getOpenFileName(this, tr("Select file"), settings.getLastSaveDirectory(), tr("Settings files (*.msf)"));
+    QString filename = fd->getOpenFileName(this, tr("Select file"), settings->getLastSaveDirectory(), tr("Settings files (*.msf)"));
     if(!filename.isEmpty()) {
-        settings.setLastSaveDirectory(fd->directory().absolutePath());
+        settings->setLastSaveDirectory(fd->directory().absolutePath());
         readSettingsFile(filename);
     }
 }
@@ -528,16 +511,16 @@ void MainWindow::saveSettingsSlot() {
 
     QStringList dataOut;
 
-    QString lastDir = settings.getLastSaveDirectory();
+    QString lastDir = settings->getLastSaveDirectory();
     QDir dir = QDir(lastDir);
     if(!dir.exists()) lastDir = QDir::homePath();
 
     QFileDialog *fd = new QFileDialog();
     fd->setFileMode(QFileDialog::AnyFile);
     fd->setDirectory(lastDir);
-    QString filename = fd->getSaveFileName(this, tr("Select file"), settings.getLastSaveDirectory(), tr("Settings files (*.msf)"));
+    QString filename = fd->getSaveFileName(this, tr("Select file"), settings->getLastSaveDirectory(), tr("Settings files (*.msf)"));
     if(!filename.isEmpty()) {
-        settings.setLastSaveDirectory(fd->directory().absolutePath());
+        settings->setLastSaveDirectory(fd->directory().absolutePath());
         if(!filename.endsWith(".msf")) filename.append(".msf");
         QFile *file = new QFile(filename);
         file->open(QIODevice::WriteOnly | QIODevice::Text);
@@ -602,14 +585,14 @@ void MainWindow::saveSettingsSlot() {
 
         autoSendNextCommand = tmpAutoSend;
         // Процесс записи окончен
-        QList<QVariant> tmpList = settings.getRecentOpenFiles();
+        QList<QVariant> tmpList = settings->getRecentOpenFiles();
         if(tmpList.contains(filename)) {
             tmpList.removeAll(filename);
-            settings.removeRecentOpenFiles(filename);
+            settings->removeRecentOpenFiles(filename);
         }
         if(tmpList.size() >= MAX_FILES_IN_MENU) tmpList.removeLast();
         tmpList.prepend(filename);
-        settings.setRecentOpenFiles(tmpList);
+        settings->setRecentOpenFiles(tmpList);
 
         refreshMenuFile();
 
@@ -636,14 +619,14 @@ void MainWindow::setupMenuView() {
 }
 
 void MainWindow::refreshMenuView() {
-    if(QString::compare(settings.getTemperatureSymbol(), "C", Qt::CaseInsensitive) == 0) {
+    if(QString::compare(settings->getTemperatureSymbol(), "C", Qt::CaseInsensitive) == 0) {
         ui->actionTemperature_in_C->setChecked(true);
         ui->actionTemperature_in_F->setChecked(false);
     } else {
         ui->actionTemperature_in_C->setChecked(false);
         ui->actionTemperature_in_F->setChecked(true);
     }
-    ui->actionCompact_view->setChecked(settings.getCompactModeFlag());
+    ui->actionCompact_view->setChecked(settings->getCompactModeFlag());
 }
 
 void MainWindow::setupParameterHandlers() {
@@ -651,12 +634,18 @@ void MainWindow::setupParameterHandlers() {
     serialPort->setStopCommandDelay(devConfig.stopCommandDelay);
     currCommandItt = nullptr;
 
+    foreach(Command* cmd, devConfig.commands) {
+        if(cmd->isTemperature()) {
+            cmd->setTemperatureUnit(settings->getTemperatureSymbol());
+        }
+    }
+
     if(!devConfig.paramWidgets.empty()) {
 //        QHBoxLayout* hlayoutparams = new QHBoxLayout();
 //        QVBoxLayout* vlayoutparams = new QVBoxLayout();
         QGridLayout* layoutparams = new QGridLayout();
 
-        ui->controlsVisibleButton->setChecked(false); //settings.getHideControlsFlag());
+        ui->controlsVisibleButton->setChecked(false); //settings->getHideControlsFlag());
         ui->controlsVisibleButton->setText("Hide controls");
         aboutDeviceDialog->setInfo(devConfig);
 
@@ -681,7 +670,7 @@ void MainWindow::setupParameterHandlers() {
 //                row++;
                parameterController->loadTextWidget()->setVisible(true);
             } else { // Вывод "крутилок-таскалок" для параметров
-                if(settings.getCompactModeFlag()) {
+                if(settings->getCompactModeFlag()) {
                     parameterController->loadCompactWidget()->setVisible(true);
                     parameterController->loadWidget()->setVisible(false);
                 } else {
@@ -880,16 +869,16 @@ void MainWindow::setRegulatorsEnable(bool state) {
 void MainWindow::getPortNewState(bool state) {
     if (state != portIsOpen) {
         if(state) { // Port is openned now
-            this->writeToConsole(settings.getComPort() + tr(" is open!\n"), CONSOLE_INFO_COLOR);
-            ui->comPortConnectButton->setText(settings.getComPort() + QString("   ") + QString::number(settings.getComBaudrate()) + "bps");
+            this->writeToConsole(settings->getComPort() + tr(" is open!\n"), CONSOLE_INFO_COLOR);
+            ui->comPortConnectButton->setText(settings->getComPort() + QString("   ") + QString::number(settings->getComBaudrate()) + "bps");
             startDeviceIdent();
             if(ui->statusBar->currentMessage().size() > 0) ui->statusBar->showMessage("");
         } else { // Port is closed now
-            this->writeToConsole(settings.getComPort() + tr(" is close!\n"), CONSOLE_INFO_COLOR);
+            this->writeToConsole(settings->getComPort() + tr(" is close!\n"), CONSOLE_INFO_COLOR);
             //emit writeToLogSignal(tr("COM: ") + COM_CURRENT_PORT + tr(" is close!\n"));
             ui->comPortConnectButton->setText(tr("Disconnected"));
             devID = 0;
-            settings.setLastSelectedDeviceId(0);
+            settings->setLastSelectedDeviceId(0);
             setRegulatorsEnable(false);
             setLink(false);
             isDeviceLoaded = false;
@@ -968,7 +957,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
             if(command == IDENTIFY_DEVICE_COMMAND) {
                 if(value == COMMON_OLD_DEVICES_VALUE) {
                     if(devID == 0) {
-    //                    devID = settings.getLastSelectedDeviceId();
+    //                    devID = settings->getLastSelectedDeviceId();
                         bool isCommonDevice = false;
                         foreach(availableDev_t devStruct, availableDevices) {
                             if(devStruct.id == devID) {
@@ -1012,7 +1001,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
 //                        newValue  = currentCommand->getValue();
 
 
-//                        if(parameterController->isTemperature() && settings.getTemperatureSymbol() == "F") {
+//                        if(parameterController->isTemperature() && settings->getTemperatureSymbol() == "F") {
 //                            newValue = convertCelToFar(newValue);
 //                        }
 
@@ -1149,7 +1138,7 @@ void MainWindow::selectedDeviceSlot(QString userSelectedDevice) {
         if(devStruct.name.compare(userSelectedDevice, Qt::CaseInsensitive) == 0) {
             clearAllRegulators();
             devID = devStruct.id;
-            settings.setLastSelectedDeviceId(devID);
+            settings->setLastSelectedDeviceId(devID);
             loadDeviceConfig(devID);
             serialPort->clearQueue();
             ui->devSelectButton->setVisible(true);
@@ -1232,7 +1221,7 @@ void MainWindow::comPortError(QString str) {
     setLink(false);
     setRegulatorsEnable(false);
     QTimer sendTimer;
-    sendTimer.singleShot(settings.getComCommandsDelay(), this, SLOT(startDeviceIdent()));
+    sendTimer.singleShot(settings->getComCommandsDelay(), this, SLOT(startDeviceIdent()));
     writeToConsoleError("COM [ERROR]: " + str);
     ui->statusBar->showMessage("[ERROR]: " + str, STATUSBAR_MESSAGE_TIMEOUT);
 }
@@ -1243,16 +1232,16 @@ void MainWindow::changeBaudRateSlot(int BR) {
 }
 
 //void MainWindow::changePortSlot(QString port) {
-//    settings.setComPort(port);
+//    settings->setComPort(port);
 //    refreshMenuPort();
 //}
 
 void MainWindow::triggComAutoConnectSlot(bool state) {
-    settings.setComAutoconnectFlag(state);
+    settings->setComAutoconnectFlag(state);
 }
 
 void MainWindow::triggTemperatureSymbolSlot(QString str) {
-    settings.setTemperatureSymbol(str);
+    settings->setTemperatureSymbol(str);
 
 //    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
 //        if(parameterController->isTemperature()) {
@@ -1334,7 +1323,7 @@ void MainWindow::sendLogSlot() {
 }
 
 void MainWindow::hideControlsButtonSlot(bool state) {
-    settings.setHideControlsFlag(state);
+    settings->setHideControlsFlag(state);
     if(state) {
         ui->controlsVisibleButton->setText(tr("Show controls"));
     } else {
@@ -1343,7 +1332,7 @@ void MainWindow::hideControlsButtonSlot(bool state) {
 
     for(QList<ParameterController*>::iterator p = devConfig.paramWidgets.begin(); p != devConfig.paramWidgets.end(); p++) {
         if((*p)->getPinState() == false && !(*p)->isOnlyMeasured()) {
-            if(settings.getCompactModeFlag()) {
+            if(settings->getCompactModeFlag()) {
                 (*p)->loadCompactWidget()->setVisible(!state);
             } else {
                 (*p)->loadWidget()->setVisible(!state);
@@ -1499,9 +1488,9 @@ void MainWindow::sendDataToPort(QString msg) {
 }
 
 void MainWindow::toogleCompactModeSlot(bool state) {
-    settings.setCompactModeFlag(state);
+    settings->setCompactModeFlag(state);
 
-    settings.setHideControlsFlag(false);
+    settings->setHideControlsFlag(false);
     ui->controlsVisibleButton->setText(tr("Hide controls"));
     ui->controlsVisibleButton->setChecked(false);
 
@@ -1555,13 +1544,13 @@ void MainWindow::loadFont() {
 }
 
 void MainWindow::saveWindowSettings() {
-    settings.setWindowPosition(pos());
-//    settings.setWindowSize(size());
+    settings->setWindowPosition(pos());
+//    settings->setWindowSize(size());
 }
 
 void MainWindow::loadWindowSettings() {
-    QPoint pos = settings.getWindowPosition();
-//    QSize size = settings.getWindowSize();
+    QPoint pos = settings->getWindowPosition();
+//    QSize size = settings->getWindowSize();
 
     if(pos != WINDOW_DEFAULT_POSITION) { //&& size != AppSettings::WINDOW_DEFAULT_SIZE) {
         move(pos);
