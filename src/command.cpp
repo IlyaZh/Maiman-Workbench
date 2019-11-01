@@ -1,8 +1,6 @@
 #include "command.h"
 #include "appsettings.h"
 
-extern AppSettings settings;
-
 Command::Command(QString code, QString unit, double divider, quint8 interval, bool isTemperatureFlag, QObject *parent) : QObject(parent)
 {
     this->Code = code;
@@ -11,8 +9,6 @@ Command::Command(QString code, QString unit, double divider, quint8 interval, bo
     this->isTemperatureFlag = isTemperatureFlag;
     this->unit = unit;
     setRawValue(0);
-
-    setTemperatureUnit(settings.getTemperatureSymbol());
 }
 
 double Command::convertCelToFar(double val) {

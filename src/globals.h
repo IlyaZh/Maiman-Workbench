@@ -32,10 +32,9 @@ typedef struct {
 
 typedef struct {
     QString title;
-    QString code;
+    Command* code;
     int min;
     int max;
-    double divider;
 } calibration_t;
 
 typedef struct {
@@ -67,7 +66,7 @@ typedef struct {
     QString link;
     quint16 deviceID;
     QMap<QString, Command*> commands;
-    QList<DeviceLimit*> limits;
+    QMap<QString, DeviceLimit*> limits;
     QList<calibration_t> calCoefs;
     QList<ParameterController*> paramWidgets;
     QList<binOption_t> binOptions;

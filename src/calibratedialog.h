@@ -21,7 +21,7 @@ private:
     Ui::CalibrateDialog *ui;
     int coef;
     QString code;
-    int divider;
+    double divider;
 
 public slots:
     void setValue(double);

@@ -25,15 +25,15 @@ private:
     DeviceLimit *limit;
 
 public slots:
-    void setData(DeviceLimit&);
-    void setAbsMax(double val);
-    void setMax(double val);
-    void setMax(int val);
-    void setAbsMin(double val);
-    void setMin(double val);
-    void setMin(int val);
+    void setData(DeviceLimit*);
 //    void updateValues();
     void saveResult();
+
+private slots:
+    void setMax();
+    void setMin();
+    void setValue(double val);
+    void setValue(int val);
 
 signals:
     void sendData(QString commStr);
