@@ -722,10 +722,7 @@ void MainWindow::setupParameterHandlers() {
                     this->sendDataToPort(sQuery);
                     saveCheckboxes();
                 });
-//                connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
-//                cbSignalMapper->setMapping(checkBox, binOption.label);
             }
-//            connect(cbSignalMapper, SIGNAL(mapped(QString)), this, SLOT(spcialParameterSlot(QString)));
             ui->specialParamBox->setLayout(vlayout);
         }
     }
@@ -764,13 +761,12 @@ void MainWindow::loadCheckboxes() {
     if(devConfig.binOptions.isEmpty()) return;
 
     QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
-    if(file->open(QIODevice::ReadOnly | QIODevice::Text)) {
+    if(file->open(QIODevice::ReadOnly | QIODevice::Text | QIODevice::ExistingOnly)) {
         QTextStream in(file);
         while(!in.atEnd()) {
             QStringList values = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseSensitive);
             if(values.length() == 2) {
                 QString msgForSend = COM_WRITE_PREFIX + values.at(0) + QString(" ") + values.at(1);
-//                qDebug() << msgForSend;
                 sendDataToPort(msgForSend);
             } else {
                 writeToConsoleError("Binary options config load error.");
