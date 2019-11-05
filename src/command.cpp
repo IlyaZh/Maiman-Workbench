@@ -21,6 +21,7 @@ double Command::convertFarToCel(double val) {
 
 void Command::setTemperatureUnit(QString unit) {
     temperatureUnit = unit;
+//    emit valueChanged();
 }
 
 QString Command::getCode() {

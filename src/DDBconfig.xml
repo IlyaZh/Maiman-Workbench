@@ -72,9 +72,9 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<ParamControls>
 			<Param min="0101" max="0102" value="0100">Frequency</Param>
 			<Param min="0201" max="0202" value="0200">Duration</Param>
-			<Param unit="A" min="0301" max="0302" value="0300" real="0307">Current</Param>
-			<Param unit=" " real="0701">Serial Number</Param>
-			<Param unit="V" real="0407">Voltage</Param>
+			<Param min="0301" max="0302" value="0300" real="0307">Current</Param>
+			<Param real="0701">Serial Number</Param>
+			<Param real="0407">Voltage</Param>
 		</ParamControls>
 		<!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,

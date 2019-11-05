@@ -1250,6 +1250,7 @@ void MainWindow::triggTemperatureSymbolSlot(QString str) {
 //    }
     foreach(Command* cmd, devConfig.commands) {
         if(cmd->isTemperature()) {
+            qDebug() << cmd->getCode();
             cmd->setTemperatureUnit(str);
         }
     }

@@ -19,17 +19,17 @@ ParameterController::ParameterController(QString title, Command *minComm, Comman
     } else {
         precisionOfRealValue = qRound(log10(realComm->getDivider()));
         connect(realComm, &Command::valueChanged, this, &ParameterController::setRealValue);
-    }
-    if(valueComm != nullptr) {
+    } 
+
+    if(!isOnlyMeasured()) {
         precisionOfValue = qRound(log10(valueComm->getDivider()));
         validator.setDecimals(precisionOfValue);
         ui_currValueLine->setValidator(&validator);
         ui_currValueCompactLine->setValidator(&validator);
         connect(valueComm, &Command::valueChanged, this, &ParameterController::setSentValue);
+        connect(maxComm, &Command::valueChanged, this, &ParameterController::setMax);
+        connect(minComm, &Command::valueChanged, this, &ParameterController::setMin);
     }
-
-    connect(minComm, &Command::valueChanged, this, &ParameterController::setMin);
-    connect(maxComm, &Command::valueChanged, this, &ParameterController::setMax);
 
     setEditLineDefaultState();
     QMetaObject::connectSlotsByName(this);
@@ -224,6 +224,8 @@ void ParameterController::setTitle(QString str) {
 //}
 
 void ParameterController::setMax() {
+    if(isOnlyMeasured()) return;
+
     double max = maxComm->getValue();
     double divider = maxComm->getDivider();
     QString unit = maxComm->getUnit();
@@ -241,6 +243,8 @@ void ParameterController::setMax() {
 }
 
 void ParameterController::setMin() {
+    if(isOnlyMeasured()) return;
+
     double min = minComm->getValue();
     double divider = minComm->getDivider();
     QString unit = minComm->getUnit();
@@ -272,7 +276,8 @@ bool ParameterController::getEnableState() {
 void ParameterController::setRealValue() {
     realValue = realComm->getValue();
 
-    ui_measuredValueBar->setValue(static_cast<int>(qRound(qBound(minComm->getValue(), realValue, maxComm->getValue())*realComm->getDivider())));
+//    ui_measuredValueBar->setValue(static_cast<int>(qRound(qBound(minComm->getValue(), realValue, maxComm->getValue())*realComm->getDivider())));
+    ui_measuredValueBar->setValue(static_cast<int>(qRound(realValue*realComm->getDivider())));
     ui_measuredValueBar->setStyleSheet(" QProgressBar { \
                                      border: 1px solid rgb(25,25,25); \
                                      background: rgb(25,25,25); \
@@ -349,6 +354,7 @@ void ParameterController::on_valueSlider_sliderMoved(int value) {
 void ParameterController::on_valueSlider_sliderReleased() {
     if(ui_currValueLine->hasFocus()) ui_currValueLine->clearFocus();
     preparedCommand = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(valueComm->getCode()).arg(ui_valueSlider->value(), 4, 16, QChar('0'));
+    qDebug() << preparedCommand;
     emit changeValue(preparedCommand);
     isUserEdited = false;
 }
@@ -517,7 +523,8 @@ void ParameterController::setEditLineDefaultState() {
         ui_currValueCompactLine->setStyleSheet("QLineEdit {\n	color: rgb(16, 33, 40);\n	background: rgb(230, 230, 230);\n	border-radius: 5px;\n	padding: 5px 0;\n}\n\nQLineEdit::disabled {\n	background: rgb(180, 180, 180);\n	color: rgb(76, 93, 100);\n}");
         ui_currValueCompactLine->setText(wlocale.toString(currValue, DOUBLE_FORMAT, precisionOfValue));
         ui_currValueLine->setText(wlocale.toString(currValue, DOUBLE_FORMAT, precisionOfValue));
-        ui_valueSlider->setValue(qRound(currValue*valueComm->getDivider()));
+        if(valueComm != nullptr)
+            ui_valueSlider->setValue(qRound(currValue*valueComm->getDivider()));
 }
 
 /*
