@@ -31,14 +31,14 @@ signals:
     void valueChanged();
 
 protected:
-    QString temperatureUnit;
-    QString unit;
+    QString TemperatureUnit;
+    QString Unit;
     QString Code;
     double Divider;
-    bool isTemperatureFlag;
-    QVariant rawValue;
-    double value;
-    quint8 interval;
+    bool IsTemperatureFlag;
+    QVariant RawValue;
+    double Value;
+    quint8 Interval;
 };
 
 #endif // PARAMETER_T_H

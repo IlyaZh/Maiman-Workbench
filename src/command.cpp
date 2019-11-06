@@ -4,11 +4,11 @@
 Command::Command(QString code, QString unit, double divider, quint8 interval, bool isTemperatureFlag, QObject *parent) : QObject(parent)
 {
     this->Code = code;
-    this->interval = (interval < MAX_COM_INTERVAL_COUNTER) ? interval : MAX_COM_INTERVAL_COUNTER;
+    this->Interval = (interval < MAX_COM_INTERVAL_COUNTER) ? interval : MAX_COM_INTERVAL_COUNTER;
     this->Divider = divider;
-    this->isTemperatureFlag = isTemperatureFlag;
-    this->unit = unit;
-    setRawValue(0);
+    this->IsTemperatureFlag = isTemperatureFlag;
+    this->Unit = unit;
+    RawValue.setValue(-1);
 }
 
 double Command::convertCelToFar(double val) {
@@ -20,8 +20,8 @@ double Command::convertFarToCel(double val) {
 }
 
 void Command::setTemperatureUnit(QString unit) {
-    temperatureUnit = unit;
-//    emit valueChanged();
+    TemperatureUnit = unit;
+    emit valueChanged();
 }
 
 QString Command::getCode() {
@@ -29,15 +29,15 @@ QString Command::getCode() {
 }
 
 double Command::getValue() {
-    if(isTemperature() && temperatureUnit == "F") {
-        return convertCelToFar(value);
+    if(isTemperature() && TemperatureUnit == "F") {
+        return convertCelToFar(Value);
     } else {
-        return value;
+        return Value;
     }
 }
 
 quint16 Command::getRawValue() {
-    return static_cast<quint16>(rawValue.toUInt());
+    return static_cast<quint16>(RawValue.toUInt());
 }
 
 double Command::getDivider() {
@@ -49,28 +49,28 @@ bool Command::isSignedValue() {
 }
 
 bool Command::isTemperature() {
-    return isTemperatureFlag;
+    return IsTemperatureFlag;
 }
 
 QString Command::getUnit() {
     if(isTemperature()) {
-        return unit+temperatureUnit;
+        return Unit+TemperatureUnit;
     } else {
-        return unit;
+        return Unit;
     }
 }
 
 // SLOTS are declared below
 
 void Command::setRawValue(quint16 _value) {
-    if(rawValue.toUInt() != _value) {
-        rawValue.setValue(_value);
-        this->value = rawValue.toDouble() / Divider;
+    if(RawValue.toUInt() != _value) {
+        RawValue.setValue(_value);
+        this->Value = RawValue.toDouble() / Divider;
 
         emit valueChanged();
     }
 }
 
 quint8 Command::getInterval() {
-    return interval;
+    return Interval;
 }

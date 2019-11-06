@@ -21,7 +21,6 @@ class FileDownloader : public QObject
 
  signals:
     void downloaded();
-    //void needToUpdateSignal(QString);
 
  private slots:
   void fileDownloaded(QNetworkReply* pReply);

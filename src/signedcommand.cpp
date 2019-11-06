@@ -10,9 +10,9 @@ bool SignedCommand::isSignedValue() {
 }
 
 void SignedCommand::setRawValue(quint16 value) {
-    if(rawValue.toUInt() != value) {
-        rawValue.setValue(value);
-        this->value = -static_cast<double>((~(static_cast<qint16>(rawValue.toInt())-1))) / Divider;
+    if(RawValue.toUInt() != value) {
+        RawValue.setValue(value);
+        this->Value = -static_cast<double>((~(static_cast<qint16>(RawValue.toInt())-1))) / Divider;
 
         emit valueChanged();
     }

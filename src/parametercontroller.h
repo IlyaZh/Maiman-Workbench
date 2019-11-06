@@ -34,19 +34,12 @@ public:
     QWidget* loadTextWidget();
     int getCommValue();
     bool isOnlyMeasured();
-//    QString getMinComm();
-//    QString getMaxComm();
-//    QString getRealComm();
-//    QString getValueComm();
-//    bool isTemperature();
 
 public slots:
     void hideRealValue(bool state = false);
     void setEnableState(bool state);
-//    void temperatureIsChanged(QString);
 
 private:
-//    void setUnit(QString str);
     void setTitle(QString str);
     void setPinState(bool val);
     void prepareBigWidget();
@@ -82,18 +75,11 @@ private:
     QPushButton *ui_minusCompactButton;
     QPushButton *ui_plusCompactButton;
     QPushButton *ui_sendValueCompactButton;
-//    QString unit;
-//    QString type;
     QString title;
     bool pinState;
-//    bool isCelsius;
     bool hideReal;
-//    bool isTemperatureFlag;
-//    double min;
-//    double max;
     double currValue;
     double realValue;
-//    double realDivider, divider;
     int precisionOfRealValue, precisionOfValue;
     QLabel* titleLabel;
     QLabel* valueLabel;

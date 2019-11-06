@@ -303,7 +303,7 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 			<Command unit="A" code="0301" divider="100" interval="100"/>
 			<Command unit="A" code="0302" divider="100" interval="100"/>
 			<Command unit="A" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100" interval="10"/>
+			<Command unit="A" code="030E" divider="100" interval="10"/>
 			<Command unit="V" code="0407" divider="10"/>
 			<Command unit="" code="0700"/>
 			<Command unit="" code="0701" interval="100"/>
@@ -322,7 +322,7 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		</Limits>
 		<!--  калибровка -->
 		<CalibrationKoefs>
-			<Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
+			<Calibrate code="030E" minCode="9500" maxCode="10500">Current calibration</Calibrate>
 		</CalibrationKoefs>
 		<!-- список выводимых параметров.
     регистр необходимо соблюдать
@@ -333,13 +333,13 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Параметры с value "участвуют" в hide controls.
      -->
 		<ParamControls>
-			<Param unit="Hz" min="0101" max="0102" value="0100">Frequency</Param>
-			<Param unit="ms" min="0201" max="0202" value="0200">Duration</Param>
-			<Param unit="A" min="0301" max="0302" value="0300" real="0307">Current</Param>
-			<Param unit=" " real="0701">Serial Number</Param>
-			<Param unit="V" real="0407">Voltage</Param>
-			<Param unit="(deg)" isTemperature="1" real="0AF4">Driver Temperature</Param>
-			<Param unit="(deg)" isTemperature="1" real="0AE4">NTC Temperature</Param>
+			<Param min="0101" max="0102" value="0100">Frequency</Param>
+			<Param min="0201" max="0202" value="0200">Duration</Param>
+			<Param min="0301" max="0302" value="0300" real="0307">Current</Param>
+			<Param real="0701">Serial Number</Param>
+			<Param real="0407">Voltage</Param>
+			<Param real="0AF4">Driver Temperature</Param>
+			<Param real="0AE4">NTC Temperature</Param>
 		</ParamControls>
 		<!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,

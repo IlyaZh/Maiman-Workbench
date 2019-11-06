@@ -4,10 +4,7 @@ ComPort::ComPort(AppSettings* settings, QObject *parent) : QObject(parent), seri
 {
     serialPort = new QSerialPort();
     this->settings = settings;
-//    qsettings = new QSettings(QSettings::NativeFormat, QSettings::UserScope, ORG_NAME, APP_NAME);
 
-//    isTimeout = false;
-//    bufferSize = 0;
     portIsBusy = false;
     checkStopWritten = false;
     stopCommandDelay = STOP_COMMAND_DELAY_DEFAULT;
@@ -28,7 +25,6 @@ ComPort::ComPort(AppSettings* settings, QObject *parent) : QObject(parent), seri
     connect(serialPort, SIGNAL(bytesWritten(qint64)), this, SLOT(dataIsWritten(qint64)));
     connect(serialPort, SIGNAL(readyRead()), this, SLOT(needToRead()));
     connect(serialPort, SIGNAL(errorOccurred(QSerialPort::SerialPortError)), this, SLOT(errorSlot(QSerialPort::SerialPortError)));
-//    connect(serialPort, SIGNAL())
 }
 
 ComPort::~ComPort() {
@@ -44,6 +40,7 @@ bool ComPort::isOpen() {
 
 void ComPort::stopAndDisconnect() {
     clearQueue();
+    putIntoQueue(TEC_STOP_COMMAND);
     putIntoQueue(DEVICE_STOP_COMMAND);
     checkStopWritten = true;
 }
@@ -96,30 +93,21 @@ void ComPort::close() {
     }
     timer->stop();
     errorTimer->stop();
-//    isTimeout = false;
     portIsBusy = false;
     clearQueue();
     emit portNewState(serialPort->isOpen());
 }
 
 void ComPort::putIntoQueue(QString str) {
+
     // Добавляем символ конца строки \r = 0x13
     str.append(COM_END_OF_LINE);
-
-    // Удаляем дубликаты
-//    queue2send.removeAll(str);
-    // Удаляем запросы той же команды, но с другим значением параметра.
-//    for(int i =0; i < queue2send.size(); i++) {
-//        if(queue2send.at(i).startsWith(str.left(5), Qt::CaseInsensitive)) {
-//            queue2send.removeAt(i);
-//        }
-//    }
 
     // Команды установки параметров добавляем в начало очереди
     if(str.at(0) == COM_WRITE_PREFIX) {
         // Добавляем в начало очереди
         queue2send.prepend(str);
-    } else {
+    } else if(queue2send.length() < 10) {
         // В конец очереди
         queue2send.append(str);
     }
@@ -133,13 +121,10 @@ void ComPort::putIntoQueue(QString str) {
 void ComPort::writeToPort() {
     if(queue2send.isEmpty()) return;
     portIsBusy = true;
-//    isTimeout = false;
     buffer.clear();
     msgToSend = queue2send.dequeue();
     sizeOfPackage = msgToSend.size();
     firstSymbol = msgToSend.at(0);
-    // Сохраняем номер команды (2-5 символы включительно) - в функции mid нумерация идёт с 0 символа.
-    //if(sizeOfPackage > 4) lastWrittenCommand = msgToSend.mid(1,4);
 
     if(serialPort->isOpen()) {
         lastSentCommand = msgToSend;
@@ -154,7 +139,6 @@ void ComPort::writeToPort() {
 }
 
 void ComPort::timeOut() {
-//    isTimeout = false; // was true
     portIsBusy = false;
     buffer.clear();
     clearQueue();
@@ -165,7 +149,6 @@ void ComPort::errorTimeout() {
     portIsBusy = false;
     buffer.clear();
     clearQueue();
-//    emit portErrorTimeoutOccure();
     emit errorOccuredSignal("Cannot send data to port: " + serialPort->errorString());
 }
 
@@ -173,16 +156,10 @@ void ComPort::needToRead() {
    timer->stop();
 
    buffer.append(serialPort->readAll());
-//   bufferSize += buffer.size();
-
-//   if(isTimeout) {
-//       return;
-//   }
 
    if(firstSymbol == COM_WRITE_PREFIX) {
        buffer.clear();
        portIsBusy = false;
-//       bufferSize = 0;
        return;
    }
 
@@ -191,7 +168,6 @@ void ComPort::needToRead() {
    if(buffer.contains(COM_END_OF_LINE)) {
 
        splitCommands = buffer.split(COM_END_OF_LINE);
-//       qDebug() << splitCommands;
        buffer.clear();
        foreach(QByteArray item, splitCommands) {
            if(item.size() == 0) continue;
@@ -204,21 +180,16 @@ void ComPort::needToRead() {
            portIsBusy = false;
        }
        splitCommands.clear();
-   //        bufferSize = 0;
 
-           // Если в очереди есть ещё команды - приступаем к передаче
-           if(startToSendNextCommand()) return;
+
+        // Если в очереди есть ещё команды - приступаем к передаче
+        if(startToSendNextCommand()) return;
 
    } else {
        timer->setInterval(COM_PORT_TIMEOUT);
        timer->start();
    }
 
-//   if(buffer.size() > READ_COM_COMMAND_LENGTH*2) {
-//       emit errorOccuredSignal("Unexpected length of answer: " + QString(buffer));
-//       portIsBusy = false;
-//       return;
-//   }
 }
 
 void ComPort::dataIsWritten(qint64 length) {
@@ -227,9 +198,6 @@ void ComPort::dataIsWritten(qint64 length) {
     if(sizeOfPackage == length) {
         emit writeToConsoleSignal("-> "+msgToSend, CONSOLE_SEND_COLOR);
         if(firstSymbol == COM_WRITE_PREFIX) {
-            // emit dataIsSentSignal();
-            // startToSendNextCommand();
-
             // Ожидаем длительную паузу после отправки команды "стоп"
             if(lastSentCommand == DEVICE_STOP_COMMAND+QString(COM_END_OF_LINE) || lastSentCommand == TEC_STOP_COMMAND+QString(COM_END_OF_LINE)) {
                 QTimer::singleShot(stopCommandDelay, this, SLOT(waitForNextCommandSlot()));
@@ -250,7 +218,6 @@ void ComPort::dataIsWritten(qint64 length) {
 void ComPort::errorSlot(QSerialPort::SerialPortError spe) {
     portIsBusy = false;
     if(spe != QSerialPort::NoError) {// && spe != QSerialPort::UnknownError)
-//        if(serialPort->isOpen())
             emit errorOccuredSignal(serialPort->errorString());
         close();
     }

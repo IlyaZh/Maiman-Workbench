@@ -2,7 +2,6 @@
 #define BITSLAYOUT_H
 
 #include <QWidget>
-//#include <QHBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
 #include <QSet>

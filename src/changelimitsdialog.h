@@ -26,7 +26,6 @@ private:
 
 public slots:
     void setData(DeviceLimit*);
-//    void updateValues();
     void saveResult();
 
 private slots:

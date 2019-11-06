@@ -1,6 +1,7 @@
 #include "devicelimit.h"
 
-DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, Command* maxComm) {
+DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, Command* maxComm, QObject *parent) : QObject(parent)
+{
     this->title = title;
     this->valueComm = valueComm;
     this->minComm = minComm;
@@ -9,7 +10,8 @@ DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, Co
     max = maxComm->getValue();
 }
 
-DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, Command* maxComm) {
+DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, Command* maxComm, QObject *parent) : QObject(parent)
+{
     this->title = title;
     this->valueComm = valueComm;
     this->minComm = nullptr;
@@ -18,7 +20,8 @@ DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, Co
     max = maxComm->getValue();
 }
 
-DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, quint16 maxValue) {
+DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, quint16 maxValue, QObject *parent) : QObject(parent)
+{
     this->title = title;
     this->valueComm = valueComm;
     this->minComm = minComm;
@@ -27,7 +30,8 @@ DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, qu
     max = maxValue;
 }
 
-DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, quint16 maxValue) {
+DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, quint16 maxValue, QObject *parent) : QObject(parent)
+{
     this->title = title;
     this->valueComm = valueComm;
     this->minComm = nullptr;
@@ -37,9 +41,7 @@ DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, qu
 }
 
 DeviceLimit::~DeviceLimit() {
-    valueComm->disconnect();
-    if(minComm != nullptr) minComm->disconnect();
-    if(maxComm != nullptr) maxComm->disconnect();
+
 }
 
 double DeviceLimit::getDivider() {
@@ -77,28 +79,3 @@ double DeviceLimit::getValue() {
 QString DeviceLimit::getCode() {
     return  valueComm->getCode();
 }
-
-
-//void DeviceLimit::setUpperCode(QString str) {
-//    upperLimitCode = str;
-//}
-
-//void DeviceLimit::setBottomCode(QString str) {
-//    bottomLimitCode = str;
-//}
-
-//void DeviceLimit::setMinCode(QString str) {
-//    minCode = str;
-//}
-
-//void DeviceLimit::setMaxCode(QString str) {
-//    maxCode = str;
-//}
-
-//void DeviceLimit::setShowMax(bool flag) {
-//    showMax = flag;
-//}
-
-//void DeviceLimit::setShowMin(bool flag) {
-//    showMin = flag;
-//}

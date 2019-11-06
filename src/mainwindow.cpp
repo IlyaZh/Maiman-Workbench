@@ -174,7 +174,7 @@ void MainWindow::setupWindow() {
     ui->actionSave_settings->setEnabled(false);
     ui->actionLoad_settings->setEnabled(false);
     ui->actionKeep_checkboxes->setEnabled(false);
-    ui->controlsVisibleButton->setChecked(false); //settings->getHideControlsFlag());
+    ui->controlsVisibleButton->setChecked(false);
     ui->controlsVisibleButton->setText("Hide controls");
 
     setupMenuView();
@@ -183,7 +183,6 @@ void MainWindow::setupWindow() {
     ui->actionExit->setShortcut(QKeySequence("ALT+F4"));
     ui->actionKeep_checkboxes->setChecked(settings->getKeepCheckboxesFlag());
 
-//    ui->devImageLabel->setVisible(false);
     ui->devNameLabel->setVisible(false);
     ui->devAboutButton->setVisible(false);
     ui->devSelectButton->setVisible(false);
@@ -227,13 +226,10 @@ bool MainWindow::showWarningMessageAndStopLaser() {
     return result;
 }
 
-//void closeSoftware();
-//void stopAndCloseSoftware();
 
 void MainWindow::setupMenuPort() {
     // Формирование и вывод в меню списка доступных бауд-рейтов
     ui->menuSelectBaudrate->clear();
-//    QSignalMapper* signalMapper = new QSignalMapper(this);
     foreach (quint32 BR, comBaudRates) {
         QAction *newAct = new QAction(QString::number(BR), this);
         newAct->setCheckable(true);
@@ -246,10 +242,7 @@ void MainWindow::setupMenuPort() {
         connect(newAct, &QAction::triggered, [this, BR]{
             this->changeBaudRateSlot(BR);
         });
-//        signalMapper->setMapping(newAct, BR);
-//        connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
     }
-//    connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(changeBaudRateSlot(int)));
 
     refreshMenuPort();
     refreshMenuBaud();
@@ -258,7 +251,6 @@ void MainWindow::setupMenuPort() {
 
 void MainWindow::refreshMenuPort() {
     // Формирование и вывод в меню списка доступных портов
-//    ui->menuSelectPort->clear();
     foreach(QAction* item, ui->menuSelectPort->actions()) {
         if(item->text() == tr("Refresh list")) {
             ui->menuSelectPort->removeAction(item);
@@ -270,7 +262,6 @@ void MainWindow::refreshMenuPort() {
     QStringList portList = getAvailablePorts();
     if(!portList.isEmpty()) {
         ui->menuSelectPort->clear();
-//        QSignalMapper* signalMapper = new QSignalMapper(this);
         foreach (QString port, portList) {
             QAction *newAct = new QAction(port, this);
             newAct->setCheckable(true);
@@ -284,10 +275,7 @@ void MainWindow::refreshMenuPort() {
                 settings->setComPort(port);
                 refreshMenuPort();
             });
-//            signalMapper->setMapping(newAct, str);
-//            connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
         }
-//        connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(changePortSlot(QString)));
     }
     // кнопка обновления портов
     QAction *refreshPortAct = new QAction(tr("Refresh list"), this);
@@ -337,10 +325,6 @@ void MainWindow::refreshMenuCalibrate() {
         ui->menuCalibrate->menuAction()->setVisible(false);
     } else {
         ui->menuCalibrate->menuAction()->setVisible(true);
-
-
-    //    QSignalMapper* signalMapper = new QSignalMapper(this);
-
         if(!menuCalibrateActions.isEmpty()) {
             ui->menuCalibrate->clear();
             menuCalibrateActions.clear();
@@ -353,13 +337,10 @@ void MainWindow::refreshMenuCalibrate() {
             newAction->setText(item.title);
             ui->menuCalibrate->addAction(newAction);
             menuCalibrateActions.append(newAction);
-            connect(newAction, &QAction::triggered, [this, &item]{
+            connect(newAction, &QAction::triggered, [item, this](){
                 this->openCalibrateWindow(item.title);
             });
-    //        signalMapper->setMapping(newAction, item.title);
-    //        connect(newAction, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
         }
-    //    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(openCalibrateWindow(QString)));
     }
 }
 
@@ -381,7 +362,6 @@ void MainWindow::refreshMenuLimits() {
     } else {
         ui->menuLimits->menuAction()->setVisible(true);
     }
-//    QSignalMapper* signalMapper = new QSignalMapper(this);
 
     if(!menuLimitsActions.isEmpty()) {
         ui->menuLimits->clear();
@@ -398,10 +378,7 @@ void MainWindow::refreshMenuLimits() {
         connect(newAction, &QAction::triggered,[this, limit]{
             this->openLimitsWindow(limit->getTitle());
         });
-//        signalMapper->setMapping(newAction, limit->getTitle());
-//        connect(newAction, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
     }
-//    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(openLimitsWindow(QString)));
 }
 
 void MainWindow::openLimitsWindow(QString name) {
@@ -420,7 +397,6 @@ void MainWindow::refreshMenuFile() {
     }
     lastFileActions.clear();
 
-//    QSignalMapper* signalMapper = new QSignalMapper(this);
     ui->menuFile->addSeparator();
     foreach(QVariant listVar, settings->getRecentOpenFiles()) {
         QString fileName = listVar.toString();
@@ -434,13 +410,10 @@ void MainWindow::refreshMenuFile() {
         connect(newAct, &QAction::triggered, [this, fileName]{
             this->readSettingsFile(fileName);
         });
-//        signalMapper->setMapping(newAct, fileName);
-//        connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
         newAct->setEnabled(link);
         lastFileActions.prepend(newAct);
         ui->menuFile->addAction(newAct);
     }
-//    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(readSettingsFile(QString)));
 }
 
 
@@ -458,7 +431,6 @@ void MainWindow::readSettingsFile(QString fileName) {
     file->open(QIODevice::ReadOnly | QIODevice::Text);
     if(file->error()) {
         writeToConsoleError(file->errorString());
-        //emit writeToLogSignal(file->errorString());
     }
     bool autoSend = autoSendNextCommand;
     autoSendNextCommand = false;
@@ -526,7 +498,6 @@ void MainWindow::saveSettingsSlot() {
         file->open(QIODevice::WriteOnly | QIODevice::Text);
         if(file->error()) {
             writeToConsoleError(file->errorString());
-            //emit writeToLogSignal(file->errorString());
         }
 
         QTextStream dataOut(file);
@@ -601,13 +572,6 @@ void MainWindow::saveSettingsSlot() {
 }
 
 void MainWindow::setupMenuView() {
-//    QSignalMapper* signalMapper = new QSignalMapper(this);
-//    signalMapper->setMapping(ui->actionTemperature_in_C, "C");
-//    signalMapper->setMapping(ui->actionTemperature_in_F, "F");
-//    connect(ui->actionTemperature_in_C, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
-//    connect(ui->actionTemperature_in_F, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
-//    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(triggTemperatureSymbolSlot(QString)));
-
     connect(ui->actionTemperature_in_C, &QAction::triggered, [this]{
         this->triggTemperatureSymbolSlot("C");
     });
@@ -640,18 +604,17 @@ void MainWindow::setupParameterHandlers() {
         }
     }
 
+
     if(!devConfig.paramWidgets.empty()) {
-//        QHBoxLayout* hlayoutparams = new QHBoxLayout();
-//        QVBoxLayout* vlayoutparams = new QVBoxLayout();
         QGridLayout* layoutparams = new QGridLayout();
 
-        ui->controlsVisibleButton->setChecked(false); //settings->getHideControlsFlag());
+        ui->controlsVisibleButton->setChecked(false);
+        //settings->getHideControlsFlag());
         ui->controlsVisibleButton->setText("Hide controls");
         aboutDeviceDialog->setInfo(devConfig);
 
         refreshMenuLimits();
         refreshMenuCalibrate();
-//        ui->bitMaskBox->setLayout(bitsLayout->getLayout());
 
         bitsLayout->addFromList(devConfig.leds);
 
@@ -665,9 +628,6 @@ void MainWindow::setupParameterHandlers() {
             row++;
 
             if(parameterController->isOnlyMeasured()) { // Вывод значений в окно параметров
-//                actualParamsGLayout->removeWidget((*itemPtr)->loadTextWidget());
-//                actualParamsGLayout->addWidget((*itemPtr)->loadTextWidget(), row, 0);
-//                row++;
                parameterController->loadTextWidget()->setVisible(true);
             } else { // Вывод "крутилок-таскалок" для параметров
                 if(settings->getCompactModeFlag()) {
@@ -692,7 +652,6 @@ void MainWindow::setupParameterHandlers() {
         ui->actualParameters->setLayout(actualParamsGLayout);
 
         // Формирование и вывод на экран панели режимов
-//        QSignalMapper* cbSignalMapper = new QSignalMapper(this);
         if(!devConfig.binOptions.empty()) {
             QVBoxLayout *vlayout = new QVBoxLayout();
             foreach(binOption_t binOption, devConfig.binOptions) {
@@ -744,7 +703,6 @@ bool MainWindow::isCheckboxesFileExist() {
 
 // TODO: LOOK THIS SHIT
 void MainWindow::loadCheckboxes() {
-    qDebug() << "loadCheckboxes()";
     if(devConfig.binOptions.isEmpty()) return;
 
     QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
@@ -798,8 +756,6 @@ void MainWindow::saveCheckboxes() {
         dataOut << currentLine.toUpper() << endl;
     }
 
-
-
     file->close();
 
     file->deleteLater();
@@ -842,10 +798,8 @@ void MainWindow::clearAllRegulators() {
     devConfig.leds.clear();
 
     if(ui->parametersGroupBox->layout()) delete ui->parametersGroupBox->layout();
-//    if(ui->bitMaskBox->layout()) delete ui->bitMaskBox->layout();
     bitsLayout->clear();
     if(ui->specialParamBox->layout()) delete ui->specialParamBox->layout();
-//    if(ui->actualParameters->layout()) delete actualParamsGLayout;
 
     this->updateWindow();
 }
@@ -1040,10 +994,6 @@ void MainWindow::readComData_Slot(QByteArray str) {
                             } else {
                                 ui->laserButton->setChecked(false);
                                 devConfig.laserOn = false;
-    //                            if(waitingForStop == closeWindow_t::CONDITION_CLOSE) {
-    //                                waitingForStop = closeWindow_t::APPROVE_CLOSE;
-    //                                this->close();
-    //                            }
                             }
                         }
                     } else
@@ -1182,7 +1132,7 @@ void MainWindow::loadConfigFinished(bool isDeviceFound) {
 
         setRegulatorsEnable(true);
         bNeedSetCheckboxes = true;
-//        prepareToSendNextCommand();
+        prepareToSendNextCommand();
     } else {
         emit writeToConsoleError(tr("CONFIG: The device hasn't found!"));
     }
@@ -1231,11 +1181,6 @@ void MainWindow::changeBaudRateSlot(int BR) {
     refreshMenuBaud();
 }
 
-//void MainWindow::changePortSlot(QString port) {
-//    settings->setComPort(port);
-//    refreshMenuPort();
-//}
-
 void MainWindow::triggComAutoConnectSlot(bool state) {
     settings->setComAutoconnectFlag(state);
 }
@@ -1243,14 +1188,8 @@ void MainWindow::triggComAutoConnectSlot(bool state) {
 void MainWindow::triggTemperatureSymbolSlot(QString str) {
     settings->setTemperatureSymbol(str);
 
-//    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
-//        if(parameterController->isTemperature()) {
-//            parameterController->temperatureIsChanged(str);
-//        }
-//    }
     foreach(Command* cmd, devConfig.commands) {
         if(cmd->isTemperature()) {
-            qDebug() << cmd->getCode();
             cmd->setTemperatureUnit(str);
         }
     }
@@ -1356,16 +1295,12 @@ void MainWindow::hideControlsButtonSlot(bool state) {
 
 void MainWindow::setLink(bool state) {
     link = state;
-//    if(ui->statusBar->currentMessage().size() > 0) ui->statusBar->showMessage("");
-//    refreshMenuFile();
 
     int linkId = bitsLayout->findElement("Link");
     if(state) {
         bitsLayout->setElementColor(linkId, Qt::green);
      } else {
         bitsLayout->setElementColor(linkId, LEDS_DEFAULT_COLOR);
-//        ui->devSelectButton->setVisible(false);
-//        ui->devAboutButton->setVisible(false);
     }
 }
 
@@ -1546,16 +1481,13 @@ void MainWindow::loadFont() {
 
 void MainWindow::saveWindowSettings() {
     settings->setWindowPosition(pos());
-//    settings->setWindowSize(size());
 }
 
 void MainWindow::loadWindowSettings() {
     QPoint pos = settings->getWindowPosition();
-//    QSize size = settings->getWindowSize();
 
     if(pos != WINDOW_DEFAULT_POSITION) { //&& size != AppSettings::WINDOW_DEFAULT_SIZE) {
         move(pos);
-//        resize(size);
     }
 }
 

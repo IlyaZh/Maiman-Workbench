@@ -16,8 +16,6 @@
 #include <QDir>
 #include <QDesktopServices>
 #include <QMessageBox>
-//#include <QSignalMapper>
-//#include <QInputDialog>
 #include <QListIterator>
 #include <QBoxLayout>
 #include <QFontDatabase>
@@ -49,7 +47,6 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void closeEvent(QCloseEvent *event);
-//    void resizeEvent(QResizeEvent *event);
     typedef enum {CLEAR_ALL_DATA, CLEAR_ONLY_WIDGETS} clearParamsOptions_t;
     typedef enum {NONE_CLOSE, CONDITION_CLOSE, APPROVE_CLOSE} closeWindow_t;
     const QString saveParDir = "cfgs/";
@@ -65,11 +62,9 @@ private slots:
     void startDeviceIdent();
     void loadConfigFinished(bool);
     void loadConfigProgramFinished(bool);
-//    void writeToLogSlot(QString str);
     void comPortTimeout();
     void comPortError(QString);
     void changeBaudRateSlot(int BR);
-//    void changePortSlot(QString port);
     void triggComAutoConnectSlot(bool state);
     void triggTemperatureSymbolSlot(QString);
     void refreshMenuView();
@@ -92,8 +87,6 @@ private slots:
     void loadDeviceConfig(quint16 id = 0);
     void loadCommonConfig(QList<availableDev_t>& deviceList);
     void spcialParameterSlot(QString);
-//    void paramPrepareToSendCommand(QString);
-    //void setLastSentCommand(QString);
     void comSetDataTransfer(bool state);
     void showConsoleSlot(bool state);
     void laserButtonSlot();
@@ -127,8 +120,6 @@ private:
     void loadWindowSettings();
     bool maybeSave();
     bool isCheckboxesFileExist();
-//    void setupIndicators();
-//    bool selectDevice();
     void updateWindow();
     void loadFont();
     QStringList consoleBuffer;
@@ -160,17 +151,12 @@ private:
     QFont systemFont;
     SelectDeviceDialog *selectDeviceDialog;
     quint16 devID;
-//    closeWindow_t waitingForStop;
     bool bNeedSetCheckboxes;
     bool checkStopAndDisconnect;
     AppSettings *settings;
 
 signals:
-//    void writeToLogSignal(QString);
-//    void sendToPort(QString);
-//    void setPortNewState(bool);
-//    void temperatureIsChanged(QString);
-    //void startLoadingConfig();
+
 };
 
 #endif // MAINWINDOW_H

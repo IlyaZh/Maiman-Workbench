@@ -103,7 +103,6 @@ void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16
     setDeviceOptions(devicePtr, dev_id);
     if(!readFile()) return;
     bool isDeviceFound = false;
-//    currDeviceFound = false;
 
     xml.setDevice(file);
 
@@ -112,15 +111,12 @@ void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16
         if(token == QXmlStreamReader::StartElement) {
             QStringRef xname = xml.name();
             if (xname == "Device") {
-//                if(isDeviceFound) break;
                 isDeviceFound = parseDevice();
                 if(!isDeviceFound) xml.skipCurrentElement();
             }
-//            if(!isDeviceFound) continue;
 
             else if (xname == "Content") {
                 parseContent();
-//                currDevIndex++;
             } else if (xname == "Limits") {
                 parseLimits();
             } else if (xname == "CalibrationKoefs") {
@@ -136,7 +132,6 @@ void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16
             } else if (xname == "Buttons") {
                 parseButtons();
             } else {
-//                xml.skipCurrentElement();
             }
         } else if(token == QXmlStreamReader::EndElement) {
             if(xml.name() == "Device" && isDeviceFound) break;
@@ -319,7 +314,6 @@ void xmlReader::parseLimits() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Limits")) {
         xml.readNext();
         if(!(xml.name() == "Limit" && xml.tokenType() == QXmlStreamReader::StartElement)) continue;
-        //    if(!currDeviceFound) return;
         QXmlStreamAttributes attrib = xml.attributes();
 
         Command* valueComm = device->commands.value(attrib.value("code").toString(), nullptr);
@@ -389,11 +383,8 @@ void xmlReader::parseButtons() {
         QString tmpName = "noname";
         tmp.mask = 0;
 
-        //    btn->setStyleSheet("QPushButton {\n	color: #000;\n	border: 1px solid rgb(31,31,31);\n	border-radius: 4px;\n	padding: 3px 20px;\n	background-color: rgb(189, 1, 2);\n}\n\nQPushButton::checked {\n	background-color: rgb(0, 102, 52);\n}");
-
         if(attrib.hasAttribute("name")) {
             tmpName = attrib.value("name").toString();
-            //        btn->setText(tmpName);
             if(tmpName == "laser") {
                 device->hasLaser = true;
             } else if (tmpName == "tec") {

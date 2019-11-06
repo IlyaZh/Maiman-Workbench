@@ -7,6 +7,7 @@
 
 class SignedCommand : public Command
 {
+    Q_OBJECT
 public:
     explicit SignedCommand(QString code, QString unit = "", double divider = 1, quint8 interval = 1, bool isTemperature = false, QObject* parent = nullptr);
     bool isSignedValue() override;

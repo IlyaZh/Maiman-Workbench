@@ -2,15 +2,17 @@
 #define DEVICELIMIT_H
 
 #include <QString>
+#include <QObject>
 #include "command.h"
 
-class DeviceLimit
+class DeviceLimit : public QObject
 {
+    Q_OBJECT
 public:
-    explicit DeviceLimit(QString title, Command* valueComm, Command* minComm, Command* maxComm);
-    explicit DeviceLimit(QString title, Command* valueComm, quint16 minValue, Command* maxComm);
-    explicit DeviceLimit(QString title, Command* valueComm, Command* minComm, quint16 maxValue);
-    explicit DeviceLimit(QString title, Command* valueComm, quint16 minValue, quint16 maxValue);
+    explicit DeviceLimit(QString title, Command* valueComm, Command* minComm, Command* maxComm, QObject* parent = nullptr);
+    explicit DeviceLimit(QString title, Command* valueComm, quint16 minValue, Command* maxComm, QObject* parent = nullptr);
+    explicit DeviceLimit(QString title, Command* valueComm, Command* minComm, quint16 maxValue, QObject* parent = nullptr);
+    explicit DeviceLimit(QString title, Command* valueComm, quint16 minValue, quint16 maxValue, QObject* parent = nullptr);
     ~DeviceLimit();
     double getDivider();
     QString getTitle();
@@ -19,11 +21,6 @@ public:
     double getMax();
     double getValue();
     QString getCode();
-
-//    void setUpperCode(QString);
-//    void setBottomCode(QString);
-//    void setMinCode(QString);
-//    void setMaxCode(QString);
 
 private:
     double min, max;

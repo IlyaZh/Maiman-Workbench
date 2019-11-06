@@ -36,7 +36,6 @@ signals:
 
 
 public slots:
-    //void writeToConsole(QString str, QColor color = QColor::fromRgb(255,255,255,0));
     void writeToLog(QString str);
 };
 
