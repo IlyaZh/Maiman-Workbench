@@ -31,10 +31,6 @@ ParameterController::ParameterController(QString title, Command *minComm, Comman
         connect(minComm, &Command::valueChanged, this, &ParameterController::setMin);
     }
 
-    connect(this, &ParameterController::changeValue, [](const QString &str){
-        qDebug() << str;
-    });
-
     setPinState(false);
     isUserEdited = false;
 
@@ -180,20 +176,14 @@ void ParameterController::prepareCompactViewWidget() {
         if(ui_currValueCompactLine != nullptr) {
             connect(ui_currValueCompactLine, &QLineEdit::returnPressed, this, &ParameterController::on_currValueCompactLine_returnPressed);
             connect(ui_currValueCompactLine, &QLineEdit::textEdited, this, &ParameterController::on_currValueCompactLine_textEdited);
-        } else {
-            qDebug() << "ui_currValueCompactLine NULLPTR";
         }
 
         if(ui_minusCompactButton != nullptr) {
             connect(ui_minusCompactButton, &QPushButton::released, this, &ParameterController::on_minusCompactButton_released);
-        } else {
-            qDebug() << "ui_minusCompactButton NULLPTR";
         }
 
         if(ui_plusCompactButton != nullptr) {
             connect(ui_plusCompactButton, &QPushButton::released, this, &ParameterController::on_plusCompactButton_released);
-        } else {
-            qDebug() << "ui_plusCompactButton NULLPTR";
         }
 
     //    end of loading widget for compact view
@@ -399,7 +389,6 @@ void ParameterController::on_valueSlider_sliderMoved(int value) {
 void ParameterController::on_valueSlider_sliderReleased() {
     if(ui_currValueLine->hasFocus()) ui_currValueLine->clearFocus();
     preparedCommand = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(valueComm->getCode()).arg(ui_valueSlider->value(), 4, 16, QChar('0'));
-    qDebug() << preparedCommand;
     emit changeValue(preparedCommand);
     isUserEdited = false;
 }

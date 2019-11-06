@@ -162,24 +162,29 @@ void ComPort::needToRead() {
        portIsBusy = false;
        return;
    }
-
-    splitCommands.clear();
+//    splitCommands.clear();
 
    if(buffer.contains(COM_END_OF_LINE)) {
-
-       splitCommands = buffer.split(COM_END_OF_LINE);
+       buffer.resize(buffer.indexOf(COM_END_OF_LINE)+1);
+       emit receivedDataSignal(buffer);
        buffer.clear();
-       foreach(QByteArray item, splitCommands) {
-           if(item.size() == 0) continue;
-           if(item.size() > READ_COM_COMMAND_LENGTH) {
-               emit errorOccuredSignal("Unexpected length of answer: " + QString(item));
-               portIsBusy = false;
-               return;
-           }
-           emit receivedDataSignal(item);
-           portIsBusy = false;
-       }
-       splitCommands.clear();
+       portIsBusy = false;
+
+
+
+
+//       splitCommands = buffer.split(COM_END_OF_LINE);
+//       buffer.clear();
+//       foreach(QByteArray item, splitCommands) {
+//           if(item.size() == 0) continue;
+//           if(item.size() > READ_COM_COMMAND_LENGTH) {
+//               emit errorOccuredSignal("Unexpected length of answer: " + QString(item));
+//               continue;
+//           }
+//           emit receivedDataSignal(item);
+//           portIsBusy = false;
+//       }
+//       splitCommands.clear();
 
 
         // Если в очереди есть ещё команды - приступаем к передаче
@@ -224,7 +229,8 @@ void ComPort::errorSlot(QSerialPort::SerialPortError spe) {
 }
 
 void ComPort::clearQueue() {
-    queue2send.clear();
+    if(!queue2send.isEmpty())
+        queue2send.clear();
 }
 
 bool ComPort::startToSendNextCommand() {

@@ -12,7 +12,7 @@ class AppSettings : public QObject
 {
     Q_OBJECT
 public:
-    explicit AppSettings(QObject *parent = 0);
+    explicit AppSettings(QObject *parent = nullptr);
     quint32 getComBaudrate();
     QString getComPort();
     uint getComAutoconnectFlag(bool flag);

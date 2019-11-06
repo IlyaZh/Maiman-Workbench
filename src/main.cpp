@@ -10,7 +10,7 @@
 
 QLocale wlocale;
 QString updateUrl;
-bool debugMode = true; //false;
+bool debugMode = false;
 
 int main(int argc, char *argv[])
 {

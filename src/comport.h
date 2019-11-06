@@ -26,6 +26,7 @@ public:
     void close();
     bool isOpen();
     void stopAndDisconnect();
+    void clearQueue();
 
 
 private:
@@ -45,6 +46,7 @@ private:
     uint stopCommandDelay;
     bool checkStopWritten;
     QList<QByteArray> splitCommands;
+
 
 signals:
     void errorOccuredSignal(QString);
@@ -71,7 +73,6 @@ private slots:
     void writeToPort();
     bool startToSendNextCommand();
     void waitForNextCommandSlot();
-    void clearQueue();
 };
 
 #endif // COMPORT_H

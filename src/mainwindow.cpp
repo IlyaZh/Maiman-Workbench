@@ -814,7 +814,7 @@ void MainWindow::setRegulatorsEnable(bool state) {
         devConfig.binOptions.at(i).checkBox->setEnabled(state);
     }
 
-    comSetDataTransfer(state);
+//    comSetDataTransfer(state);
     if(state) {
         requestAllCommands = true;
     }
@@ -1126,12 +1126,14 @@ void MainWindow::loadConfigFinished(bool isDeviceFound) {
     if(isDeviceFound) {
         isDeviceLoaded = isDeviceFound;
         devID = devConfig.deviceID;
-
         setupParameterHandlers();
         writeToConsole(tr("CONFIG: Config is loaded successful!"));
 
         setRegulatorsEnable(true);
         bNeedSetCheckboxes = true;
+        autoSendNextCommand = true;
+        ui->consoleNextCommandButton->setEnabled(false);
+        ui->consoleStartStopButton->setText("Stop autosend");
         prepareToSendNextCommand();
     } else {
         emit writeToConsoleError(tr("CONFIG: The device hasn't found!"));
@@ -1156,13 +1158,12 @@ void MainWindow::loadCommonConfig(QList<availableDev_t> &deviceList) {
 }
 
 void MainWindow::comPortTimeout() {
+    emit writeToConsoleError(tr("The device didn't response. Com-port timeout: ") + QString::number(COM_PORT_TIMEOUT) + tr("ms"));
     oldDevID = devID;
     devID = 0;
     setLink(false);
     setRegulatorsEnable(false);
     startDeviceIdent();
-
-    emit writeToConsoleError(tr("The device didn't response. Com-port timeout: ") + QString::number(COM_PORT_TIMEOUT) + tr("ms"));
 }
 
 void MainWindow::comPortError(QString str) {
@@ -1305,7 +1306,7 @@ void MainWindow::setLink(bool state) {
 }
 
 void MainWindow::sendNextComCommand() {
-    if(devConfig.commands.isEmpty() || !isDeviceLoaded) return;
+    if(devConfig.commands.isEmpty() || !isDeviceLoaded || devID == 0) return;
 
     bool needToSend = true;
     bool cycleOn = true;
@@ -1356,7 +1357,7 @@ void MainWindow::sendNextComCommand() {
 
 
 void MainWindow::comSetDataTransfer(bool state) {
-//    serialPort->clearQueue();
+    serialPort->clearQueue();
     autoSendNextCommand = state;
     ui->consoleNextCommandButton->setEnabled(!state);
     if(state) {
