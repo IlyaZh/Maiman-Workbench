@@ -606,6 +606,8 @@ void MainWindow::setupParameterHandlers() {
 
 
     if(!devConfig.paramWidgets.empty()) {
+        if(actualParamsGLayout != nullptr) delete actualParamsGLayout;
+        actualParamsGLayout = new QGridLayout();
         QGridLayout* layoutparams = new QGridLayout();
 
         ui->controlsVisibleButton->setChecked(false);
@@ -622,9 +624,10 @@ void MainWindow::setupParameterHandlers() {
         int row = 0;
         foreach(ParameterController* parameterController, devConfig.paramWidgets) {
             parameterController->setEnableState(true);
-            connect(parameterController, SIGNAL(changeValue(QString)), this, SLOT(sendDataToPort(QString)));
+//            connect(parameterController, SIGNAL(changeValue(QString)), this, SLOT(sendDataToPort(QString)));
 
-            actualParamsGLayout->addWidget(parameterController->loadTextWidget(), row, 0);
+//            actualParamsGLayout->addWidget(parameterController->loadTextWidget(), row, 0);
+//            actualParamsGLayout->addWidget(new QLabel(QString::number(row)), row, 0);
             row++;
 
             if(parameterController->isOnlyMeasured()) { // Вывод значений в окно параметров
@@ -649,6 +652,7 @@ void MainWindow::setupParameterHandlers() {
         if(ui->parametersGroupBox->layout()) delete ui->parametersGroupBox->layout();
         ui->parametersGroupBox->setLayout(layoutparams);
         // Вывод значений в окне параметров
+//        if(ui->actualParameters->layout()) delete ui->actualParameters->layout();
         ui->actualParameters->setLayout(actualParamsGLayout);
 
         // Формирование и вывод на экран панели режимов

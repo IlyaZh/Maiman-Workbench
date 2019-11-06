@@ -135,7 +135,7 @@ private:
     bool link;
     QPointer<ComPort> serialPort;
     QPointer<BitsLayout> bitsLayout;
-    QPointer<QGridLayout> actualParamsGLayout;
+    QGridLayout *actualParamsGLayout;
     QList<QLabel*> actualParamsLabels;
     bool isDeviceLoaded;
     bool autoSendNextCommand;
