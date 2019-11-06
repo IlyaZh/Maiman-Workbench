@@ -60,7 +60,6 @@ public slots:
     void putIntoQueue(QString str);
     void setPortState(bool);
     void changeBaudRate(int);
-    void clearQueue();
     void setStopCommandDelay(uint);
     void setStopBits(int);
 
@@ -72,6 +71,7 @@ private slots:
     void writeToPort();
     bool startToSendNextCommand();
     void waitForNextCommandSlot();
+    void clearQueue();
 };
 
 #endif // COMPORT_H

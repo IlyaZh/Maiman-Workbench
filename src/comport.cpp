@@ -50,6 +50,7 @@ void ComPort::setPortState(bool state) {
     if(serialportinfo) delete serialportinfo;
     serialportinfo = new QSerialPortInfo(settings->getComPort());
     portIsBusy = false;
+    clearQueue();
 
     if (state) {
         if (serialPort->open(QIODevice::ReadWrite)) {
@@ -99,7 +100,6 @@ void ComPort::close() {
 }
 
 void ComPort::putIntoQueue(QString str) {
-
     // Добавляем символ конца строки \r = 0x13
     str.append(COM_END_OF_LINE);
 

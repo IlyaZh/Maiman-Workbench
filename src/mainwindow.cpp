@@ -1090,7 +1090,7 @@ void MainWindow::selectedDeviceSlot(QString userSelectedDevice) {
             devID = devStruct.id;
             settings->setLastSelectedDeviceId(devID);
             loadDeviceConfig(devID);
-            serialPort->clearQueue();
+//            serialPort->clearQueue();
             ui->devSelectButton->setVisible(true);
             break;
         }
@@ -1356,7 +1356,7 @@ void MainWindow::sendNextComCommand() {
 
 
 void MainWindow::comSetDataTransfer(bool state) {
-    serialPort->clearQueue();
+//    serialPort->clearQueue();
     autoSendNextCommand = state;
     ui->consoleNextCommandButton->setEnabled(!state);
     if(state) {
