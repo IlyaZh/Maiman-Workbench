@@ -1,5 +1,7 @@
 #include "devicelimit.h"
 
+int DeviceLimit::Count = 0;
+
 DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, Command* maxComm, QObject *parent) : QObject(parent)
 {
     this->title = title;
@@ -8,6 +10,7 @@ DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, Co
     this->maxComm = maxComm;
     min = minComm->getValue();
     max = maxComm->getValue();
+    Count++;
 }
 
 DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, Command* maxComm, QObject *parent) : QObject(parent)
@@ -18,6 +21,7 @@ DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, Co
     this->maxComm = maxComm;
     min = minValue;
     max = maxComm->getValue();
+    Count++;
 }
 
 DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, quint16 maxValue, QObject *parent) : QObject(parent)
@@ -28,6 +32,7 @@ DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, qu
     this->maxComm = nullptr;
     min = minComm->getValue();
     max = maxValue;
+    Count++;
 }
 
 DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, quint16 maxValue, QObject *parent) : QObject(parent)
@@ -38,10 +43,11 @@ DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, qu
     this->maxComm = nullptr;
     min = minValue;
     max = maxValue;
+    Count++;
 }
 
 DeviceLimit::~DeviceLimit() {
-
+    Count--;
 }
 
 double DeviceLimit::getDivider() {

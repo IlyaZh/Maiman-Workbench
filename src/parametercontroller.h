@@ -25,6 +25,7 @@ class ParameterController : public QWidget
     Q_OBJECT
 
 public:
+    static int Count;
     explicit ParameterController(QString title, Command *minComm, Command *maxComm, Command *valueComm, Command *realComm = nullptr, QWidget *parent = nullptr);
     ~ParameterController();
     bool getPinState();
@@ -75,6 +76,7 @@ private:
     QPushButton *ui_minusCompactButton;
     QPushButton *ui_plusCompactButton;
     QPushButton *ui_sendValueCompactButton;
+    QTimer timer;
     QString title;
     bool pinState;
     bool hideReal;
@@ -88,6 +90,7 @@ private:
     Command *valueComm;
     Command *minComm;
     Command *maxComm;
+    uint iMin, iMax, iReal, iSent;
     QString preparedCommand;
     bool isUserEdited;
     QDoubleValidator validator;

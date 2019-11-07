@@ -9,6 +9,7 @@ class DeviceLimit : public QObject
 {
     Q_OBJECT
 public:
+    static int Count;
     explicit DeviceLimit(QString title, Command* valueComm, Command* minComm, Command* maxComm, QObject* parent = nullptr);
     explicit DeviceLimit(QString title, Command* valueComm, quint16 minValue, Command* maxComm, QObject* parent = nullptr);
     explicit DeviceLimit(QString title, Command* valueComm, Command* minComm, quint16 maxValue, QObject* parent = nullptr);
