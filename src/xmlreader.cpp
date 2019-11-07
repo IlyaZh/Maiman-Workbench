@@ -210,10 +210,14 @@ void xmlReader::parseCommands() {
 
         bool isSigned = attrib.hasAttribute("isSigned");
 
+        bool isTemperature = attrib.hasAttribute("isTemperature");
+        QString unit = (attrib.hasAttribute("unit")) ? attrib.value("unit").toString() : "" ;
+        unit.replace("(deg)", QString::fromRawData(new QChar('\260'), 1));
+
         if(isSigned) {
-            device->commands.insert(code, new SignedCommand(code, divider, interval));
+            device->commands.insert(code, new SignedCommand(code, unit, divider, interval, isTemperature));
         } else {
-            device->commands.insert(code, new Command(code, divider, interval));
+            device->commands.insert(code, new Command(code, unit, divider, interval, isTemperature));
         }
 
     }

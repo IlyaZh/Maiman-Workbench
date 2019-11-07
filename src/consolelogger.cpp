@@ -1,10 +1,14 @@
 #include "consolelogger.h"
 
+const qint64 consoleLogger::DAY_TO_REMOVE_LOGS = 5;
+
 consoleLogger::consoleLogger(QString logFileName, QObject *parent) : QObject(parent)
 {
     setLogFileName(logFileName);
     setLogFilePath(DEFAULT_LOG_FILEPATH);
     file = new QFile;
+
+//    checkAndDeleteOldLogs();
 
     start();
 
@@ -62,5 +66,21 @@ void consoleLogger::writeToLog(QString str) {
             queue.dequeue();
         }
         queue.enqueue(logString);
+    }
+}
+
+void consoleLogger::checkAndDeleteOldLogs() {
+    QDir dir;
+    dir.setPath(filePath);
+    dir.setFilter(QDir::Files);
+    dir.setSorting(QDir::Time);
+
+
+     QFileInfoList list = dir.entryInfoList();
+    for(int i = 0; i < list.size(); ++i) {
+        QFileInfo fileInfo = list.at(i);
+        if(fileInfo.birthTime().daysTo(QDateTime::currentDateTime()) > DAY_TO_REMOVE_LOGS) {
+            QFile::remove(fileInfo.filePath());
+        }
     }
 }

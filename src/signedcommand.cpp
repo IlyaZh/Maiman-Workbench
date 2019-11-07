@@ -1,6 +1,6 @@
 #include "signedcommand.h"
 
-SignedCommand::SignedCommand(QString code, double divider, quint8 interval, QObject* parent) : Command(code, divider, interval, parent)
+SignedCommand::SignedCommand(QString code, QString unit, double divider, quint8 interval, bool isTemperatureFlag, QObject* parent) : Command(code, unit, divider, interval, isTemperatureFlag, parent)
 {
 
 }
@@ -14,6 +14,8 @@ double SignedCommand::getConvertedValue() {
 }
 
 void SignedCommand::setRawValue(quint16 value) {
-    rawValue.setValue(value);
-    this->value = -static_cast<double>((~(static_cast<qint16>(rawValue.toInt())-1))) / Divider;
+//    if(rawValue.toUInt() != value) {
+        rawValue.setValue(value);
+        this->value = -static_cast<double>((~(static_cast<qint16>(rawValue.toInt())-1))) / Divider;
+//    }
 }

@@ -501,18 +501,18 @@ void ParameterController::temperatureIsChanged(QString str) {
     if(str == "F" && isCelsius) {
         // Меняем цельсии на фаренгейты
         isCelsius = false;
-        setMin(convertCelToFar(min));
-        setMax(convertCelToFar(max));
-        setRealValue(convertCelToFar(realValue));
-        setSentValue(convertCelToFar(currValue));
+//        setMin(convertCelToFar(min));
+//        setMax(convertCelToFar(max));
+//        setRealValue(convertCelToFar(realValue));
+//        setSentValue(convertCelToFar(currValue));
         setUnit(QString::fromRawData(new QChar('\260'), 1));// + str);
     } else if(str == "C" && !isCelsius) {
         // Меняем фаренгейты на цельсии
         isCelsius = true;
-        setMin(convertFarToCel(min));
-        setMax(convertFarToCel(max));
-        setRealValue(convertFarToCel(realValue));
-        setSentValue(convertCelToFar(currValue));
+//        setMin(convertFarToCel(min));
+//        setMax(convertFarToCel(max));
+//        setRealValue(convertFarToCel(realValue));
+//        setSentValue(convertCelToFar(currValue));
         setUnit(QString::fromRawData(new QChar('\260'), 1));// + str);
     }
 

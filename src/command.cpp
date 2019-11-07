@@ -1,15 +1,42 @@
 #include "command.h"
+#include "appsettings.h"
 
-Command::Command(QString code, double divider, quint8 interval, QObject *parent) : QObject(parent)
+extern AppSettings settings;
+
+Command::Command(QString code, QString unit, double divider, quint8 interval, bool isTemperatureFlag, QObject *parent) : QObject(parent)
 {
     this->Code = code;
     this->interval = (interval < MAX_COM_INTERVAL_COUNTER) ? interval : MAX_COM_INTERVAL_COUNTER;
     this->Divider = divider;
+    this->isTemperatureFlag = isTemperatureFlag;
+    this->unit = unit;
     setRawValue(0);
+
+    setTemperatureUnit(settings.getTemperatureSymbol());
 }
 
-const QString Command::getCode() {
+double Command::convertCelToFar(double val) {
+    return val * 9.0 / 5.0 + 32.0;
+}
+
+double Command::convertFarToCel(double val) {
+    return (val - 32.0) * 5.0 / 9.0;
+}
+
+void Command::setTemperatureUnit(QString unit) {
+    temperatureUnit = unit;
+}
+
+QString Command::getCode() {
     return Code;
+}
+
+double Command::getValue() {
+    if(isTemperature() && temperatureUnit == "F") {
+        return convertCelToFar(value);
+    } else {
+        return value;
+    }
 }
 
 double Command::getConvertedValue() {
@@ -17,11 +44,23 @@ double Command::getConvertedValue() {
 }
 
 quint16 Command::getRawValue() {
-    return rawValue.toUInt();
+    return static_cast<quint16>(rawValue.toUInt());
 }
 
 double Command::getDivider() {
     return Divider;
+}
+
+bool Command::isTemperature() {
+    return isTemperatureFlag;
+}
+
+QString Command::getUnit() {
+    if(isTemperature()) {
+        return unit+temperatureUnit;
+    } else {
+        return unit;
+    }
 }
 
 bool Command::isSignedValue() {
@@ -31,8 +70,10 @@ bool Command::isSignedValue() {
 // SLOTS are declared below
 
 void Command::setRawValue(quint16 _value) {
-    rawValue.setValue(_value);
-    this->value = rawValue.toDouble() / Divider;
+//    if(rawValue.toUInt() != _value) {
+        rawValue.setValue(_value);
+        this->value = rawValue.toDouble() / Divider;
+//    }
 }
 
 quint8 Command::getInterval() {

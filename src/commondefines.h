@@ -118,13 +118,4 @@ const QString appTitle = QString("%1 v.%2.%3.%4").arg(APP_NAME_TITLE).arg(MAJOR_
 
 extern quint16 devID;
 
-
-inline double convertCelToFar(double val) {
-    return val * 9.0 / 5.0 + 32.0;
-}
-
-inline double convertFarToCel(double val) {
-    return (val - 32.0) * 5.0 / 9.0;
-}
-
 #endif // COMMONDEFINES_H

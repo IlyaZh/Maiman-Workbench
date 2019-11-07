@@ -1019,7 +1019,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
 
 
                         if(parameterController->isTemperature() && settings.getTemperatureSymbol() == "F") {
-                            newValue = convertCelToFar(newValue);
+//                            newValue = convertCelToFar(newValue);
                         }
 
                         if(parameterController->getMaxComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
