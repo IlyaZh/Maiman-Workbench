@@ -67,10 +67,16 @@ color: #fff;</string>
    <item>
     <widget class="QLabel" name="valueLabel">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>50</width>
+       <height>16777215</height>
+      </size>
      </property>
      <property name="font">
       <font>

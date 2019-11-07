@@ -1,8 +1,11 @@
 #include "parametercontroller.h"
 #include "math.h"
 
+int ParameterController::Count = 0;
+
 ParameterController::ParameterController(QString title, Command *minComm, Command *maxComm, Command *valueComm, Command *realComm, QWidget *parent) : QWidget(parent)
 {
+    Count++;
     this->minComm = minComm;
     this->maxComm = maxComm;
     this->realComm = realComm;
@@ -18,7 +21,9 @@ ParameterController::ParameterController(QString title, Command *minComm, Comman
     } else {
         hideRealValue(false);
         precisionOfRealValue = qRound(log10(realComm->getDivider()));
-        connect(realComm, &Command::valueChanged, this, &ParameterController::setRealValue);
+//        connect(realComm, &Command::valueChanged, this, &ParameterController::setRealValue);
+        iReal = 0xffff-realComm->getRawValue();
+//        setRealValue();
     } 
 
     if(!isOnlyMeasured()) {
@@ -26,15 +31,45 @@ ParameterController::ParameterController(QString title, Command *minComm, Comman
         validator.setDecimals(precisionOfValue);
         ui_currValueLine->setValidator(&validator);
         ui_currValueCompactLine->setValidator(&validator);
-        connect(valueComm, &Command::valueChanged, this, &ParameterController::setSentValue);
-        connect(maxComm, &Command::valueChanged, this, &ParameterController::setMax);
-        connect(minComm, &Command::valueChanged, this, &ParameterController::setMin);
+//        connect(valueComm, &Command::valueChanged, this, &ParameterController::setSentValue);
+//        connect(maxComm, &Command::valueChanged, this, &ParameterController::setMax);
+//        connect(minComm, &Command::valueChanged, this, &ParameterController::setMin);
+//        setMax();
+//        setMin();
+//        setSentValue();
+        iMin = 0xffff-minComm->getRawValue();
+        iMax = 0xffff-maxComm->getRawValue();
+        iSent = 0xffff-valueComm->getRawValue();
     }
 
     setPinState(false);
     isUserEdited = false;
 
     setEditLineDefaultState();
+
+    connect(this, &ParameterController::changeValue, [this](const QString& str){
+        qDebug() << "Cntrl " << this->valueComm->getCode() << " value " << str;
+    });
+
+    timer.setSingleShot(false);
+    connect(&timer, &QTimer::timeout, [this]() {
+        if(this->minComm != nullptr) {
+            if(iMin != this->minComm->getRawValue())
+                setMin();
+        }
+        if(this->maxComm != nullptr) {
+            if(iMax != this->maxComm->getRawValue())
+                setMax();
+        }
+        if(this->realComm != nullptr) {
+            if(iReal != this->realComm->getRawValue())
+                setRealValue();
+        }
+        if(this->valueComm != nullptr) {
+            if(iSent != this->valueComm->getRawValue())
+                setSentValue();
+        }
+    });
 
     //QMetaObject::connectSlotsByName(this);
 }
@@ -70,6 +105,8 @@ ParameterController::~ParameterController() {
     if(ui_pinButton != nullptr) {
         ui_pinButton->disconnect();
     }*/
+
+    Count--;
 
     if(compactWidget) delete compactWidget;
     if(bigWidget) delete bigWidget;
@@ -257,41 +294,37 @@ void ParameterController::setTitle(QString str) {
 }
 
 void ParameterController::setMax() {
-    if(isOnlyMeasured()) return;
+    iMax = maxComm->getRawValue();
 
-    double max = maxComm->getValue();
-    double divider = maxComm->getDivider();
-    QString unit = maxComm->getUnit();
+    QString strValueUnit = wlocale.toString(maxComm->getValue(), DOUBLE_FORMAT, precisionOfValue) + maxComm->getUnit();
 
-    ui_maxLabel->setText("max=" + wlocale.toString(max, DOUBLE_FORMAT, precisionOfValue) + unit);
-    ui_maxCompactLabel->setText("max=" + wlocale.toString(max, DOUBLE_FORMAT, precisionOfValue) + unit);
-    ui_valueSlider->setMaximum(qRound(max*divider));
-    ui_measuredValueBar->setMaximum(qRound(max*divider));
-    ui_maxUnitProgressLabel->setText(wlocale.toString(max, DOUBLE_FORMAT, precisionOfValue) + unit);
+    ui_maxLabel->setText("max=" + strValueUnit);
+    ui_maxCompactLabel->setText("max=" + strValueUnit);
+    ui_valueSlider->setMaximum(iMax);
+    ui_measuredValueBar->setMaximum(iMax);
+    ui_maxUnitProgressLabel->setText(strValueUnit);
 
-    if(currValue > max) {
-        currValue = max;
-        ui_valueSlider->setValue(qRound(currValue*divider));
-    }
+//    if(currValue > max) {
+//        currValue = max;
+//        ui_valueSlider->setValue(qRound(currValue*divider));
+//    }
 }
 
 void ParameterController::setMin() {
-    if(isOnlyMeasured()) return;
+    iMin = minComm->getRawValue();
 
-    double min = minComm->getValue();
-    double divider = minComm->getDivider();
-    QString unit = minComm->getUnit();
+    QString strValueUnit = wlocale.toString(minComm->getValue(), DOUBLE_FORMAT, precisionOfValue) + minComm->getUnit();
 
-    ui_minLabel->setText("min=" + wlocale.toString(min, DOUBLE_FORMAT, precisionOfValue) + unit);
-    ui_minCompactLabel->setText("min=" + wlocale.toString(min, DOUBLE_FORMAT, precisionOfValue) + unit);
-    ui_valueSlider->setMinimum(qRound(min*divider));
-    ui_measuredValueBar->setMinimum(qRound(min*divider));
-    ui_minUnitProgressLabel->setText(wlocale.toString(min, DOUBLE_FORMAT, precisionOfValue) + unit);
+    ui_minLabel->setText("min=" + strValueUnit);
+    ui_minCompactLabel->setText("min=" + strValueUnit);
+    ui_valueSlider->setMinimum(iMin);
+    ui_measuredValueBar->setMinimum(iMin);
+    ui_minUnitProgressLabel->setText(strValueUnit);
 
-    if(currValue < min) {
-        currValue = min;
-        ui_valueSlider->setValue(qRound(currValue*divider));
-    }
+//    if(currValue < min) {
+//        currValue = min;
+//        ui_valueSlider->setValue(qRound(currValue*divider));
+//    }
 }
 
 void ParameterController::setPinState(bool val) {
@@ -307,9 +340,14 @@ bool ParameterController::getEnableState() {
 }
 
 void ParameterController::setRealValue() {
+    iReal = realComm->getRawValue();
     realValue = realComm->getValue();
+    qDebug() << realComm->getCode() << realComm->getValue();
 
-    ui_measuredValueBar->setValue(static_cast<int>(qRound(realValue*realComm->getDivider())));
+    QString strValue = wlocale.toString(realValue, DOUBLE_FORMAT, precisionOfRealValue);
+    QString strValueUnit = strValue + realComm->getUnit();
+
+    ui_measuredValueBar->setValue(iReal);
     ui_measuredValueBar->setStyleSheet(" QProgressBar { \
                                      border: 1px solid rgb(25,25,25); \
                                      background: rgb(25,25,25); \
@@ -320,10 +358,10 @@ void ParameterController::setRealValue() {
                                      background: rgb(254, 26, 6); \
                                  }");
 //    if (isTemperature()) {
-        ui_currValueUnitLabel->setText(wlocale.toString(realValue, DOUBLE_FORMAT, precisionOfRealValue) + realComm->getUnit());
-        ui_realValueUnitCompactLabel->setText("real=" + wlocale.toString(realValue, DOUBLE_FORMAT, precisionOfRealValue) + realComm->getUnit());
+        ui_currValueUnitLabel->setText(strValueUnit);
+        ui_realValueUnitCompactLabel->setText("real=" + strValueUnit);
 //    }
-    valueLabel->setText(wlocale.toString(realValue, DOUBLE_FORMAT, precisionOfRealValue));
+    valueLabel->setText(strValue);
     if(realComm != nullptr)
         unitLabel->setText(realComm->getUnit());
 
@@ -331,7 +369,8 @@ void ParameterController::setRealValue() {
 
 void ParameterController::setSentValue() {
     if(!isUserEdited) {
-        ui_valueSlider->setValue(static_cast<int>(qRound(valueComm->getValue()*valueComm->getDivider())));
+        iSent = valueComm->getRawValue();
+        ui_valueSlider->setValue(static_cast<int>(iSent));
     }
 }
 
@@ -571,5 +610,11 @@ void ParameterController::setEnableState(bool state) {
     ui_minusCompactButton->setEnabled(state);
     ui_plusCompactButton->setEnabled(state);
     ui_currValueCompactLine->setEnabled(state);
+
+    if(state) {
+        timer.start(50);
+    } else {
+        timer.stop();
+    }
 }
 

@@ -10,7 +10,9 @@ class Command : public QObject
 {
     Q_OBJECT
 public:
+    static int Count;
     explicit Command(QString code, QString unit = "", double divider = 1, quint8 interval = 1, bool isTemperature = false, QObject *parent = nullptr);
+    ~Command();
     void setTemperatureUnit(QString unit);
     QString getCode();
     virtual double getValue();
@@ -28,7 +30,7 @@ public slots:
     virtual void setRawValue(quint16 value);
 
 signals:
-    void valueChanged();
+//    void valueChanged();
 
 protected:
     QString TemperatureUnit;

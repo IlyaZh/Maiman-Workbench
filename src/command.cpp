@@ -1,6 +1,8 @@
 #include "command.h"
 #include "appsettings.h"
 
+int Command::Count = 0;
+
 Command::Command(QString code, QString unit, double divider, quint8 interval, bool isTemperatureFlag, QObject *parent) : QObject(parent)
 {
     this->Code = code;
@@ -9,6 +11,12 @@ Command::Command(QString code, QString unit, double divider, quint8 interval, bo
     this->IsTemperatureFlag = isTemperatureFlag;
     this->Unit = unit;
     RawValue.setValue(-1);
+
+    Count++;
+}
+
+Command::~Command() {
+    Count--;
 }
 
 double Command::convertCelToFar(double val) {
@@ -21,7 +29,7 @@ double Command::convertFarToCel(double val) {
 
 void Command::setTemperatureUnit(QString unit) {
     TemperatureUnit = unit;
-    emit valueChanged();
+//    emit valueChanged();
 }
 
 QString Command::getCode() {
@@ -67,7 +75,7 @@ void Command::setRawValue(quint16 _value) {
         RawValue.setValue(_value);
         this->Value = RawValue.toDouble() / Divider;
 
-        emit valueChanged();
+//        emit valueChanged();
     }
 }
 

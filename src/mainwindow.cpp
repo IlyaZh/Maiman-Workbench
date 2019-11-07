@@ -624,10 +624,9 @@ void MainWindow::setupParameterHandlers() {
         int row = 0;
         foreach(ParameterController* parameterController, devConfig.paramWidgets) {
             parameterController->setEnableState(true);
-//            connect(parameterController, SIGNAL(changeValue(QString)), this, SLOT(sendDataToPort(QString)));
+            connect(parameterController, SIGNAL(changeValue(QString)), this, SLOT(sendDataToPort(QString)));
 
-//            actualParamsGLayout->addWidget(parameterController->loadTextWidget(), row, 0);
-//            actualParamsGLayout->addWidget(new QLabel(QString::number(row)), row, 0);
+            actualParamsGLayout->addWidget(parameterController->loadTextWidget(), row, 0);
             row++;
 
             if(parameterController->isOnlyMeasured()) { // Вывод значений в окно параметров
@@ -766,41 +765,39 @@ void MainWindow::saveCheckboxes() {
 }
 
 void MainWindow::clearAllRegulators() {
-
-    for(QList<ParameterController*>::ConstIterator i = devConfig.paramWidgets.constBegin(); i != devConfig.paramWidgets.constEnd(); i++) {
-        delete (*i)->loadWidget();
-        delete (*i)->loadCompactWidget();
-        delete (*i)->loadTextWidget();
-        delete (*i);
+    foreach(ParameterController* item, devConfig.paramWidgets) {
+        delete item;
     }
     devConfig.paramWidgets.clear();
 
     bitsLayout->clear();
 
-    foreach(Command* itemPtr, devConfig.commands) {
-        delete itemPtr;
+    foreach(Command* cmd, devConfig.commands) {
+        delete cmd;
     }
-
+    devConfig.commands.clear();
 
     foreach(binOption_t item, devConfig.binOptions) {
          delete item.checkBox;
     }
+    devConfig.binOptions.clear();
 
-
+    foreach(DeviceLimit* item, devConfig.limits) {
+        item->deleteLater();
+    }
     devConfig.limits.clear();
+
+
+
     devConfig.calCoefs.clear();
-    devConfig.commands.clear();
     devConfig.description = "";
     devConfig.devName = "";
     devConfig.hasLaser = false;
     devConfig.hasTEC = false;
     devConfig.image = "";
     devConfig.link = "";
-    devConfig.paramWidgets.clear();
-    devConfig.binOptions.clear();
     devConfig.stateButtons.clear();
     devConfig.leds.clear();
-
     if(ui->parametersGroupBox->layout()) delete ui->parametersGroupBox->layout();
     bitsLayout->clear();
     if(ui->specialParamBox->layout()) delete ui->specialParamBox->layout();
@@ -954,25 +951,25 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     Command* currentCommand = devConfig.commands.value(commandStr);
                     currentCommand->setRawValue(value);
                     // Обработка крутилок и информеров основных параметров
-//                    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
-//                        double newValue;
-//                        newValue  = currentCommand->getValue();
+                    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
+                        double newValue;
+                        newValue  = currentCommand->getValue();
 
 
-//                        if(parameterController->isTemperature() && settings->getTemperatureSymbol() == "F") {
-//                            newValue = convertCelToFar(newValue);
-//                        }
+                        if(parameterController->isTemperature() && settings->getTemperatureSymbol() == "F") {
+                            newValue = convertCelToFar(newValue);
+                        }
 
-//                        if(parameterController->getMaxComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-//                            parameterController->setMax(newValue);
-//                        } else if(parameterController->getMinComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-//                            parameterController->setMin(newValue);
-//                        } else if(parameterController->getRealComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-//                            parameterController->setRealValue(newValue);
-//                        } else if(parameterController->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
-//                            parameterController->setSentValue(newValue);
-//                        }
-//                    }
+                        if(parameterController->getMaxComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                            parameterController->setMax(newValue);
+                        } else if(parameterController->getMinComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                            parameterController->setMin(newValue);
+                        } else if(parameterController->getRealComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                            parameterController->setRealValue(newValue);
+                        } else if(parameterController->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
+                            parameterController->setSentValue(newValue);
+                        }
+                    }
 
                     // Обработка LEDS
                     setLedState(commandStr, value);
