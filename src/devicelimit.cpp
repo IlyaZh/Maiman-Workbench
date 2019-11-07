@@ -1,57 +1,38 @@
 #include "devicelimit.h"
 
-int DeviceLimit::Count = 0;
-
-DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, Command* maxComm, QObject *parent) : QObject(parent)
+DeviceLimit::DeviceLimit(QString title, QString unit, QString bottomLimitCode, QString upperLimitCode, QString minCode, QString maxCode, double divider, bool showMin, bool showMax)
 {
     this->title = title;
-    this->valueComm = valueComm;
-    this->minComm = minComm;
-    this->maxComm = maxComm;
-    min = minComm->getValue();
-    max = maxComm->getValue();
-    Count++;
-}
+    this->unit = unit;
+    this->bottomLimitCode = bottomLimitCode;
+    this->upperLimitCode = upperLimitCode;
+    this->minCode = minCode;
+    this->maxCode = maxCode;
+    this->divider = divider;
+    this->showMin = showMin;
+    this->showMax = showMax;
 
-DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, Command* maxComm, QObject *parent) : QObject(parent)
-{
-    this->title = title;
-    this->valueComm = valueComm;
-    this->minComm = nullptr;
-    this->maxComm = maxComm;
-    min = minValue;
-    max = maxComm->getValue();
-    Count++;
-}
-
-DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, quint16 maxValue, QObject *parent) : QObject(parent)
-{
-    this->title = title;
-    this->valueComm = valueComm;
-    this->minComm = minComm;
-    this->maxComm = nullptr;
-    min = minComm->getValue();
-    max = maxValue;
-    Count++;
-}
-
-DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, quint16 maxValue, QObject *parent) : QObject(parent)
-{
-    this->title = title;
-    this->valueComm = valueComm;
-    this->minComm = nullptr;
-    this->maxComm = nullptr;
-    min = minValue;
-    max = maxValue;
-    Count++;
-}
-
-DeviceLimit::~DeviceLimit() {
-    Count--;
+    upper = bottom = max = min = 0;
 }
 
 double DeviceLimit::getDivider() {
-    return valueComm->getDivider();
+    return divider;
+}
+
+QString DeviceLimit::getBottomLimitCode() {
+    return bottomLimitCode;
+}
+
+QString DeviceLimit::getUpperLimitCode() {
+    return upperLimitCode;
+}
+
+QString DeviceLimit::getMinCode() {
+    return minCode;
+}
+
+QString DeviceLimit::getMaxCode() {
+    return maxCode;
 }
 
 QString DeviceLimit::getTitle() {
@@ -59,29 +40,69 @@ QString DeviceLimit::getTitle() {
 }
 
 QString DeviceLimit::getUnit() {
-    return valueComm->getUnit();
+    return unit;
 }
 
-double DeviceLimit::getMin() {
-    if(minComm == nullptr) {
-        return min;
-    } else {
-        return minComm->getValue();
-    }
+double DeviceLimit::getUpperValue() {
+    return upper;
 }
 
-double DeviceLimit::getMax() {
-    if(maxComm == nullptr) {
-        return max;
-    } else {
-        return maxComm->getValue();
-    }
+double DeviceLimit::getBottomValue() {
+    return bottom;
 }
 
-double DeviceLimit::getValue() {
-    return valueComm->getValue();
+double DeviceLimit::getMinValue() {
+    return min;
 }
 
-QString DeviceLimit::getCode() {
-    return  valueComm->getCode();
+double DeviceLimit::getMaxValue() {
+    return max;
+}
+
+bool DeviceLimit::isShowMax() {
+    return showMax;
+}
+
+bool DeviceLimit::isShowMin() {
+    return showMin;
+}
+
+void DeviceLimit::setUpperValue(double value) {
+    upper = value;
+}
+
+void DeviceLimit::setBottomValue(double value) {
+    bottom = value;
+}
+
+void DeviceLimit::setMinValue(double value) {
+    min = value;
+}
+
+void DeviceLimit::setMaxValue(double value) {
+    max = value;
+}
+
+//void DeviceLimit::setUpperCode(QString str) {
+//    upperLimitCode = str;
+//}
+
+//void DeviceLimit::setBottomCode(QString str) {
+//    bottomLimitCode = str;
+//}
+
+//void DeviceLimit::setMinCode(QString str) {
+//    minCode = str;
+//}
+
+//void DeviceLimit::setMaxCode(QString str) {
+//    maxCode = str;
+//}
+
+void DeviceLimit::setShowMax(bool flag) {
+    showMax = flag;
+}
+
+void DeviceLimit::setShowMin(bool flag) {
+    showMin = flag;
 }

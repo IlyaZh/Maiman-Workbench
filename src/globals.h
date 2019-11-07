@@ -19,11 +19,23 @@ typedef struct {
     QPointer<QPushButton> btnPtr;
 } doubleMaskCommand_t;
 
+//typedef struct {
+//    QString absMinCode;
+//    QString minCode;
+//    QString absMaxCode;
+//    QString maxCode;
+//    QString title;
+//    double defaulValue;
+//    double divider;
+//    QString unit;
+//} limits_t;
+
 typedef struct {
     QString title;
-    Command* code;
+    QString code;
     int min;
     int max;
+    double divider;
 } calibration_t;
 
 typedef struct {
@@ -55,7 +67,7 @@ typedef struct {
     QString link;
     quint16 deviceID;
     QMap<QString, Command*> commands;
-    QMap<QString, DeviceLimit*> limits;
+    QList<DeviceLimit*> limits;
     QList<calibration_t> calCoefs;
     QList<ParameterController*> paramWidgets;
     QList<binOption_t> binOptions;

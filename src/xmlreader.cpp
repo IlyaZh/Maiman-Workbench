@@ -103,6 +103,7 @@ void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16
     setDeviceOptions(devicePtr, dev_id);
     if(!readFile()) return;
     bool isDeviceFound = false;
+//    currDeviceFound = false;
 
     xml.setDevice(file);
 
@@ -111,12 +112,15 @@ void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16
         if(token == QXmlStreamReader::StartElement) {
             QStringRef xname = xml.name();
             if (xname == "Device") {
+//                if(isDeviceFound) break;
                 isDeviceFound = parseDevice();
                 if(!isDeviceFound) xml.skipCurrentElement();
             }
+//            if(!isDeviceFound) continue;
 
             else if (xname == "Content") {
                 parseContent();
+//                currDevIndex++;
             } else if (xname == "Limits") {
                 parseLimits();
             } else if (xname == "CalibrationKoefs") {
@@ -132,6 +136,7 @@ void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16
             } else if (xname == "Buttons") {
                 parseButtons();
             } else {
+//                xml.skipCurrentElement();
             }
         } else if(token == QXmlStreamReader::EndElement) {
             if(xml.name() == "Device" && isDeviceFound) break;
@@ -205,14 +210,10 @@ void xmlReader::parseCommands() {
 
         bool isSigned = attrib.hasAttribute("isSigned");
 
-        bool isTemperature = attrib.hasAttribute("isTemperature");
-        QString unit = (attrib.hasAttribute("unit")) ? attrib.value("unit").toString() : "" ;
-        unit.replace("(deg)", QString::fromRawData(new QChar('\260'), 1));
-
         if(isSigned) {
-            device->commands.insert(code, new SignedCommand(code, unit, divider, interval, isTemperature));
+            device->commands.insert(code, new SignedCommand(code, divider, interval));
         } else {
-            device->commands.insert(code, new Command(code, unit, divider, interval, isTemperature));
+            device->commands.insert(code, new Command(code, divider, interval));
         }
 
     }
@@ -277,9 +278,20 @@ void xmlReader::parseLedMask(leds_t* ledPtr) {
 void xmlReader::parseParam() {
     QXmlStreamAttributes attrib = xml.attributes();
 
+    bool isTemperatureFlag = false;
+    QString unit = "";
     QString title = "no name";
     QString minCode, maxCode, valueCode, realCode;
     minCode = maxCode = valueCode = realCode = "";
+
+    if(attrib.hasAttribute("isTemperature")) {
+        isTemperatureFlag = (attrib.value("isTemperature").toUInt() == 0) ? false : true;
+    }
+
+    if(attrib.hasAttribute("unit")) {
+        unit = attrib.value("unit").toString();
+        unit.replace("(deg)", QString::fromRawData(new QChar('\260'), 1));
+    }
 
     if(attrib.hasAttribute("min")) {
         minCode = attrib.value("min").toString();
@@ -299,12 +311,10 @@ void xmlReader::parseParam() {
 
     title = xml.readElementText();
 
-    Command* minComm = device->commands.value(minCode, nullptr);
-    Command* maxComm = device->commands.value(maxCode, nullptr);
-    Command* valueComm = device->commands.value(valueCode, nullptr);
-    Command* realComm = device->commands.value(realCode, nullptr);
+    double divider = (device->commands.contains(valueCode)) ? device->commands.value(valueCode)->getDivider() : 1;
+    double realDivider = (device->commands.contains(realCode)) ? device->commands.value(realCode)->getDivider() : 1;
 
-    ParameterController* parameterController = new ParameterController(title, minComm, maxComm, valueComm, realComm);
+    ParameterController* parameterController = new ParameterController(title, unit, minCode, maxCode, valueCode, realCode, divider, realDivider, isTemperatureFlag);
 
     device->paramWidgets.append(parameterController);
 
@@ -314,33 +324,67 @@ void xmlReader::parseLimits() {
     while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "Limits")) {
         xml.readNext();
         if(!(xml.name() == "Limit" && xml.tokenType() == QXmlStreamReader::StartElement)) continue;
+        //    if(!currDeviceFound) return;
         QXmlStreamAttributes attrib = xml.attributes();
+        // If there is no both codes (min and max) then it is a wrong configuration of limit
+        if(!(attrib.hasAttribute("minCode") || attrib.hasAttribute("maxCode") || attrib.hasAttribute("min") || attrib.hasAttribute("max"))) return;
 
-        Command* valueComm = device->commands.value(attrib.value("code").toString(), nullptr);
-        if(valueComm != nullptr) {
+        bool showMin = false;
+        bool showMax = false;
 
-            DeviceLimit* devLimit;
-
-            Command* minComm = device->commands.value(attrib.value("minCode").toString(), nullptr);
-            Command* maxComm = device->commands.value(attrib.value("maxCode").toString(), nullptr);
-
-            quint16 min = (attrib.hasAttribute("minValue")) ? static_cast<quint16>(attrib.value("minValue").toUInt()) : 0;
-            quint16 max = (attrib.hasAttribute("maxValue")) ? static_cast<quint16>(attrib.value("maxValue").toUInt()) : 0;
-
-            if(minComm != nullptr && maxComm != nullptr) {
-                devLimit = new DeviceLimit(xml.readElementText(), valueComm, minComm, maxComm);
-            } else if(minComm == nullptr && maxComm != nullptr) {
-                devLimit = new DeviceLimit(xml.readElementText(), valueComm, min, maxComm);
-            } else if(minComm != nullptr && maxComm == nullptr) {
-                devLimit = new DeviceLimit(xml.readElementText(), valueComm, minComm, max);
-            } else if(minComm == nullptr && maxComm == nullptr) {
-                devLimit = new DeviceLimit(xml.readElementText(), valueComm, min, max);
-            } else {
-                continue;
+        if(attrib.hasAttribute("show")) {
+            QString showValue = attrib.value("show").toString();
+            if(showValue.compare("min", Qt::CaseInsensitive) == 0) {
+                showMin = true;
+            } else if(showValue.compare("max", Qt::CaseInsensitive) == 0) {
+                showMax = true;
+            } else if(showValue.compare("both", Qt::CaseInsensitive) == 0) {
+                showMax = showMin = true;
             }
-
-            device->limits.insert(devLimit->getTitle(), devLimit);
         }
+
+        double divider = 1;
+        QString dividerParam;
+        dividerParam.clear();
+
+        if(attrib.hasAttribute("minCode")) {
+            dividerParam = attrib.value("minCode").toString();
+        } else if (attrib.hasAttribute("maxCode")) {
+            dividerParam = attrib.value("maxCode").toString();
+        }
+
+        if(!dividerParam.isEmpty()) {
+            if(device->commands.contains(dividerParam)) {
+                divider = device->commands.value(dividerParam)->getDivider();
+            }
+        }
+
+        DeviceLimit* devLimit = new DeviceLimit(xml.readElementText(),
+                                                attrib.hasAttribute("unit") ? attrib.value("unit").toString() : "",
+                                                attrib.hasAttribute("bottomCode") ? attrib.value("bottomCode").toString() : "",
+                                                attrib.hasAttribute("upperCode") ? attrib.value("upperCode").toString() : "",
+                                                attrib.hasAttribute("minCode") ? attrib.value("minCode").toString() : "",
+                                                attrib.hasAttribute("maxCode") ? attrib.value("maxCode").toString() : "",
+                                                divider, showMin, showMax);
+
+
+        if(attrib.hasAttribute("min")) {
+            devLimit->setMinValue(attrib.value("min").toDouble());
+        }
+
+        if(attrib.hasAttribute("max")) {
+            devLimit->setMaxValue(attrib.value("max").toDouble());
+        }
+
+        if(attrib.hasAttribute("upper")) {
+            devLimit->setUpperValue(attrib.value("upper").toDouble());
+        }
+
+        if(attrib.hasAttribute("bottom")) {
+            devLimit->setBottomValue(attrib.value("bottom").toDouble());
+        }
+
+        device->limits.append(devLimit);
 
     }
 }
@@ -350,26 +394,31 @@ void xmlReader::parseCalibration() {
         xml.readNext();
         if(!(xml.name() == "Calibrate" && xml.tokenType() == QXmlStreamReader::StartElement)) continue;
         QXmlStreamAttributes attrib = xml.attributes();
+        calibration_t calibrate;
+        calibrate.code = "";
+        calibrate.title = "No name";
+        calibrate.min = 9500;
+        calibrate.max = 10500;
+        calibrate.divider = 100;
+
         if(attrib.hasAttribute("code")) {
-
-            calibration_t calibrate;
-            calibrate.code = device->commands.value(attrib.value("code").toString(), nullptr);
-            calibrate.title = "No name";
-            calibrate.min = 9500;
-            calibrate.max = 10500;
-
-            if(attrib.hasAttribute("min")) {
-                calibrate.min = attrib.value("min").toInt();
+            calibrate.code = attrib.value("code").toString();
+            if(device->commands.contains(calibrate.code)) {
+                calibrate.divider = device->commands.find(calibrate.code).value()->getDivider();
             }
-
-            if(attrib.hasAttribute("max")) {
-                calibrate.max = attrib.value("max").toInt();
-            }
-
-            calibrate.title = xml.readElementText();
-
-            device->calCoefs.append(calibrate);
         }
+
+        if(attrib.hasAttribute("min")) {
+            calibrate.min = attrib.value("min").toInt();
+        }
+
+        if(attrib.hasAttribute("max")) {
+            calibrate.max = attrib.value("max").toInt();
+        }
+
+        calibrate.title = xml.readElementText();
+
+        device->calCoefs.append(calibrate);
 
     }
 }
@@ -383,8 +432,11 @@ void xmlReader::parseButtons() {
         QString tmpName = "noname";
         tmp.mask = 0;
 
+        //    btn->setStyleSheet("QPushButton {\n	color: #000;\n	border: 1px solid rgb(31,31,31);\n	border-radius: 4px;\n	padding: 3px 20px;\n	background-color: rgb(189, 1, 2);\n}\n\nQPushButton::checked {\n	background-color: rgb(0, 102, 52);\n}");
+
         if(attrib.hasAttribute("name")) {
             tmpName = attrib.value("name").toString();
+            //        btn->setText(tmpName);
             if(tmpName == "laser") {
                 device->hasLaser = true;
             } else if (tmpName == "tec") {

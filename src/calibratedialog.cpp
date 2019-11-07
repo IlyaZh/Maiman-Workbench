@@ -18,20 +18,17 @@ CalibrateDialog::~CalibrateDialog()
 }
 
 void CalibrateDialog::setStruct(const calibration_t &calibrationData) {
-    Command *cmd = calibrationData.code;
-    code = cmd->getCode();
-    divider = cmd->getDivider();
+    code = calibrationData.code;
+    divider = calibrationData.divider;
 
     ui->titleLabel->setText(calibrationData.title);
     QString desc = QString("Min: %1, Max: %2").arg(QString::number(calibrationData.min)).arg(QString::number(calibrationData.max));
     ui->valueSlider->setMinimum(calibrationData.min);
     ui->valueSlider->setMaximum(calibrationData.max);
-    ui->valueDoubleSpinBox->setSingleStep(1.0/cmd->getDivider());
-    ui->valueDoubleSpinBox->setDecimals(qRound(0.43429*qLn(cmd->getDivider())));
-    ui->valueDoubleSpinBox->setMinimum(static_cast<double>(calibrationData.min)/cmd->getDivider());
-    ui->valueDoubleSpinBox->setMaximum(static_cast<double>(calibrationData.max)/cmd->getDivider());
-
-    setValue(cmd->getValue());
+    ui->valueDoubleSpinBox->setSingleStep(1.0/calibrationData.divider);
+    ui->valueDoubleSpinBox->setDecimals(qRound(0.43429*qLn(calibrationData.divider)));
+    ui->valueDoubleSpinBox->setMinimum(static_cast<double>(calibrationData.min)/calibrationData.divider);
+    ui->valueDoubleSpinBox->setMaximum(static_cast<double>(calibrationData.max)/calibrationData.divider);
 }
 
 void CalibrateDialog::setValue(int value) {

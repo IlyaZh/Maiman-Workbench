@@ -23,6 +23,7 @@ private:
     void setDeviceList(QList<availableDev_t>& listPtr);
     void setBaudsList(QList<uint> &baudList);
     QFile *file;
+    //QDomDocument doc;
     QString filePath;
     bool readFile();
     bool parseDevice();

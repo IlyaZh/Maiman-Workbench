@@ -77,6 +77,7 @@ void BitsLayout::resetColors() {
 void BitsLayout::clear() {
     for(int i = 0; i < bitsLabels.count(); i++) {
         QLabel* labelPtr = bitsLabels.at(i);
+//        currColor.removeAt(i);
         layout->removeWidget(labelPtr);
         delete labelPtr;
     }

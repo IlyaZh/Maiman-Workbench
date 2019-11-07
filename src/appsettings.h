@@ -6,13 +6,14 @@
 #include <QPoint>
 #include <QSize>
 
+//#include "globals.h"
 #include "commondefines.h"
 
 class AppSettings : public QObject
 {
     Q_OBJECT
 public:
-    explicit AppSettings(QObject *parent = nullptr);
+    explicit AppSettings(QObject *parent = 0);
     quint32 getComBaudrate();
     QString getComPort();
     uint getComAutoconnectFlag(bool flag);
@@ -27,6 +28,8 @@ public:
     QPoint getWindowPosition();
     int getComStopBits();
     bool getKeepCheckboxesFlag();
+    void setKeepCheckboxesFlag(bool flag);
+//    QSize getWindowSize();
 
 private:
     QSettings *settings;
@@ -47,7 +50,7 @@ public slots:
     void removeRecentOpenFiles(QString str);
     void setWindowPosition(QPoint);
     void setComStopBits(int);
-    void setKeepCheckboxesFlag(bool flag);
+//    void setWindowSize(QSize);
 };
 
 #endif // APPSETTINGS_H

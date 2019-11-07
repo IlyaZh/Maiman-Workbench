@@ -14,23 +14,22 @@
 
 #include "appsettings.h"
 #include "globals.h"
+extern AppSettings settings;
 
-//typedef struct {} commandValue;
+typedef struct {} commandValue;
 
-class ComPort : public QObject
+class comPort : public QObject
 {
     Q_OBJECT
 public:
-    explicit ComPort(AppSettings *settings, QObject *parent = nullptr);
-    ~ComPort();
+    explicit comPort(QObject *parent = nullptr);
+    ~comPort();
     void close();
     bool isOpen();
     void stopAndDisconnect();
-    void clearQueue();
 
 
 private:
-    AppSettings *settings;
     QSerialPort *serialPort;
     QByteArray buffer;
     QString msgToSend;
@@ -47,7 +46,6 @@ private:
     bool checkStopWritten;
     QList<QByteArray> splitCommands;
 
-
 signals:
     void errorOccuredSignal(QString);
     void receivedDataSignal(QByteArray);
@@ -62,6 +60,7 @@ public slots:
     void putIntoQueue(QString str);
     void setPortState(bool);
     void changeBaudRate(int);
+    void clearQueue();
     void setStopCommandDelay(uint);
     void setStopBits(int);
 

@@ -10,37 +10,24 @@ class Command : public QObject
 {
     Q_OBJECT
 public:
-    static int Count;
-    explicit Command(QString code, QString unit = "", double divider = 1, quint8 interval = 1, bool isTemperature = false, QObject *parent = nullptr);
-    ~Command();
-    void setTemperatureUnit(QString unit);
-    QString getCode();
-    virtual double getValue();
+    explicit Command(QString code, double divider = 1, quint8 interval = 1, QObject *parent = nullptr);
+    const QString getCode();
+    virtual double getConvertedValue();
     quint16 getRawValue();
     quint8 getInterval();
     double getDivider();
     virtual bool isSignedValue();
-    bool isTemperature();
-    QString getUnit();
-
-    static double convertCelToFar(double val);
-    static double convertFarToCel(double val);
 
 public slots:
     virtual void setRawValue(quint16 value);
 
-signals:
-//    void valueChanged();
-
 protected:
-    QString TemperatureUnit;
-    QString Unit;
     QString Code;
     double Divider;
-    bool IsTemperatureFlag;
-    QVariant RawValue;
-    double Value;
-    quint8 Interval;
+    bool isTemperature;
+    QVariant rawValue;
+    double value;
+    quint8 interval;
 };
 
 #endif // PARAMETER_T_H
