@@ -1,6 +1,7 @@
 #include "xmlreader.h"
 #include "command.h"
 #include "signedcommand.h"
+#include "devicelimit.h"
 
 xmlReader::xmlReader(QObject *parent) : QObject(parent)
 {
@@ -330,65 +331,46 @@ void xmlReader::parseLimits() {
         if(!(xml.name() == "Limit" && xml.tokenType() == QXmlStreamReader::StartElement)) continue;
         //    if(!currDeviceFound) return;
         QXmlStreamAttributes attrib = xml.attributes();
-        // If there is no both codes (min and max) then it is a wrong configuration of limit
-        if(!(attrib.hasAttribute("minCode") || attrib.hasAttribute("maxCode") || attrib.hasAttribute("min") || attrib.hasAttribute("max"))) return;
 
-        bool showMin = false;
-        bool showMax = false;
+        double min, max;
+        min = max = 0;
+        Command *valueComm = nullptr;
+        Command *minComm = nullptr;
+        Command *maxComm = nullptr;
 
-        if(attrib.hasAttribute("show")) {
-            QString showValue = attrib.value("show").toString();
-            if(showValue.compare("min", Qt::CaseInsensitive) == 0) {
-                showMin = true;
-            } else if(showValue.compare("max", Qt::CaseInsensitive) == 0) {
-                showMax = true;
-            } else if(showValue.compare("both", Qt::CaseInsensitive) == 0) {
-                showMax = showMin = true;
+        DeviceLimit *deviceLimit = nullptr;
+        QString title = xml.readElementText();
+
+        if(attrib.hasAttribute("limitCode")) {
+            valueComm = device->commands.value(attrib.value("limitCode").toString(), nullptr);
+            if(valueComm != nullptr) {
+
+                if(attrib.hasAttribute("minCode") && attrib.hasAttribute("maxCode")) {
+                    minComm = device->commands.value(attrib.value("minCode").toString(), nullptr);
+                    maxComm = device->commands.value(attrib.value("maxCode").toString(), nullptr);
+                    if(minComm != nullptr && maxComm != nullptr)
+                        deviceLimit = new DeviceLimit(title, valueComm, minComm, maxComm);
+                } else if (attrib.hasAttribute("minCode") && attrib.hasAttribute("maxValue")) {
+                    minComm = device->commands.value(attrib.value("minCode").toString(), nullptr);
+                    max = attrib.value("maxValue").toDouble();
+                    if(minComm != nullptr)
+                        deviceLimit = new DeviceLimit(title, valueComm, minComm, max);
+                } else if (attrib.hasAttribute("minValue") && attrib.hasAttribute("maxCode")) {
+                    maxComm = device->commands.value(attrib.value("maxCode").toString(), nullptr);
+                    min = attrib.value("minValue").toDouble();
+                    if(maxComm != nullptr)
+                        deviceLimit = new DeviceLimit(title, valueComm, min, maxComm);
+                } else if (attrib.hasAttribute("minValue") && attrib.hasAttribute("maxValue")) {
+                    max = attrib.value("maxValue").toDouble();
+                    min = attrib.value("minValue").toDouble();
+                    deviceLimit = new DeviceLimit(title, valueComm, min, max);
+                }
             }
         }
 
-        double divider = 1;
-        QString dividerParam;
-        dividerParam.clear();
-
-        if(attrib.hasAttribute("minCode")) {
-            dividerParam = attrib.value("minCode").toString();
-        } else if (attrib.hasAttribute("maxCode")) {
-            dividerParam = attrib.value("maxCode").toString();
+        if(deviceLimit != nullptr) {
+            device->limits.append(deviceLimit);
         }
-
-        if(!dividerParam.isEmpty()) {
-            if(device->commands.contains(dividerParam)) {
-                divider = device->commands.value(dividerParam)->getDivider();
-            }
-        }
-
-        DeviceLimit* devLimit = new DeviceLimit(xml.readElementText(),
-                                                attrib.hasAttribute("unit") ? attrib.value("unit").toString() : "",
-                                                attrib.hasAttribute("bottomCode") ? attrib.value("bottomCode").toString() : "",
-                                                attrib.hasAttribute("upperCode") ? attrib.value("upperCode").toString() : "",
-                                                attrib.hasAttribute("minCode") ? attrib.value("minCode").toString() : "",
-                                                attrib.hasAttribute("maxCode") ? attrib.value("maxCode").toString() : "",
-                                                divider, showMin, showMax);
-
-
-        if(attrib.hasAttribute("min")) {
-            devLimit->setMinValue(attrib.value("min").toDouble());
-        }
-
-        if(attrib.hasAttribute("max")) {
-            devLimit->setMaxValue(attrib.value("max").toDouble());
-        }
-
-        if(attrib.hasAttribute("upper")) {
-            devLimit->setUpperValue(attrib.value("upper").toDouble());
-        }
-
-        if(attrib.hasAttribute("bottom")) {
-            devLimit->setBottomValue(attrib.value("bottom").toDouble());
-        }
-
-        device->limits.append(devLimit);
 
     }
 }

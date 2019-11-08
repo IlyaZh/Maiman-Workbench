@@ -1,9 +1,10 @@
 #include "aboutdevicedialog.h"
 #include "ui_aboutdevicedialog.h"
 
-AboutDeviceDialog::AboutDeviceDialog(QWidget *parent) :
+AboutDeviceDialog::AboutDeviceDialog(AppSettings* appSettings, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::AboutDeviceDialog)
+    ui(new Ui::AboutDeviceDialog),
+    settings(appSettings)
 {
     ui->setupUi(this);
     setWindowIcon(QIcon(":/images/logo-minimal.png"));
@@ -46,13 +47,13 @@ void AboutDeviceDialog::setInfo(const device_t& device) {
 
     ui->comPortDelaySpinBox->setMinimum(device.minCommDelay);
     ui->comPortDelaySpinBox->setMaximum(device.maxCommDelay);
-    ui->comPortDelaySpinBox->setValue(qBound(device.minCommDelay, settings.getComCommandsDelay(), device.maxCommDelay));
+    ui->comPortDelaySpinBox->setValue(qBound(device.minCommDelay, settings->getComCommandsDelay(), device.maxCommDelay));
     QString limitsStr = QString("From %1 to %2 ms").arg(QString::number(device.minCommDelay)).arg(QString::number(device.maxCommDelay));
     ui->comPortDelayLimitsLabel->setText(limitsStr);
 
 }
 
 void AboutDeviceDialog::saveDataAndClose() {
-    settings.setComCommandsDelay(ui->comPortDelaySpinBox->value());
+    settings->setComCommandsDelay(ui->comPortDelaySpinBox->value());
     this->hide();
 }

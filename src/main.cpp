@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     updateUrl.clear();
 
     // Определение экземпляров окон программы
-    MainWindow w;
+    MainWindow w(&settings);
     w.setFont(APPLICATION_DEFAULT_FONT);
 
     // Отобразить главное окно

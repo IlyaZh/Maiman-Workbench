@@ -36,8 +36,6 @@
 #include "calibratedialog.h"
 #include "selectdevicedialog.h"
 
-extern AppSettings settings;
-
 namespace Ui {
 class MainWindow;
 }
@@ -47,7 +45,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(AppSettings *appSettings, QWidget *parent = nullptr);
     ~MainWindow();
     void closeEvent(QCloseEvent *event);
 //    void resizeEvent(QResizeEvent *event);
@@ -115,6 +113,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    AppSettings *settings;
     bool showWarningMessageAndStopLaser();
     void setupWindow();
     void setConnections();
@@ -143,7 +142,7 @@ private:
     QMap<QString, Command*>::const_iterator currCommandItt;
     quint16 oldDevID;
     bool link;
-    QPointer<comPort> serialPort;
+    QPointer<ComPort> serialPort;
     QPointer<BitsLayout> bitsLayout;
     QPointer<QGridLayout> actualParamsGLayout;
     QList<QLabel*> actualParamsLabels;

@@ -14,22 +14,20 @@
 
 #include "appsettings.h"
 #include "globals.h"
-extern AppSettings settings;
 
-typedef struct {} commandValue;
-
-class comPort : public QObject
+class ComPort : public QObject
 {
     Q_OBJECT
 public:
-    explicit comPort(QObject *parent = nullptr);
-    ~comPort();
+    explicit ComPort(AppSettings *appSettings, QObject *parent = nullptr);
+    ~ComPort();
     void close();
     bool isOpen();
     void stopAndDisconnect();
 
 
 private:
+    AppSettings *settings;
     QSerialPort *serialPort;
     QByteArray buffer;
     QString msgToSend;

@@ -1,6 +1,6 @@
 #include "comport.h"
 
-comPort::comPort(QObject *parent) : QObject(parent), serialportinfo(nullptr)
+ComPort::ComPort(AppSettings *appSettings, QObject *parent) : QObject(parent), settings(appSettings), serialportinfo(nullptr)
 {
     serialPort = new QSerialPort();
 //    qsettings = new QSettings(QSettings::NativeFormat, QSettings::UserScope, ORG_NAME, APP_NAME);
@@ -30,33 +30,34 @@ comPort::comPort(QObject *parent) : QObject(parent), serialportinfo(nullptr)
 //    connect(serialPort, SIGNAL())
 }
 
-comPort::~comPort() {
+ComPort::~ComPort() {
     close();
     if(timer) timer->deleteLater();
     if(errorTimer) errorTimer->deleteLater();
     emit portNewState(serialPort->isOpen());
 }
 
-bool comPort::isOpen() {
+bool ComPort::isOpen() {
     return serialPort->isOpen();
 }
 
-void comPort::stopAndDisconnect() {
+void ComPort::stopAndDisconnect() {
     clearQueue();
+    putIntoQueue(TEC_STOP_COMMAND);
     putIntoQueue(DEVICE_STOP_COMMAND);
     checkStopWritten = true;
 }
 
-void comPort::setPortState(bool state) {
-    serialPort->setPortName(settings.getComPort());
+void ComPort::setPortState(bool state) {
+    serialPort->setPortName(settings->getComPort());
     if(serialportinfo) delete serialportinfo;
-    serialportinfo = new QSerialPortInfo(settings.getComPort());
+    serialportinfo = new QSerialPortInfo(settings->getComPort());
     portIsBusy = false;
 
     if (state) {
         if (serialPort->open(QIODevice::ReadWrite)) {
             QSerialPort::StopBits stopBits;
-            switch(settings.getComStopBits()) {
+            switch(settings->getComStopBits()) {
             case 1:
                 stopBits = QSerialPort::OneStop;
                 break;
@@ -67,7 +68,7 @@ void comPort::setPortState(bool state) {
             }
             if (serialPort->setStopBits(stopBits) &&
                     serialPort->setParity(QSerialPort::NoParity) &&
-                    serialPort->setBaudRate(settings.getComBaudrate())) {
+                    serialPort->setBaudRate(settings->getComBaudrate())) {
             } else {
                 emit errorOccuredSignal(serialPort->errorString());
             }
@@ -80,8 +81,8 @@ void comPort::setPortState(bool state) {
     }
 }
 
-void comPort::changeBaudRate(int BR) {
-    settings.setComBaudrate(BR);
+void ComPort::changeBaudRate(int BR) {
+    settings->setComBaudrate(BR);
     if(serialPort->isOpen()) {
         // restart the port
         setPortState(false);
@@ -89,7 +90,7 @@ void comPort::changeBaudRate(int BR) {
     }
 }
 
-void comPort::close() {
+void ComPort::close() {
     if(serialPort->isOpen()) {
         serialPort->close();
     }
@@ -101,7 +102,7 @@ void comPort::close() {
     emit portNewState(serialPort->isOpen());
 }
 
-void comPort::putIntoQueue(QString str) {
+void ComPort::putIntoQueue(QString str) {
     // Добавляем символ конца строки \r = 0x13
     str.append(COM_END_OF_LINE);
 
@@ -129,7 +130,7 @@ void comPort::putIntoQueue(QString str) {
     }
 }
 
-void comPort::writeToPort() {
+void ComPort::writeToPort() {
     if(queue2send.isEmpty()) return;
     portIsBusy = true;
 //    isTimeout = false;
@@ -152,7 +153,7 @@ void comPort::writeToPort() {
     }
 }
 
-void comPort::timeOut() {
+void ComPort::timeOut() {
 //    isTimeout = false; // was true
     portIsBusy = false;
     buffer.clear();
@@ -160,7 +161,7 @@ void comPort::timeOut() {
     emit portTimeroutOccure();
 }
 
-void comPort::errorTimeout() {
+void ComPort::errorTimeout() {
     portIsBusy = false;
     buffer.clear();
     clearQueue();
@@ -168,7 +169,7 @@ void comPort::errorTimeout() {
     emit errorOccuredSignal("Cannot send data to port: " + serialPort->errorString());
 }
 
-void comPort::needToRead() {
+void ComPort::needToRead() {
    timer->stop();
 
    buffer.append(serialPort->readAll());
@@ -220,7 +221,7 @@ void comPort::needToRead() {
 //   }
 }
 
-void comPort::dataIsWritten(qint64 length) {
+void ComPort::dataIsWritten(qint64 length) {
     errorTimer->stop();
 
     if(sizeOfPackage == length) {
@@ -246,7 +247,7 @@ void comPort::dataIsWritten(qint64 length) {
     }
 }
 
-void comPort::errorSlot(QSerialPort::SerialPortError spe) {
+void ComPort::errorSlot(QSerialPort::SerialPortError spe) {
     portIsBusy = false;
     if(spe != QSerialPort::NoError) {// && spe != QSerialPort::UnknownError)
 //        if(serialPort->isOpen())
@@ -255,21 +256,21 @@ void comPort::errorSlot(QSerialPort::SerialPortError spe) {
     }
 }
 
-void comPort::clearQueue() {
+void ComPort::clearQueue() {
     queue2send.clear();
 }
 
-bool comPort::startToSendNextCommand() {
+bool ComPort::startToSendNextCommand() {
     if(portIsBusy) return false;
     if(queue2send.count() > 0) {
         QTimer sendTimer;
-        sendTimer.singleShot(settings.getComCommandsDelay(), this, SLOT(writeToPort()));
+        sendTimer.singleShot(settings->getComCommandsDelay(), this, SLOT(writeToPort()));
         return true;
     }
     return false;
 }
 
-void comPort::waitForNextCommandSlot() {
+void ComPort::waitForNextCommandSlot() {
     portIsBusy = false;
 
     if(checkStopWritten && lastSentCommand == DEVICE_STOP_COMMAND+QString(COM_END_OF_LINE)) {
@@ -283,12 +284,12 @@ void comPort::waitForNextCommandSlot() {
     }
 }
 
-void comPort::setStopCommandDelay(uint value) {
+void ComPort::setStopCommandDelay(uint value) {
     stopCommandDelay = value;
 }
 
-void comPort::setStopBits(int value) {
-    settings.setComStopBits(value);
+void ComPort::setStopBits(int value) {
+    settings->setComStopBits(value);
     if(serialPort->isOpen()) {
         // restart the port
         setPortState(false);

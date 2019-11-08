@@ -16,23 +16,17 @@ class ChangeLimitsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ChangeLimitsDialog(QWidget *parent = 0);
+    explicit ChangeLimitsDialog(QWidget *parent = nullptr);
+    void setData(DeviceLimit *devLimit);
     ~ChangeLimitsDialog();
 
 private:
     Ui::ChangeLimitsDialog *ui;
-    double min, max, absMin, absMax;
     DeviceLimit *limit;
+    void setMax();
+    void setMin();
 
 public slots:
-    void setData(DeviceLimit&);
-    void setAbsMax(double val);
-    void setMax(double val);
-    void setMax(int val);
-    void setAbsMin(double val);
-    void setMin(double val);
-    void setMin(int val);
-//    void updateValues();
     void saveResult();
 
 signals:

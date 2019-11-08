@@ -2,47 +2,32 @@
 #define DEVICELIMIT_H
 
 #include <QString>
+#include "command.h"
 
 class DeviceLimit
 {
 public:
-    explicit DeviceLimit(QString title, QString unit = "", QString bottomLimitCode = "", QString upperLimitCode = "", QString minCode = "", QString maxCode = "", double divider = 1, bool showMin = false, bool showMax = false);
-    double getDivider();
-    QString getBottomLimitCode();
-    QString getUpperLimitCode();
-    QString getMinCode();
-    QString getMaxCode();
-    QString getTitle();
+    explicit DeviceLimit(QString title, Command* code, Command* minCode, Command* maxCode);
+    explicit DeviceLimit(QString title, Command* code, double minValue, Command* maxCode);
+    explicit DeviceLimit(QString title, Command* code, Command* minCode, double maxValue);
+    explicit DeviceLimit(QString title, Command* code, double minValue, double maxValue);
     QString getUnit();
-    double getUpperValue();
-    double getBottomValue();
+    QString getLimitCode();
+    quint16 getLimitRaw();
+    double getLimitValue();
+    QString getTitle();
     double getMinValue();
     double getMaxValue();
-    bool isShowMax();
-    bool isShowMin();
-
-    void setUpperValue(double);
-    void setBottomValue(double);
-    void setMinValue(double);
-    void setMaxValue(double);
-//    void setUpperCode(QString);
-//    void setBottomCode(QString);
-//    void setMinCode(QString);
-//    void setMaxCode(QString);
-    void setShowMax(bool);
-    void setShowMin(bool);
+    quint16 getMinRaw();
+    quint16 getMaxRaw();
+    double getDivider();
 
 private:
-    double divider;
-    double upper, bottom, min, max;
-    QString upperLimitCode;
-    QString minCode;
-    QString bottomLimitCode;
-    QString maxCode;
+    double min, max;
+    Command* minCode;
+    Command* maxCode;
+    Command* limitCode;
     QString title;
-    QString unit;
-    bool showMin;
-    bool showMax;
 };
 
 #endif // DEVICELIMIT_H

@@ -19,17 +19,6 @@ typedef struct {
     QPointer<QPushButton> btnPtr;
 } doubleMaskCommand_t;
 
-//typedef struct {
-//    QString absMinCode;
-//    QString minCode;
-//    QString absMaxCode;
-//    QString maxCode;
-//    QString title;
-//    double defaulValue;
-//    double divider;
-//    QString unit;
-//} limits_t;
-
 typedef struct {
     QString title;
     QString code;

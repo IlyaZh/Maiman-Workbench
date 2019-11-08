@@ -302,6 +302,7 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 			<Command unit="A" code="0300" divider="100"/>
 			<Command unit="A" code="0301" divider="100" interval="100"/>
 			<Command unit="A" code="0302" divider="100" interval="100"/>
+			<Command unit="A" code="0306" divider="100" interval="100"/>
 			<Command unit="A" code="0307" divider="10"/>
 			<Command unit="" code="030E" divider="100" interval="10"/>
 			<Command unit="V" code="0407" divider="10"/>
@@ -316,8 +317,9 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
+			<Limit maxCode="0306" limitCode="0302" minValue="0.3">Ток</Limit>
 			<!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
-      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
+      
       <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
 		</Limits>
 		<!--  калибровка -->

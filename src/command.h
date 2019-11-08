@@ -12,9 +12,11 @@ class Command : public QObject
 public:
     explicit Command(QString code, QString unit = "", double divider = 1, quint8 interval = 1, bool isTemperature = false, QObject *parent = nullptr);
     void setTemperatureUnit(QString unit);
+    // mark for delete
+    virtual double getConvertedValue();
+    // end of mark for delete
     QString getCode();
     virtual double getValue();
-    virtual double getConvertedValue();
     quint16 getRawValue();
     quint8 getInterval();
     double getDivider();
