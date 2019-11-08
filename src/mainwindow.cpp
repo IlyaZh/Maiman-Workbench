@@ -8,6 +8,10 @@ MainWindow::MainWindow(AppSettings *appSettings, QWidget *parent) :
 {
     ui->setupUi(this);
 
+    if(appSettings == nullptr) {
+        qDebug() << "ComPort" << "appSettings pointer is NULL";
+    }
+
     setupWindow();
     setConnections();
 }
@@ -129,6 +133,7 @@ void MainWindow::setConnections() {
     connect(xml, SIGNAL(endOfLoadingConfig(bool)), this, SLOT(loadConfigFinished(bool)));
     // Если загрузка произошла с ошибкой, пишем в консоль и в лог ошибку
     connect(xml, SIGNAL(errorHandler(QString)), this, SLOT(writeToConsoleError(QString)));
+    connect(xml, &xmlReader::logger, logger, &consoleLogger::writeToLog);
 }
 
 void MainWindow::setupWindow() {

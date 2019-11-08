@@ -42,11 +42,13 @@ private:
     device_t *device;
     QList<availableDev_t>* availableListPtr;
     QList<uint>* bauds;
+    void writeToLog(QString);
 
 signals:
     void errorHandler(QString);
     void endOfLoadingConfig(bool);
     void endOfLoadingProgramConfig(bool);
+    void logger(QString);
 
 
 public slots:

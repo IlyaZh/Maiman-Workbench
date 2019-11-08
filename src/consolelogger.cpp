@@ -8,7 +8,7 @@ consoleLogger::consoleLogger(QString logFileName, QObject *parent) : QObject(par
     setLogFilePath(DEFAULT_LOG_FILEPATH);
     file = new QFile;
 
-//    checkAndDeleteOldLogs();
+    checkAndDeleteOldLogs();
 
     start();
 

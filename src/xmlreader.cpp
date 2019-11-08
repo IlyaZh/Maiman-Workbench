@@ -93,6 +93,10 @@ void xmlReader::parseCommonConfig(QString fileName, QList<availableDev_t>& devic
         }
     }
 
+    if(bauds->isEmpty()) {
+        writeToLog("Bauds is empty!");
+    }
+
     emit endOfLoadingProgramConfig(!xml.hasError());
 
     file->close();
@@ -104,7 +108,6 @@ void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16
     setDeviceOptions(devicePtr, dev_id);
     if(!readFile()) return;
     bool isDeviceFound = false;
-//    currDeviceFound = false;
 
     xml.setDevice(file);
 
@@ -113,15 +116,12 @@ void xmlReader::parseDeviceConfig(QString fileName, device_t &devicePtr, quint16
         if(token == QXmlStreamReader::StartElement) {
             QStringRef xname = xml.name();
             if (xname == "Device") {
-//                if(isDeviceFound) break;
                 isDeviceFound = parseDevice();
                 if(!isDeviceFound) xml.skipCurrentElement();
             }
-//            if(!isDeviceFound) continue;
 
             else if (xname == "Content") {
                 parseContent();
-//                currDevIndex++;
             } else if (xname == "Limits") {
                 parseLimits();
             } else if (xname == "CalibrationKoefs") {
@@ -202,7 +202,10 @@ void xmlReader::parseCommands() {
         QXmlStreamAttributes attrib = xml.attributes();
 
         QString code = (attrib.hasAttribute("code")) ? attrib.value("code").toString() : "";
-        if(code.isEmpty()) continue;
+        if(code.isEmpty()) {
+            writeToLog(QString("Parse incorrect command. Line number %1: %2").arg(xml.lineNumber()).arg(xml.text()));
+            continue;
+        }
 
         double divider = (attrib.hasAttribute("divider")) ? attrib.value("divider").toDouble() : 1;
 
@@ -210,8 +213,8 @@ void xmlReader::parseCommands() {
         interval = qBound(MIN_COM_INTERVAL_COUNTER, interval, MAX_COM_INTERVAL_COUNTER);
 
         bool isSigned = attrib.hasAttribute("isSigned");
-
         bool isTemperature = attrib.hasAttribute("isTemperature");
+
         QString unit = (attrib.hasAttribute("unit")) ? attrib.value("unit").toString() : "" ;
         unit.replace("(deg)", QString::fromRawData(new QChar('\260'), 1));
 
@@ -238,12 +241,19 @@ void xmlReader::parseLeds() {
         if(xml.name() == "Led") {
             if(xml.tokenType() == QXmlStreamReader::StartElement) {
                 led = new leds_t;
+                led->label = "";
                 QXmlStreamAttributes attrib = xml.attributes();
                 if(attrib.hasAttribute("label")) {
                     led->label = attrib.value("label").toString();
+                } else {
+                    writeToLog(QString("Some led has no label. Line %1: %2").arg(xml.lineNumber()).arg(xml.text()));
                 }
             } else if (xml.tokenType() == QXmlStreamReader::EndElement) {
-                device->leds.append(*led);
+                if(!led->label.isEmpty()) {
+                    device->leds.append(*led);
+                } else {
+                    delete led;
+                }
                 led = nullptr;
             }
         } else if (xml.name() == "LedMask") {
@@ -253,6 +263,8 @@ void xmlReader::parseLeds() {
     }
 }
 
+
+// ТРЕБУЮТСЯ ИЗМЕНЕНИЯ НА ССЫЛКИ ДЛЯ КОММАНД И ИСКЛЮЧЕНИЯ В ЛОГГЕР ШЛИ!
 void xmlReader::parseLedMask(leds_t* ledPtr) {
     if(ledPtr == nullptr) return;
 
@@ -261,8 +273,11 @@ void xmlReader::parseLedMask(leds_t* ledPtr) {
     ledMask.activeColor = LEDS_DEFAULT_ACTIVE_COLOR;
     ledMask.defaultColor = LEDS_DEFAULT_COLOR;
     QXmlStreamAttributes attrib = xml.attributes();
+    Command* cmd = nullptr;
+
     if(attrib.hasAttribute("code")) {
         ledMask.command = attrib.value("code").toString();
+        cmd = device->commands.value(attrib.value("code").toString(), nullptr);
     }
     if(attrib.hasAttribute("mask")) {
         ledMask.mask = attrib.value("mask").toUInt(nullptr, 16);
@@ -276,8 +291,9 @@ void xmlReader::parseLedMask(leds_t* ledPtr) {
 
     QString maskMsg = xml.readElementText();
     if(!maskMsg.isEmpty()) ledMask.message = maskMsg;
-
-    ledPtr->masks.append(ledMask);
+    if(cmd != nullptr) {
+        ledPtr->masks.append(ledMask);
+    }
 }
 
 void xmlReader::parseParam() {
@@ -289,9 +305,13 @@ void xmlReader::parseParam() {
     QString minCode, maxCode, valueCode, realCode;
     minCode = maxCode = valueCode = realCode = "";
 
-    if(attrib.hasAttribute("isTemperature")) {
-        isTemperatureFlag = (attrib.value("isTemperature").toUInt() == 0) ? false : true;
-    }
+    // ДОДЕЛАЙ РЕАЛИЗАЦИЮ ЧЕРЕЗ ССЫЛКИ НА КОМАНДЫ
+    Command *minCmd = nullptr;
+    Command *maxCmd = nullptr;
+    Command *realCmd = nullptr;
+    Command *valueCmd = nullptr;
+
+    isTemperatureFlag = attrib.hasAttribute("isTemperature");
 
     if(attrib.hasAttribute("unit")) {
         unit = attrib.value("unit").toString();
@@ -300,18 +320,22 @@ void xmlReader::parseParam() {
 
     if(attrib.hasAttribute("min")) {
         minCode = attrib.value("min").toString();
+        minCmd = device->commands.value(attrib.value("min").toString(), nullptr);
     }
 
     if(attrib.hasAttribute("max")) {
         maxCode = attrib.value("max").toString();
+        maxCmd = device->commands.value(attrib.value("max").toString(), nullptr);
     }
 
     if(attrib.hasAttribute("value")) {
         valueCode = attrib.value("value").toString();
+        valueCmd = device->commands.value(attrib.value("value").toString(), nullptr);
     }
 
     if(attrib.hasAttribute("real")) {
         realCode = attrib.value("real").toString();
+        realCmd = device->commands.value(attrib.value("real").toString(), nullptr);
     }
 
     title = xml.readElementText();
@@ -483,4 +507,8 @@ void xmlReader::parseBinaryOptions() {
         device->binOptions.append(binOption);
 
     }
+}
+
+void xmlReader::writeToLog(QString msg) {
+    emit logger("[INFO][xmlReader] " + msg);
 }

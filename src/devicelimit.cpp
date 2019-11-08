@@ -7,7 +7,12 @@ DeviceLimit::DeviceLimit(QString title, Command* code, Command* minCode, Command
     this->minCode = minCode;
     this->maxCode = maxCode;
 
-//    qDebug() << "1" << minCode->getValue() << maxCode->getValue();
+    if(limitCode == nullptr)
+        qDebug() << "DeviceLimit" << "limitCode pointer is NULL";
+    if(minCode == nullptr)
+         qDebug() << "DeviceLimit" << "minCode pointer is NULL";
+    if(maxCode == nullptr)
+         qDebug() << "DeviceLimit" << "maxCode pointer is NULL";
 }
 
 DeviceLimit::DeviceLimit(QString title, Command* code, double minValue, Command* maxCode) {
@@ -16,7 +21,11 @@ DeviceLimit::DeviceLimit(QString title, Command* code, double minValue, Command*
     this->minCode = nullptr;
     this->maxCode = maxCode;
     min = minValue;
-//    qDebug() << "2" << minValue << maxCode->getValue();
+
+    if(limitCode == nullptr)
+        qDebug() << "DeviceLimit" << "limitCode pointer is NULL";
+    if(maxCode == nullptr)
+        qDebug() << "DeviceLimit" << "maxCode pointer is NULL";
 }
 
 DeviceLimit::DeviceLimit(QString title, Command* code, Command* minCode, double maxValue) {
@@ -25,7 +34,11 @@ DeviceLimit::DeviceLimit(QString title, Command* code, Command* minCode, double 
     this->minCode = minCode;
     this->maxCode = nullptr;
     max = maxValue;
-//    qDebug() << "3" << minCode->getValue() << maxValue;
+
+    if(limitCode == nullptr)
+        qDebug() << "DeviceLimit" << "limitCode pointer is NULL";
+    if(minCode == nullptr)
+        qDebug() << "DeviceLimit" << "minCode pointer is NULL";
 }
 
 DeviceLimit::DeviceLimit(QString title, Command* code, double minValue, double maxValue) {
@@ -35,7 +48,9 @@ DeviceLimit::DeviceLimit(QString title, Command* code, double minValue, double m
     maxCode = nullptr;
     min = minValue;
     max = maxValue;
-//    qDebug() << "4" << minValue << maxValue;
+
+    if(limitCode == nullptr)
+        qDebug() << "DeviceLimit" << "limitCode pointer is NULL";
 }
 
 

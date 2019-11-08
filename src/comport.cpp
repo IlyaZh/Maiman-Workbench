@@ -2,6 +2,9 @@
 
 ComPort::ComPort(AppSettings *appSettings, QObject *parent) : QObject(parent), settings(appSettings), serialportinfo(nullptr)
 {
+    if(appSettings == nullptr)  {
+        qDebug() << "ComPort" << "appSettings pointer is NULL";
+    }
     serialPort = new QSerialPort();
 //    qsettings = new QSettings(QSettings::NativeFormat, QSettings::UserScope, ORG_NAME, APP_NAME);
 

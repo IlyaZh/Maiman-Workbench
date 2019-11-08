@@ -69,9 +69,9 @@ bool Command::isSignedValue() {
 
 // SLOTS are declared below
 
-void Command::setRawValue(quint16 _value) {
-//    if(rawValue.toUInt() != _value) {
-        rawValue.setValue(_value);
+void Command::setRawValue(quint16 iValue) {
+//    if(rawValue.toUInt() != iValue) {
+        rawValue.setValue(iValue);
         this->value = rawValue.toDouble() / Divider;
 //    }
 }
