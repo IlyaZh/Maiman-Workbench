@@ -338,7 +338,6 @@ void MainWindow::refreshMenuStopBits() {
 void MainWindow::refreshMenuCalibrate() {
     if(devConfig.calCoefs.isEmpty()) {
         ui->menuCalibrate->menuAction()->setVisible(false);
-        return;
     } else {
         ui->menuCalibrate->menuAction()->setVisible(true);
     }
@@ -355,7 +354,7 @@ void MainWindow::refreshMenuCalibrate() {
         newAction->setText(item.title);
         ui->menuCalibrate->addAction(newAction);
         menuCalibrateActions.append(newAction);
-        connect(newAction, &QAction::triggered, [this, &item]{
+        connect(newAction, &QAction::triggered, [this, item]{
             this->openCalibrateWindow(item.title);
         });
     }
@@ -366,9 +365,6 @@ void MainWindow::openCalibrateWindow(QString name) {
     foreach(const calibration_t item, devConfig.calCoefs) {
         if(item.title == name) {
             calibrateDialog->setStruct(item);
-            if(devConfig.commands.contains(item.code)) {
-                calibrateDialog->setValue(devConfig.commands.value(item.code)->getRawValue());
-            }
             calibrateDialog->show();
             break;
         }
@@ -378,13 +374,15 @@ void MainWindow::openCalibrateWindow(QString name) {
 void MainWindow::refreshMenuLimits() {
     if(devConfig.limits.isEmpty()) {
         ui->menuLimits->menuAction()->setVisible(false);
-        return;
     } else {
         ui->menuLimits->menuAction()->setVisible(true);
     }
 
     if(!menuLimitsActions.isEmpty()) {
         ui->menuLimits->clear();
+        foreach(QAction* item, menuLimitsActions) {
+            item->deleteLater();
+        }
         menuLimitsActions.clear();
     }
 
@@ -669,9 +667,9 @@ void MainWindow::setupParameterHandlers() {
             actualParamsGLayout->addWidget(parameterController->loadTextWidget(), row, 0);
             row++;
 
-            if(!parameterController->getValueComm().isEmpty()) { // Вывод "крутилок-таскалок" для параметров
+            if(!parameterController->isOnlyMeasured()) { // Вывод "крутилок-таскалок" для параметров
                 // Сокрытие\показ дополнительных полей если параметр доступен только для записи или для чтения\записи
-                parameterController->hideRealValue(parameterController->getRealComm().isEmpty());
+                parameterController->hideRealValue(!parameterController->hasRealCommand());
 
                 if(settings->getCompactModeFlag()) {
                     parameterController->loadCompactWidget()->setVisible(true);
@@ -753,9 +751,7 @@ bool MainWindow::isCheckboxesFileExist() {
     return state;
 }
 
-// TODO: LOOK THIS SHIT
 void MainWindow::loadCheckboxes() {
-    qDebug() << "loadCheckboxes()";
     if(devConfig.binOptions.isEmpty()) return;
 
     QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
@@ -780,7 +776,6 @@ void MainWindow::loadCheckboxes() {
     file->deleteLater();
 }
 
-// TODO: LOOK THIS SHIT
 void MainWindow::saveCheckboxes() {
     if(devConfig.binOptions.isEmpty()) return;
 
@@ -1010,7 +1005,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     Command* currentCommand = devConfig.commands.value(commandStr);
                     currentCommand->setRawValue(value);
                     // Обработка крутилок и информеров основных параметров
-                    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
+                    /*foreach(ParameterController* parameterController, devConfig.paramWidgets) {
                         double newValue;
                         newValue  = currentCommand->getConvertedValue();
 
@@ -1028,7 +1023,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
                         } else if(parameterController->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
                             parameterController->setSentValue(newValue);
                         }
-                    }
+                    }*/
 
                     // Обработка LEDS
                     setLedState(commandStr, value);
@@ -1194,6 +1189,10 @@ void MainWindow::loadConfigFinished(bool isDeviceFound) {
         setupParameterHandlers();
         writeToConsole(tr("CONFIG: Config is loaded successful!"));
 
+        foreach(Command* cmd, devConfig.commands) {
+            cmd->resetInterval();
+        }
+
         setRegulatorsEnable(true);
         bNeedSetCheckboxes = true;
 //        prepareToSendNextCommand();
@@ -1245,11 +1244,6 @@ void MainWindow::changeBaudRateSlot(int BR) {
     refreshMenuBaud();
 }
 
-//void MainWindow::changePortSlot(QString port) {
-//    settings.setComPort(port);
-//    refreshMenuPort();
-//}
-
 void MainWindow::triggComAutoConnectSlot(bool state) {
     settings->setComAutoconnectFlag(state);
 }
@@ -1257,12 +1251,11 @@ void MainWindow::triggComAutoConnectSlot(bool state) {
 void MainWindow::triggTemperatureSymbolSlot(QString str) {
     settings->setTemperatureSymbol(str);
 
-    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
-        if(parameterController->isTemperature()) {
-            parameterController->temperatureIsChanged(str);
+    foreach(Command* cmd, devConfig.commands) {
+        if(cmd->isTemperature()) {
+            cmd->setTemperatureUnit(str);
         }
     }
-
 
     refreshMenuView();
 }
@@ -1340,7 +1333,7 @@ void MainWindow::hideControlsButtonSlot(bool state) {
     }
 
     for(QList<ParameterController*>::iterator p = devConfig.paramWidgets.begin(); p != devConfig.paramWidgets.end(); p++) {
-        if((*p)->getPinState() == false && !(*p)->getValueComm().isEmpty()) {
+        if((*p)->getPinState() == false && !(*p)->isOnlyMeasured()) {
             if(settings->getCompactModeFlag()) {
                 (*p)->loadCompactWidget()->setVisible(!state);
             } else {
@@ -1348,11 +1341,11 @@ void MainWindow::hideControlsButtonSlot(bool state) {
             }
 
             if (state) { // скрыть крутилки
-                if (!(*p)->getRealComm().isEmpty()) {
+                if ((*p)->hasRealCommand()) {
                     (*p)->loadTextWidget()->setVisible(true);
                 }
             } else { // показать крутилки
-                if (!(*p)->getRealComm().isEmpty()) {
+                if ((*p)->hasRealCommand()) {
                     (*p)->loadTextWidget()->setVisible(false);
                 }
             }
@@ -1401,17 +1394,18 @@ void MainWindow::sendNextComCommand() {
 
         if(currCommandItt == devConfig.commands.constEnd()) {
             currCommandItt = devConfig.commands.constBegin();
-            comPortIntervalCounter++;
-            if(comPortIntervalCounter > MAX_COM_INTERVAL_COUNTER) comPortIntervalCounter = 1;
+//            comPortIntervalCounter++;
+//            if(comPortIntervalCounter > MAX_COM_INTERVAL_COUNTER) comPortIntervalCounter = 1;
             requestAllCommands = false;
         }
 
-        if((*currCommandItt)->getInterval() == 0) {
-            needToSend = false;
-        } else {
-            needToSend = ((comPortIntervalCounter % (*currCommandItt)->getInterval()) == 0);
-        }
+//        if((*currCommandItt)->getInterval() == 0) {
+//            needToSend = false;
+//        } else {
+//            needToSend = ((comPortIntervalCounter % (*currCommandItt)->getInterval()) == 0);
+//        }
 
+        needToSend = (*currCommandItt)->needToRequest();
         if(needToSend || requestAllCommands) {
             cycleOn = false;
         } else {

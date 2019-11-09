@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>179</width>
-    <height>31</height>
+    <height>33</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -79,7 +79,7 @@ color: #fff;</string>
       </font>
      </property>
      <property name="text">
-      <string>45.5</string>
+      <string>0</string>
      </property>
     </widget>
    </item>
@@ -98,7 +98,7 @@ color: #fff;</string>
       </font>
      </property>
      <property name="text">
-      <string>*C</string>
+      <string>X</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

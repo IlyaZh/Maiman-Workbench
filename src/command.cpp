@@ -7,10 +7,12 @@ Command::Command(QString code, QString unit, double divider, quint8 interval, bo
 {
     this->Code = code;
     this->interval = (interval < MAX_COM_INTERVAL_COUNTER) ? interval : MAX_COM_INTERVAL_COUNTER;
+    if(this->interval < 1) this->interval = 1;
     this->Divider = divider;
     this->isTemperatureFlag = isTemperatureFlag;
     this->unit = unit;
-    setRawValue(0);
+    rawValue.setValue(-1);
+    tick = 0;
 
     setTemperatureUnit(settings.getTemperatureSymbol());
 }
@@ -25,6 +27,7 @@ double Command::convertFarToCel(double val) {
 
 void Command::setTemperatureUnit(QString unit) {
     temperatureUnit = unit;
+    emit valueChanged();
 }
 
 QString Command::getCode() {
@@ -37,6 +40,10 @@ double Command::getValue() {
     } else {
         return value;
     }
+}
+
+quint16 Command::getIValue() {
+    return iValue;
 }
 
 double Command::getConvertedValue() {
@@ -72,10 +79,25 @@ bool Command::isSignedValue() {
 void Command::setRawValue(quint16 iValue) {
 //    if(rawValue.toUInt() != iValue) {
         rawValue.setValue(iValue);
+        this->iValue = static_cast<quint16>(rawValue.toUInt());
         this->value = rawValue.toDouble() / Divider;
+
+        emit valueChanged();
 //    }
 }
 
-quint8 Command::getInterval() {
-    return interval;
+bool Command::needToRequest() {
+    bool result = false;
+    if((tick % interval) == 0) {
+        result = true;
+    }
+
+    tick++;
+    if(tick > MAX_COM_INTERVAL_COUNTER) tick = 0;
+
+    return result;
+}
+
+void Command::resetInterval() {
+    tick = interval;
 }

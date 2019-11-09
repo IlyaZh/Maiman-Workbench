@@ -21,6 +21,7 @@ public:
     quint16 getMinRaw();
     quint16 getMaxRaw();
     double getDivider();
+    void requestCommand();
 
 private:
     double min, max;

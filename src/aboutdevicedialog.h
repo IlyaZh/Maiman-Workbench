@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QImageReader>
 #include "commondefines.h"
+#include "appsettings.h"
 #include "globals.h"
 
 namespace Ui {

@@ -299,11 +299,7 @@ void xmlReader::parseLedMask(leds_t* ledPtr) {
 void xmlReader::parseParam() {
     QXmlStreamAttributes attrib = xml.attributes();
 
-    bool isTemperatureFlag = false;
-    QString unit = "";
     QString title = "no name";
-    QString minCode, maxCode, valueCode, realCode;
-    minCode = maxCode = valueCode = realCode = "";
 
     // ДОДЕЛАЙ РЕАЛИЗАЦИЮ ЧЕРЕЗ ССЫЛКИ НА КОМАНДЫ
     Command *minCmd = nullptr;
@@ -311,41 +307,29 @@ void xmlReader::parseParam() {
     Command *realCmd = nullptr;
     Command *valueCmd = nullptr;
 
-    isTemperatureFlag = attrib.hasAttribute("isTemperature");
-
-    if(attrib.hasAttribute("unit")) {
-        unit = attrib.value("unit").toString();
-        unit.replace("(deg)", QString::fromRawData(new QChar('\260'), 1));
-    }
-
     if(attrib.hasAttribute("min")) {
-        minCode = attrib.value("min").toString();
         minCmd = device->commands.value(attrib.value("min").toString(), nullptr);
     }
 
     if(attrib.hasAttribute("max")) {
-        maxCode = attrib.value("max").toString();
         maxCmd = device->commands.value(attrib.value("max").toString(), nullptr);
     }
 
     if(attrib.hasAttribute("value")) {
-        valueCode = attrib.value("value").toString();
         valueCmd = device->commands.value(attrib.value("value").toString(), nullptr);
     }
 
     if(attrib.hasAttribute("real")) {
-        realCode = attrib.value("real").toString();
         realCmd = device->commands.value(attrib.value("real").toString(), nullptr);
     }
 
     title = xml.readElementText();
 
-    double divider = (device->commands.contains(valueCode)) ? device->commands.value(valueCode)->getDivider() : 1;
-    double realDivider = (device->commands.contains(realCode)) ? device->commands.value(realCode)->getDivider() : 1;
 
-    ParameterController* parameterController = new ParameterController(title, unit, minCode, maxCode, valueCode, realCode, divider, realDivider, isTemperatureFlag);
-
-    device->paramWidgets.append(parameterController);
+    if(realCmd != nullptr || (minCmd != nullptr && maxCmd != nullptr && valueCmd != nullptr)) {
+        ParameterController* parameterController = new ParameterController(title, minCmd, maxCmd, valueCmd, realCmd);
+        device->paramWidgets.append(parameterController);
+    }
 
 }
 
@@ -405,30 +389,22 @@ void xmlReader::parseCalibration() {
         if(!(xml.name() == "Calibrate" && xml.tokenType() == QXmlStreamReader::StartElement)) continue;
         QXmlStreamAttributes attrib = xml.attributes();
         calibration_t calibrate;
-        calibrate.code = "";
-        calibrate.title = "No name";
+        calibrate.cmd = nullptr;
+//        calibrate.title = "No name";
         calibrate.min = 9500;
         calibrate.max = 10500;
-        calibrate.divider = 100;
 
-        if(attrib.hasAttribute("code")) {
-            calibrate.code = attrib.value("code").toString();
-            if(device->commands.contains(calibrate.code)) {
-                calibrate.divider = device->commands.find(calibrate.code).value()->getDivider();
-            }
-        }
-
-        if(attrib.hasAttribute("min")) {
+        if(attrib.hasAttribute("code") && attrib.hasAttribute("min") && attrib.hasAttribute("max")) {
+            calibrate.cmd = device->commands.value(attrib.value("code").toString(), nullptr);
             calibrate.min = attrib.value("min").toInt();
-        }
-
-        if(attrib.hasAttribute("max")) {
             calibrate.max = attrib.value("max").toInt();
         }
 
         calibrate.title = xml.readElementText();
-
-        device->calCoefs.append(calibrate);
+        if(calibrate.cmd == nullptr)
+            writeToLog(QString("Incorrect calibrate tag. Line %1 : %2").arg(xml.lineNumber()).arg(xml.text()));
+        else
+            device->calCoefs.append(calibrate);
 
     }
 }

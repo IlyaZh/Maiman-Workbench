@@ -3,8 +3,7 @@
 
 #include "commondefines.h"
 
-#include "appsettings.h"
-extern AppSettings settings;
+#include "command.h"
 
 #include <QWidget>
 #include <QUiLoader>
@@ -26,7 +25,8 @@ class ParameterController : public QWidget
     Q_OBJECT
 
 public:
-    explicit ParameterController(QString title, QString unit, QString minComm, QString maxComm, QString valueComm, QString realComm, double divider, double realDivider, bool isTemperature = false, QWidget *parent = nullptr);
+    static int Count;
+    explicit ParameterController(QString title, Command *minComm, Command *maxComm, Command *valueComm, Command *realComm, QWidget *parent = nullptr);
     ~ParameterController();
     bool getPinState();
     bool getEnableState();
@@ -34,27 +34,17 @@ public:
     QWidget* loadCompactWidget();
     QWidget* loadTextWidget();
     int getCommValue();
-    QString getMinComm();
-    QString getMaxComm();
-    QString getRealComm();
-    QString getValueComm();
-    bool isTemperature();
+    bool isOnlyMeasured();
+    bool hasRealCommand();
 
 public slots:
-    void setMax(double val);
-    void setMin(double val);
-    void setRealValue(double val);
-    void setSentValue(double val);
     void hideRealValue(bool state = false);
     void setEnableState(bool state);
-    void temperatureIsChanged(QString);
 
 private:
-    void setUnit(QString str);
+    void setUnit();
     void setTitle(QString str);
     void setPinState(bool val);
-    void setDivider(double val);
-    void setRealDivider(double val);
     void prepareBigWidget();
     void prepareCompactViewWidget();
     void prepareTextWidget();
@@ -88,26 +78,21 @@ private:
     QPushButton *ui_minusCompactButton;
     QPushButton *ui_plusCompactButton;
     QPushButton *ui_sendValueCompactButton;
-    QString unit;
-//    QString type;
+    QTimer timer;
     QString title;
     bool pinState;
-    bool isCelsius;
     bool hideReal;
-    bool isTemperatureFlag;
-    double min;
-    double max;
     double currValue;
     double realValue;
-    double realDivider, divider;
     int precisionOfRealValue, precisionOfValue;
     QLabel* titleLabel;
     QLabel* valueLabel;
     QLabel* unitLabel;
-    QString realComm;
-    QString valueComm;
-    QString minComm;
-    QString maxComm;
+    Command *realComm;
+    Command *valueComm;
+    Command *minComm;
+    Command *maxComm;
+    uint iMin, iMax, iReal, iSent;
     QString preparedCommand;
     bool isUserEdited;
     QDoubleValidator validator;
@@ -130,6 +115,10 @@ private slots:
     void sendValueCompactSlot();
     void setEditLineRedColor();
     void setEditLineDefaultState();
+    void setMax();
+    void setMin();
+    void setRealValue();
+    void setSentValue();
 
 signals:
     void changeValue(QString);

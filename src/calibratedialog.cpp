@@ -6,9 +6,16 @@ CalibrateDialog::CalibrateDialog(QWidget *parent) :
     ui(new Ui::CalibrateDialog)
 {
     ui->setupUi(this);
-    coef = 0;
-    connect(ui->valueSlider, SIGNAL(valueChanged(int)), this, SLOT(setValue(int)));
-    connect(ui->valueDoubleSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setValue(double)));
+
+    connect(ui->valueSlider, &QSlider::valueChanged, [=](int value){
+        ui->valueSlider->setValue(value);
+        ui->valueDoubleSpinBox->setValue((static_cast<double>(value)/code->getDivider()));
+    });
+    connect(ui->valueDoubleSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+          [=](double value){
+        ui->valueSlider->setValue(static_cast<quint16>(qRound(value*code->getDivider())));
+        ui->valueDoubleSpinBox->setValue(value);
+    });
     connect(this, SIGNAL(accepted()), this, SLOT(saveResult()));
 }
 
@@ -18,34 +25,22 @@ CalibrateDialog::~CalibrateDialog()
 }
 
 void CalibrateDialog::setStruct(const calibration_t &calibrationData) {
-    code = calibrationData.code;
-    divider = calibrationData.divider;
+    code = calibrationData.cmd;
 
     ui->titleLabel->setText(calibrationData.title);
     QString desc = QString("Min: %1, Max: %2").arg(QString::number(calibrationData.min)).arg(QString::number(calibrationData.max));
     ui->valueSlider->setMinimum(calibrationData.min);
     ui->valueSlider->setMaximum(calibrationData.max);
-    ui->valueDoubleSpinBox->setSingleStep(1.0/calibrationData.divider);
-    ui->valueDoubleSpinBox->setDecimals(qRound(0.43429*qLn(calibrationData.divider)));
-    ui->valueDoubleSpinBox->setMinimum(static_cast<double>(calibrationData.min)/calibrationData.divider);
-    ui->valueDoubleSpinBox->setMaximum(static_cast<double>(calibrationData.max)/calibrationData.divider);
-}
-
-void CalibrateDialog::setValue(int value) {
-    coef = value;
-    ui->valueSlider->setValue(coef);
-    ui->valueDoubleSpinBox->setValue(static_cast<double>(coef)/divider);
-}
-
-void CalibrateDialog::setValue(double value) {
-    coef = qRound(value*divider);
-    ui->valueSlider->setValue(coef);
-    ui->valueDoubleSpinBox->setValue(value);
+    ui->valueDoubleSpinBox->setSingleStep(1.0/code->getDivider());
+    ui->valueDoubleSpinBox->setDecimals(qRound(0.43429*qLn(code->getDivider())));
+    ui->valueDoubleSpinBox->setMinimum(static_cast<double>(calibrationData.min)/code->getDivider());
+    ui->valueDoubleSpinBox->setMaximum(static_cast<double>(calibrationData.max)/code->getDivider());
 }
 
 void CalibrateDialog::saveResult() {
     int value = ui->valueSlider->value();
-    QString strToSend = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(code).arg(value, 4, 16, QChar('0')).toUpper();
+    QString strToSend = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(code->getCode()).arg(value, 4, 16, QChar('0')).toUpper();
+    code->resetInterval();
     emit sendData(strToSend);
 }
 

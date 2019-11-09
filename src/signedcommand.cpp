@@ -13,9 +13,12 @@ double SignedCommand::getConvertedValue() {
     return value;
 }
 
-void SignedCommand::setRawValue(quint16 iValue) {
-//    if(rawValue.toUInt() != iValue) {
-        rawValue.setValue(iValue);
-        this->value = -static_cast<double>((~(static_cast<qint16>(rawValue.toInt())-1))) / Divider;
-//    }
+void SignedCommand::setRawValue(quint16 inValue) {
+    if(rawValue.toUInt() != inValue) {
+        rawValue.setValue(inValue);
+        this->iValue = -static_cast<quint16>((~(static_cast<qint16>(rawValue.toInt())-1)));
+        this->value = static_cast<double>(iValue) / Divider;
+
+        emit valueChanged();
+    }
 }

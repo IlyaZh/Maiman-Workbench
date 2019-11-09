@@ -76,7 +76,7 @@ void consoleLogger::checkAndDeleteOldLogs() {
     dir.setSorting(QDir::Time);
 
 
-     QFileInfoList list = dir.entryInfoList();
+    QFileInfoList list = dir.entryInfoList();
     for(int i = 0; i < list.size(); ++i) {
         QFileInfo fileInfo = list.at(i);
         if(fileInfo.birthTime().daysTo(QDateTime::currentDateTime()) > DAY_TO_REMOVE_LOGS) {

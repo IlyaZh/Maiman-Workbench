@@ -20,11 +20,12 @@ typedef struct {
 } doubleMaskCommand_t;
 
 typedef struct {
+    Command* cmd;
     QString title;
-    QString code;
+//    QString code;
     int min;
     int max;
-    double divider;
+//    double divider;
 } calibration_t;
 
 typedef struct {

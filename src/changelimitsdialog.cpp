@@ -10,6 +10,13 @@ ChangeLimitsDialog::ChangeLimitsDialog(QWidget *parent) :
 
     connect(ui->okButton, SIGNAL(clicked(bool)), this, SLOT(saveResult()));
     connect(ui->cancelButton, SIGNAL(clicked(bool)), this, SLOT(hide()));
+    connect(ui->valueSlider, &QSlider::valueChanged, [this](int value){
+        this->ui->valueSpinBox->setValue(value/limit->getDivider());
+    });
+    connect(ui->valueSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+          [=](double d){
+        this->ui->valueSlider->setValue(static_cast<quint16>(qRound(d*limit->getDivider())));
+    });
 }
 
 ChangeLimitsDialog::~ChangeLimitsDialog()
@@ -31,7 +38,6 @@ void ChangeLimitsDialog::setData(DeviceLimit *devLimit) {
 
     ui->valueSlider->setValue(limit->getLimitRaw());
     ui->valueSpinBox->setValue(limit->getLimitValue());
-    qDebug() << limit->getLimitValue();
 
 //    this->updateValues();
 }
@@ -78,9 +84,10 @@ void ChangeLimitsDialog::setMin(int val) {
 }*/
 
 void ChangeLimitsDialog::saveResult() {
-        int value = ui->valueSlider->value();
-        QString strToSend = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(limit->getLimitCode()).arg(value, 4, 16, QChar('0')).toUpper();
-        emit sendData(strToSend);
+    int value = ui->valueSlider->value();
+    QString strToSend = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(limit->getLimitCode()).arg(value, 4, 16, QChar('0')).toUpper();
+    emit sendData(strToSend);
+    limit->requestCommand();
     this->hide();
 
 }

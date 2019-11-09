@@ -105,3 +105,7 @@ quint16 DeviceLimit::getMaxRaw() {
 double DeviceLimit::getDivider() {
     return limitCode->getDivider();
 }
+
+void DeviceLimit::requestCommand() {
+    limitCode->resetInterval();
+}

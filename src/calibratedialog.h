@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "globals.h"
+#include "command.h"
 
 namespace Ui {
 class CalibrateDialog;
@@ -13,19 +14,14 @@ class CalibrateDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit CalibrateDialog(QWidget *parent = 0);
+    explicit CalibrateDialog(QWidget *parent = nullptr);
     ~CalibrateDialog();
     void setStruct(const calibration_t &itemPtr);
 
 private:
     Ui::CalibrateDialog *ui;
-    int coef;
-    QString code;
+    Command* code;
     int divider;
-
-public slots:
-    void setValue(double);
-    void setValue(int);
 
 private slots:
     void saveResult();
