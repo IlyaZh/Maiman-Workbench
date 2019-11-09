@@ -263,8 +263,6 @@ void xmlReader::parseLeds() {
     }
 }
 
-
-// ТРЕБУЮТСЯ ИЗМЕНЕНИЯ НА ССЫЛКИ ДЛЯ КОММАНД И ИСКЛЮЧЕНИЯ В ЛОГГЕР ШЛИ!
 void xmlReader::parseLedMask(leds_t* ledPtr) {
     if(ledPtr == nullptr) return;
 
@@ -301,7 +299,6 @@ void xmlReader::parseParam() {
 
     QString title = "no name";
 
-    // ДОДЕЛАЙ РЕАЛИЗАЦИЮ ЧЕРЕЗ ССЫЛКИ НА КОМАНДЫ
     Command *minCmd = nullptr;
     Command *maxCmd = nullptr;
     Command *realCmd = nullptr;
