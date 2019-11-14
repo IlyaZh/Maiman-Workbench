@@ -194,20 +194,19 @@ void ComPort::needToRead() {
    if(buffer.contains(COM_END_OF_LINE)) {
 
        splitCommands = buffer.split(COM_END_OF_LINE);
-//       qDebug() << splitCommands;
-       buffer.clear();
+//       QByteArray item = buffer;
        foreach(QByteArray item, splitCommands) {
-           if(item.size() == 0) continue;
-           if(item.size() > READ_COM_COMMAND_LENGTH) {
-               emit errorOccuredSignal("Unexpected length of answer: " + QString(item));
-               portIsBusy = false;
-               return;
-           }
-           emit receivedDataSignal(item);
+           if(item.size() > 0) {
+               if(item.at(0) == COM_ANSWER_PREFIX) {
+//                   emit errorOccuredSignal("Unexpected length of answer: " + QString(item));
+//                   portIsBusy = false;
+//                   return;
+                   emit receivedDataSignal(item);
+               }
            portIsBusy = false;
+           }
        }
        splitCommands.clear();
-   //        bufferSize = 0;
 
            // Если в очереди есть ещё команды - приступаем к передаче
            if(startToSendNextCommand()) return;
@@ -216,6 +215,7 @@ void ComPort::needToRead() {
        timer->setInterval(COM_PORT_TIMEOUT);
        timer->start();
    }
+   buffer.clear();
 
 //   if(buffer.size() > READ_COM_COMMAND_LENGTH*2) {
 //       emit errorOccuredSignal("Unexpected length of answer: " + QString(buffer));

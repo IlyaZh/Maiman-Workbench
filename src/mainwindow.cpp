@@ -742,10 +742,14 @@ bool MainWindow::isCheckboxesFileExist() {
     QDir *dir = new QDir(saveParDir);
     if(!dir->exists()) {
         state = false;
+        writeToConsole(QString("Dir (%1) is not exists").arg(saveParDir));
     }
-    QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
+    QString filename = QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg");
+    QFile *file = new QFile(filename);
     if(file->exists()) {
         state = true;
+    } else {
+        writeToConsole(QString("File (%1) is not exists").arg(filename));
     }
     file->deleteLater();
     return state;
@@ -755,20 +759,20 @@ void MainWindow::loadCheckboxes() {
     if(devConfig.binOptions.isEmpty()) return;
 
     QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
-    if(file->open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QTextStream in(file);
-        while(!in.atEnd()) {
-            QStringList values = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseSensitive);
-            if(values.length() == 2) {
-                QString msgForSend = COM_WRITE_PREFIX + values.at(0) + QString(" ") + values.at(1);
-//                qDebug() << msgForSend;
-                sendDataToPort(msgForSend);
-            } else {
-                writeToConsoleError("Binary options config load error.");
+        if(file->open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(file);
+            while(!in.atEnd()) {
+                QStringList values = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseSensitive);
+                if(values.length() == 2) {
+                    QString msgForSend = COM_WRITE_PREFIX + values.at(0) + QString(" ") + values.at(1);
+    //                qDebug() << msgForSend;
+                    sendDataToPort(msgForSend);
+                } else {
+                    writeToConsoleError("Binary options config load error.");
+                }
             }
+            file->close();
         }
-        file->close();
-    }
     if(file->error()) {
         writeToConsoleError(file->errorString());
     }

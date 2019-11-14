@@ -53,7 +53,7 @@ void consoleLogger::stop() {
 void consoleLogger::writeToLog(QString str) {
     QDateTime timestamp;
     timestamp = QDateTime::currentDateTime();
-    QString logString = "[" + timestamp.toString(LOG_TIMESTAMP_DEFAULT_FORMAT) + "] " + str + "\n";
+    QString logString = "[" + timestamp.toString(LOG_TIMESTAMP_DEFAULT_FORMAT) + "] " + str + "\r\n";
     if(file->isOpen()) {
         QTextStream stream(file);
 
