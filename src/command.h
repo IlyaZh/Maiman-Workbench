@@ -17,7 +17,7 @@ public:
     // end of mark for delete
     QString getCode();
     virtual double getValue();
-    virtual quint16 getIValue();
+    virtual int getIValue();
     quint16 getRawValue();
     bool needToRequest();
     void resetInterval();
@@ -43,7 +43,7 @@ protected:
     bool isTemperatureFlag;
     QVariant rawValue;
     double value;
-    quint16 iValue;
+    int iValue;
     quint8 interval;
     quint8 tick;
 };

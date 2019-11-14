@@ -42,7 +42,7 @@ double Command::getValue() {
     }
 }
 
-quint16 Command::getIValue() {
+int Command::getIValue() {
     return iValue;
 }
 

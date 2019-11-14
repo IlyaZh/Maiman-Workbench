@@ -35,21 +35,21 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="Hz" code="0100" divider="10" />
-			<Command unit="Hz" code="0101" divider="10" interval="100"/>
-			<Command unit="Hz" code="0102" divider="10" interval="100"/>
-			<Command unit="ms" code="0200" divider="10"/>
-			<Command unit="ms" code="0201" divider="10"/>
-			<Command unit="ms" code="0202" divider="10"/>
-			<Command unit="A" code="0300" divider="10"/>
-			<Command unit="A" code="0301" divider="10" interval="100"/>
-			<Command unit="A" code="0302" divider="10" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="V" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0704" interval="10"/>
-			<Command unit="" code="0800"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="10"/>
+			<Command code="0301" divider="10" interval="100"/>
+			<Command code="0302" divider="10" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0704" interval="10"/>
+			<Command code="0800"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
@@ -70,8 +70,8 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Параметры с value "участвуют" в hide controls.
      -->
 		<ParamControls>
-			<Param min="0101" max="0102" value="0100">Frequency</Param>
-			<Param min="0201" max="0202" value="0200">Duration</Param>
+			<Param unit="Hz" min="0101" max="0102" value="0100">Frequency</Param>
+			<Param unit="ms" min="0201" max="0202" value="0200">Duration</Param>
 			<Param unit="A" min="0301" max="0302" value="0300" real="0307">Current</Param>
 			<Param unit=" " real="0701">Serial Number</Param>
 			<Param unit="V" real="0407">Voltage</Param>
@@ -121,21 +121,21 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="10"/>
-			<Command unit="" code="0301" divider="10" interval="100"/>
-			<Command unit="" code="0302" divider="10" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0704" interval="10"/>
-			<Command unit="" code="0800"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="10"/>
+			<Command code="0301" divider="10" interval="100"/>
+			<Command code="0302" divider="10" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0704" interval="10"/>
+			<Command code="0800"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
@@ -207,21 +207,21 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="10"/>
-			<Command unit="" code="0301" divider="10" interval="100"/>
-			<Command unit="" code="0302" divider="10" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0704" interval="10"/>
-			<Command unit="" code="0800"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="10"/>
+			<Command code="0301" divider="10" interval="100"/>
+			<Command code="0302" divider="10" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0704" interval="10"/>
+			<Command code="0800"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
@@ -293,34 +293,31 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="Hz" code="0100" divider="10"/>
-			<Command unit="Hz" code="0101" divider="10" interval="100"/>
-			<Command unit="Hz" code="0102" divider="10" interval="100"/>
-			<Command unit="ms" code="0200" divider="10"/>
-			<Command unit="ms" code="0201" divider="10"/>
-			<Command unit="ms" code="0202" divider="10"/>
-			<Command unit="A" code="0300" divider="100"/>
-			<Command unit="A" code="0301" divider="100" interval="100"/>
-			<Command unit="A" code="0302" divider="100" interval="100"/>
-			<Command unit="A" code="0306" divider="100" interval="100"/>
-			<Command unit="A" code="0307" divider="10"/>
-			<Command unit="%" code="030E" divider="100" interval="10"/>
-			<Command unit="V" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" divider="10" interval="100"/>
-			<Command unit="" code="0A06" divider="10" interval="100"/>
-			<Command unit="(deg)" isTemperature="1" code="0AE4" isSigned="" divider="10" interval="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="100"/>
-			<Command unit="(deg)" isTemperature="1" code="0AF4" isSigned="" divider="10" interval="10"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="100"/>
+			<Command code="0301" divider="100" interval="100"/>
+			<Command code="0302" divider="100" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="030E" divider="100" interval="10"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" divider="10" interval="100"/>
+			<Command code="0A06" divider="10" interval="100"/>
+			<Command code="0AE4" isSigned="" divider="10" interval="10"/>
+			<Command code="0B0E" divider="1" interval="100"/>
+			<Command code="0AF4" isSigned="" divider="10" interval="10"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
-			<Limit maxCode="0306" limitCode="0302" minValue="0.3">Ток</Limit>
-			<Limit minCode="0205" limitCode="0201" maxCode="0203">Мин длительность</Limit>
 			<!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
-      
+      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
       <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
 		</Limits>
 		<!--  калибровка -->
@@ -338,7 +335,7 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<ParamControls>
 			<Param unit="Hz" min="0101" max="0102" value="0100">Frequency</Param>
 			<Param unit="ms" min="0201" max="0202" value="0200">Duration</Param>
-			<Param min="0301" max="0302" value="0300" real="0307">Current</Param>
+			<Param unit="A" min="0301" max="0302" value="0300" real="0307">Current</Param>
 			<Param unit=" " real="0701">Serial Number</Param>
 			<Param unit="V" real="0407">Voltage</Param>
 			<Param unit="(deg)" isTemperature="1" real="0AF4">Driver Temperature</Param>
@@ -390,26 +387,26 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="100"/>
-			<Command unit="" code="0301" divider="100" interval="100"/>
-			<Command unit="" code="0302" divider="100" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100" interval="10"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" divider="10" interval="100"/>
-			<Command unit="" code="0A06" divider="10" interval="100"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10" interval="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="100"/>
-			<Command unit="" code="0AF4" isSigned="" divider="10" interval="10"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="100"/>
+			<Command code="0301" divider="100" interval="100"/>
+			<Command code="0302" divider="100" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="030E" divider="100" interval="10"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" divider="10" interval="100"/>
+			<Command code="0A06" divider="10" interval="100"/>
+			<Command code="0AE4" isSigned="" divider="10" interval="10"/>
+			<Command code="0B0E" divider="1" interval="100"/>
+			<Command code="0AF4" isSigned="" divider="10" interval="10"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
@@ -484,26 +481,26 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="100"/>
-			<Command unit="" code="0101" divider="100" interval="100"/>
-			<Command unit="" code="0102" divider="100" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="100"/>
-			<Command unit="" code="0301" divider="100" interval="100"/>
-			<Command unit="" code="0302" divider="100" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100" interval="10"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" divider="10" interval="100"/>
-			<Command unit="" code="0A06" divider="10" interval="100"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10" interval="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="100"/>
-			<Command unit="" code="0AF4" isSigned="" divider="10" interval="10"/>
+			<Command code="0100" divider="100"/>
+			<Command code="0101" divider="100" interval="100"/>
+			<Command code="0102" divider="100" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="100"/>
+			<Command code="0301" divider="100" interval="100"/>
+			<Command code="0302" divider="100" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="030E" divider="100" interval="10"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" divider="10" interval="100"/>
+			<Command code="0A06" divider="10" interval="100"/>
+			<Command code="0AE4" isSigned="" divider="10" interval="10"/>
+			<Command code="0B0E" divider="1" interval="100"/>
+			<Command code="0AF4" isSigned="" divider="10" interval="10"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
@@ -578,36 +575,36 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="100"/>
-			<Command unit="" code="0301" divider="100" interval="100"/>
-			<Command unit="" code="0302" divider="100" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100" interval="10"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" divider="10" interval="100"/>
-			<Command unit="" code="0A06" divider="10" interval="100"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10" interval="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="100"/>
-			<Command unit="" code="0AF4" isSigned="" divider="10" interval="10"/>
+			<Command code="0100" divider="10" unit="Hz"/>
+			<Command code="0101" divider="10" interval="100" unit="Hz"/>
+			<Command code="0102" divider="10" interval="100" unit="Hz"/>
+			<Command code="0200" divider="10" unit="ms"/>
+			<Command code="0201" divider="10" interval="100" unit="ms"/>
+			<Command code="0202" divider="10" unit="ms"/>
+			<Command code="0300" divider="100" unit="A"/>
+			<Command code="0301" divider="100" interval="100" unit="A"/>
+			<Command code="0302" divider="100" interval="100" unit="A"/>/>
+			<Command code="0307" divider="10" unit="A"/>
+			<Command code="030E" divider="100" />
+			<Command code="0407" divider="10" unit="V"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" isSigned="" divider="10" unit="(deg)" isTemperature="1"/>
+			<Command code="0A06" isSigned="" divider="10" unit="(deg)" isTemperature="1"/>
+			<Command code="0AE4" isSigned="" divider="10" interval="10" unit="(deg)" isTemperature="1"/>
+			<Command code="0B0E" divider="1"/>
+			<Command code="0AF4" isSigned="" divider="10" interval="10" unit="(deg)" isTemperature="1"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
-			<!--   <limit absMin="0205" min="0201" max="0203" divider="10" unit="мс">Мин длительность</limit>
-      <limit absMax="0306" max="0302" MinValue="0.3" divider="100" unit="А">Ток</limit>
-      <limit absMax="0406" max="0402" min="0401" absMin="0405" divider="10" unit="V">Напряжение</limit> -->
+			<Limit limitCode="0A05" minValue="-10.0" maxCode="0A06">NTC temperature warning lower limit</Limit>
+			<Limit limitCode="0A06" minCode="0A05" maxValue="100.0">NTC temperature warning upper limit</Limit>
 		</Limits>
 		<!--  калибровка -->
 		<CalibrationKoefs>
 			<Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
+			<Calibrate code="0B0E" min="3000" max="5000">External NTC B25/100 coefficient</Calibrate>
 		</CalibrationKoefs>
 		<!-- список выводимых параметров.
     регистр необходимо соблюдать
@@ -618,13 +615,13 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Параметры с value "участвуют" в hide controls.
      -->
 		<ParamControls>
-			<Param unit="Hz" min="0101" max="0102" value="0100">Frequency</Param>
-			<Param unit="ms" min="0201" max="0202" value="0200">Duration</Param>
-			<Param unit="A" min="0301" max="0302" value="0300" real="0307">Current</Param>
-			<Param unit=" " real="0701">Serial Number</Param>
-			<Param unit="V" real="0407">Voltage</Param>
-			<Param unit="(deg)" isTemperature="1" real="0AF4">Driver Temperature</Param>
-			<Param unit="(deg)" isTemperature="1" real="0AE4">NTC Temperature</Param>
+			<Param min="0101" max="0102" value="0100">Frequency</Param>
+			<Param min="0201" max="0202" value="0200">Duration</Param>
+			<Param min="0301" max="0302" value="0300" real="0307">Current</Param>
+			<Param real="0701">Serial Number</Param>
+			<Param real="0407">Voltage</Param>
+			<Param real="0AF4">Driver Temperature</Param>
+			<Param real="0AE4">NTC Temperature</Param>
 		</ParamControls>
 		<!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
@@ -672,26 +669,26 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="100"/>
-			<Command unit="" code="0101" divider="100" interval="100"/>
-			<Command unit="" code="0102" divider="100" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="100"/>
-			<Command unit="" code="0301" divider="100" interval="100"/>
-			<Command unit="" code="0302" divider="100" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100" interval="10"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" divider="10" interval="100"/>
-			<Command unit="" code="0A06" divider="10" interval="100"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10" interval="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="100"/>
-			<Command unit="" code="0AF4" isSigned="" divider="10" interval="10"/>
+			<Command code="0100" divider="100"/>
+			<Command code="0101" divider="100" interval="100"/>
+			<Command code="0102" divider="100" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="100"/>
+			<Command code="0301" divider="100" interval="100"/>
+			<Command code="0302" divider="100" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="030E" divider="100" interval="10"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" divider="10" interval="100"/>
+			<Command code="0A06" divider="10" interval="100"/>
+			<Command code="0AE4" isSigned="" divider="10" interval="10"/>
+			<Command code="0B0E" divider="1" interval="100"/>
+			<Command code="0AF4" isSigned="" divider="10" interval="10"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
@@ -766,26 +763,26 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="100"/>
-			<Command unit="" code="0301" divider="100" interval="100"/>
-			<Command unit="" code="0302" divider="100" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100" interval="10"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" divider="10" interval="100"/>
-			<Command unit="" code="0A06" divider="10" interval="100"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10" interval="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="100"/>
-			<Command unit="" code="0AF4" isSigned="" divider="10" interval="10"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="100"/>
+			<Command code="0301" divider="100" interval="100"/>
+			<Command code="0302" divider="100" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="030E" divider="100" interval="10"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" divider="10" interval="100"/>
+			<Command code="0A06" divider="10" interval="100"/>
+			<Command code="0AE4" isSigned="" divider="10" interval="10"/>
+			<Command code="0B0E" divider="1" interval="100"/>
+			<Command code="0AF4" isSigned="" divider="10" interval="10"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
@@ -860,26 +857,26 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="100"/>
-			<Command unit="" code="0301" divider="100" interval="100"/>
-			<Command unit="" code="0302" divider="100" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100" interval="10"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" divider="10" interval="100"/>
-			<Command unit="" code="0A06" divider="10" interval="100"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10" interval="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="100"/>
-			<Command unit="" code="0AF4" isSigned="" divider="10" interval="10"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="100"/>
+			<Command code="0301" divider="100" interval="100"/>
+			<Command code="0302" divider="100" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="030E" divider="100" interval="10"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" divider="10" interval="100"/>
+			<Command code="0A06" divider="10" interval="100"/>
+			<Command code="0AE4" isSigned="" divider="10" interval="10"/>
+			<Command code="0B0E" divider="1" interval="100"/>
+			<Command code="0AF4" isSigned="" divider="10" interval="10"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
@@ -954,25 +951,25 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="100"/>
-			<Command unit="" code="0301" divider="100" interval="100"/>
-			<Command unit="" code="0302" divider="100" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100" interval="10"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" divider="10" interval="100"/>
-			<Command unit="" code="0A06" divider="10" interval="100"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10" interval="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="100"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="100"/>
+			<Command code="0301" divider="100" interval="100"/>
+			<Command code="0302" divider="100" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="030E" divider="100" interval="10"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" divider="10" interval="100"/>
+			<Command code="0A06" divider="10" interval="100"/>
+			<Command code="0AE4" isSigned="" divider="10" interval="10"/>
+			<Command code="0B0E" divider="1" interval="100"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
@@ -1046,26 +1043,26 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="100"/>
-			<Command unit="" code="0301" divider="100" interval="100"/>
-			<Command unit="" code="0302" divider="100" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100" interval="10"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" divider="10" interval="100"/>
-			<Command unit="" code="0A06" divider="10" interval="100"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10" interval="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="100"/>
-			<Command unit="" code="0AF4" isSigned="" divider="10" interval="10"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="100"/>
+			<Command code="0301" divider="100" interval="100"/>
+			<Command code="0302" divider="100" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="030E" divider="100" interval="10"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" divider="10" interval="100"/>
+			<Command code="0A06" divider="10" interval="100"/>
+			<Command code="0AE4" isSigned="" divider="10" interval="10"/>
+			<Command code="0B0E" divider="1" interval="100"/>
+			<Command code="0AF4" isSigned="" divider="10" interval="10"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
@@ -1140,26 +1137,26 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="10"/>
-			<Command unit="" code="0301" divider="10" interval="100"/>
-			<Command unit="" code="0302" divider="10" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100" interval="10"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" divider="10" interval="100"/>
-			<Command unit="" code="0A06" divider="10" interval="100"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10" interval="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="100"/>
-			<Command unit="" code="0AF4" isSigned="" divider="10" interval="10"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="10"/>
+			<Command code="0301" divider="10" interval="100"/>
+			<Command code="0302" divider="10" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="030E" divider="100" interval="10"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" divider="10" interval="100"/>
+			<Command code="0A06" divider="10" interval="100"/>
+			<Command code="0AE4" isSigned="" divider="10" interval="10"/>
+			<Command code="0B0E" divider="1" interval="100"/>
+			<Command code="0AF4" isSigned="" divider="10" interval="10"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
@@ -1227,40 +1224,40 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10" interval="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="10"/>
-			<Command unit="" code="0301" divider="10" interval="100"/>
-			<Command unit="" code="0302" divider="10"/>
-			<Command unit="" code="0306" divider="10" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" isSigned="" divider="10"/>
-			<Command unit="" code="0A06" isSigned="" divider="10"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="10"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10" interval="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="10"/>
+			<Command code="0301" divider="10" interval="100"/>
+			<Command code="0302" divider="10"/>
+			<Command code="0306" divider="10" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="030E" divider="100"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" isSigned="" divider="10"/>
+			<Command code="0A06" isSigned="" divider="10"/>
+			<Command code="0AE4" isSigned="" divider="10"/>
+			<Command code="0B0E" divider="1" interval="10"/>
 
-			<Command unit="" code="0A10" divider="100"/>
-			<Command unit="" code="0A11" divider="100"/>
-			<Command unit="" code="0A12" divider="100"/>
-			<Command unit="" code="0A13" divider="100" interval="100"/>
-			<Command unit="" code="0A14" divider="100" interval="100"/>
-			<Command unit="" code="0A15" divider="100"/>
+			<Command code="0A10" divider="100"/>
+			<Command code="0A11" divider="100"/>
+			<Command code="0A12" divider="100"/>
+			<Command code="0A13" divider="100" interval="100"/>
+			<Command code="0A14" divider="100" interval="100"/>
+			<Command code="0A15" divider="100"/>
 
-			<Command unit="" code="0A16" isSigned="" divider="10"/>
-			<Command unit="" code="0A17" divider="10"/>
-			<Command unit="" code="0A18" isSigned="" divider="10"/>
-			<Command unit="" code="0A1A"/>
-			<Command unit="" code="0A1E" divider="100" interval="10"/>
-			<Command unit="" code="0A1F" divider="1" interval="10"/>
+			<Command code="0A16" isSigned="" divider="10"/>
+			<Command code="0A17" divider="10"/>
+			<Command code="0A18" isSigned="" divider="10"/>
+			<Command code="0A1A"/>
+			<Command code="0A1E" divider="100" interval="10"/>
+			<Command code="0A1F" divider="1" interval="10"/>
 
 		</Commands>
 		<!-- доступные для регулирования пределы -->
@@ -1343,40 +1340,40 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10" interval="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="10"/>
-			<Command unit="" code="0301" divider="10" interval="100"/>
-			<Command unit="" code="0302" divider="10"/>
-			<Command unit="" code="0306" divider="10" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" isSigned="" divider="10"/>
-			<Command unit="" code="0A06" isSigned="" divider="10"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="10"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10" interval="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="10"/>
+			<Command code="0301" divider="10" interval="100"/>
+			<Command code="0302" divider="10"/>
+			<Command code="0306" divider="10" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="030E" divider="100"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" isSigned="" divider="10"/>
+			<Command code="0A06" isSigned="" divider="10"/>
+			<Command code="0AE4" isSigned="" divider="10"/>
+			<Command code="0B0E" divider="1" interval="10"/>
 
-			<Command unit="" code="0A10" divider="100"/>
-			<Command unit="" code="0A11" divider="100"/>
-			<Command unit="" code="0A12" divider="100"/>
-			<Command unit="" code="0A13" divider="100" interval="100"/>
-			<Command unit="" code="0A14" divider="100" interval="100"/>
-			<Command unit="" code="0A15" divider="100"/>
+			<Command code="0A10" divider="100"/>
+			<Command code="0A11" divider="100"/>
+			<Command code="0A12" divider="100"/>
+			<Command code="0A13" divider="100" interval="100"/>
+			<Command code="0A14" divider="100" interval="100"/>
+			<Command code="0A15" divider="100"/>
 
-			<Command unit="" code="0A16" isSigned="" divider="10"/>
-			<Command unit="" code="0A17" divider="10"/>
-			<Command unit="" code="0A18" isSigned="" divider="10"/>
-			<Command unit="" code="0A1A"/>
-			<Command unit="" code="0A1E" divider="100" interval="10"/>
-			<Command unit="" code="0A1F" divider="1" interval="10"/>
+			<Command code="0A16" isSigned="" divider="10"/>
+			<Command code="0A17" divider="10"/>
+			<Command code="0A18" isSigned="" divider="10"/>
+			<Command code="0A1A"/>
+			<Command code="0A1E" divider="100" interval="10"/>
+			<Command code="0A1F" divider="1" interval="10"/>
 
 		</Commands>
 		<!-- доступные для регулирования пределы -->
@@ -1459,40 +1456,40 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10" interval="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="10"/>
-			<Command unit="" code="0301" divider="10" interval="100"/>
-			<Command unit="" code="0302" divider="10"/>
-			<Command unit="" code="0306" divider="10" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" isSigned="" divider="10"/>
-			<Command unit="" code="0A06" isSigned="" divider="10"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="10"/>
+			<Command code="0100" divider="10"/>
+			<Command code="0101" divider="10" interval="100"/>
+			<Command code="0102" divider="10" interval="100"/>
+			<Command code="0200" divider="10"/>
+			<Command code="0201" divider="10" interval="10"/>
+			<Command code="0202" divider="10"/>
+			<Command code="0300" divider="10"/>
+			<Command code="0301" divider="10" interval="100"/>
+			<Command code="0302" divider="10"/>
+			<Command code="0306" divider="10" interval="100"/>
+			<Command code="0307" divider="10"/>
+			<Command code="030E" divider="100"/>
+			<Command code="0407" divider="10"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" isSigned="" divider="10"/>
+			<Command code="0A06" isSigned="" divider="10"/>
+			<Command code="0AE4" isSigned="" divider="10"/>
+			<Command code="0B0E" divider="1" interval="10"/>
 
-			<Command unit="" code="0A10" divider="100"/>
-			<Command unit="" code="0A11" divider="100"/>
-			<Command unit="" code="0A12" divider="100"/>
-			<Command unit="" code="0A13" divider="100" interval="100"/>
-			<Command unit="" code="0A14" divider="100" interval="100"/>
-			<Command unit="" code="0A15" divider="100"/>
+			<Command code="0A10" divider="100"/>
+			<Command code="0A11" divider="100"/>
+			<Command code="0A12" divider="100"/>
+			<Command code="0A13" divider="100" interval="100"/>
+			<Command code="0A14" divider="100" interval="100"/>
+			<Command code="0A15" divider="100"/>
 
-			<Command unit="" code="0A16" isSigned="" divider="10"/>
-			<Command unit="" code="0A17" divider="10"/>
-			<Command unit="" code="0A18" isSigned="" divider="10"/>
-			<Command unit="" code="0A1A"/>
-			<Command unit="" code="0A1E" divider="100" interval="10"/>
-			<Command unit="" code="0A1F" divider="1" interval="10"/>
+			<Command code="0A16" isSigned="" divider="10"/>
+			<Command code="0A17" divider="10"/>
+			<Command code="0A18" isSigned="" divider="10"/>
+			<Command code="0A1A"/>
+			<Command code="0A1E" divider="100" interval="10"/>
+			<Command code="0A1F" divider="1" interval="10"/>
 
 
 		</Commands>
@@ -1576,48 +1573,50 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		<!-- команды доступные для устройства. Они циклично опрашиваются. Опрашиваются != используются :)) -->
 		<Commands>
 			<!-- Числа все Hex, кроме делителя - он десятичный. -->
-			<Command unit="" code="0100" divider="10"/>
-			<Command unit="" code="0101" divider="10" interval="100"/>
-			<Command unit="" code="0102" divider="10" interval="100"/>
-			<Command unit="" code="0200" divider="10"/>
-			<Command unit="" code="0201" divider="10" interval="10"/>
-			<Command unit="" code="0202" divider="10"/>
-			<Command unit="" code="0300" divider="10"/>
-			<Command unit="" code="0301" divider="10" interval="100"/>
-			<Command unit="" code="0302" divider="10"/>
-			<Command unit="" code="0306" divider="10" interval="100"/>
-			<Command unit="" code="0307" divider="10"/>
-			<Command unit="" code="030E" divider="100"/>
-			<Command unit="" code="0407" divider="10"/>
-			<Command unit="" code="0700"/>
-			<Command unit="" code="0701" interval="100"/>
-			<Command unit="" code="0800"/>
-			<Command unit="" code="0A05" isSigned="" divider="10"/>
-			<Command unit="" code="0A06" isSigned="" divider="10"/>
-			<Command unit="" code="0AE4" isSigned="" divider="10"/>
-			<Command unit="" code="0B0E" divider="1" interval="10"/>
+			<Command code="0100" divider="10" unit="Hz"/>
+			<Command code="0101" divider="10" interval="100" unit="Hz"/>
+			<Command code="0102" divider="10" interval="100" unit="Hz"/>
+			<Command code="0200" divider="10" unit="ms"/>
+			<Command code="0201" divider="10" interval="100" unit="ms"/>
+			<Command code="0202" divider="10" unit="ms"/>
+			<Command code="0300" divider="10" unit="mA"/>
+			<Command code="0301" divider="10" interval="100" unit="mA"/>
+			<Command code="0302" divider="10" unit="mA"/>
+			<Command code="0306" divider="10" interval="100" unit="mA"/>
+			<Command code="0307" divider="10" unit="mA"/>
+			<Command code="030E" divider="100"/>
+			<Command code="0407" divider="10" unit="V"/>
+			<Command code="0700"/>
+			<Command code="0701" interval="100"/>
+			<Command code="0800"/>
+			<Command code="0A05" isSigned="" divider="10" unit="(deg)" isTemperature="1"/>
+			<Command code="0A06" isSigned="" divider="10" unit="(deg)" isTemperature="1"/>
+			<Command code="0AE4" isSigned="" divider="10" unit="(deg)" isTemperature="1"/>
+			<Command code="0B0E" divider="1" interval="10"/>
 
-			<Command unit="" code="0A10" divider="100"/>
-			<Command unit="" code="0A11" divider="100"/>
-			<Command unit="" code="0A12" divider="100"/>
-			<Command unit="" code="0A13" divider="100" interval="100"/>
-			<Command unit="" code="0A14" divider="100" interval="100"/>
-			<Command unit="" code="0A15" divider="100"/>
+			<Command code="0A10" divider="100" unit="(deg)" isTemperature="1"/>
+			<Command code="0A11" divider="100" unit="(deg)" isTemperature="1"/>
+			<Command code="0A12" divider="100" unit="(deg)" isTemperature="1"/>
+			<Command code="0A13" divider="100" interval="100" unit="(deg)" isTemperature="1"/>
+			<Command code="0A14" divider="100" interval="100" unit="(deg)" isTemperature="1"/>
+			<Command code="0A15" divider="100" unit="(deg)" isTemperature="1"/>
 
-			<Command unit="" code="0A16" isSigned="" divider="10"/>
-			<Command unit="" code="0A17" divider="10"/>
-			<Command unit="" code="0A18" isSigned="" divider="10"/>
-			<Command unit="" code="0A1A"/>
-			<Command unit="" code="0A1E" divider="100" interval="10"/>
-			<Command unit="" code="0A1F" divider="1" interval="10"/>
+			<Command code="0A16" isSigned="" divider="10" unit="A"/>
+			<Command code="0A17" divider="10" unit="A"/>
+			<Command code="0A18" isSigned="" divider="10" unit="V"/>
+			<Command code="0A1A"/>
+			<Command code="0A1E" divider="100" interval="10"/>
+			<Command code="0A1F" divider="1" interval="10"/>
 
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
-			<Limit maxCode="0302" minCode="0301" upperCode="0306" show="max" unit="mA">LD current set up limit</Limit>
-			<Limit maxCode="0A17" min="0.0" upper="4.0" show="max" unit="A">TEC current limit</Limit>
-			<Limit minCode="0A12" maxCode="0A11" bottomCode="0A14" upperCode="0A13" show="both" unit="(deg)">TEC temperature warning limits</Limit>
-			<Limit minCode="0A05" maxCode="0A06" bottom="-10.0" upper="100.0" show="both" unit="(deg)">NTC temperature warning limits</Limit>
+			<Limit limitCode="0302" minCode="0301" maxCode="0306">LD current set up limit</Limit>
+			<Limit limitCode="0A17" minValue="0.0" maxValue="4.0">TEC current limit</Limit>
+			<Limit limitCode="0A12" minCode="0A14" maxCode="0A11">TEC temperature warning lower limit</Limit>
+			<Limit limitCode="0A11" minCode="0A12" maxCode="0A13">TEC temperature warning upper limit</Limit>
+			<Limit limitCode="0A05" minValue="-10.0" maxCode="0A06">NTC temperature warning lower limit</Limit>
+			<Limit limitCode="0A06" minCode="0A05" maxValue="100.0">NTC temperature warning lower limit</Limit>
 		</Limits>
 		<!--  калибровка -->
 		<CalibrationKoefs>
@@ -1635,15 +1634,15 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
     Параметры с value "участвуют" в hide controls.
      -->
 		<ParamControls>
-			<Param unit="Hz" min="0101" max="0102" value="0100">Frequency</Param>
-			<Param unit="ms" min="0201" max="0202" value="0200">Duration</Param>
-			<Param unit="mA" min="0301" max="0302" value="0300" real="0307">LD Current</Param>
-			<Param unit="(deg)" isTemperature="1" min="0A12" max="0A11" value="0A10" real="0A15">Temperature</Param>
-			<Param unit=" " real="0701">Serial Number</Param>
-			<Param unit="V" real="0407">LD Voltage</Param>
-			<Param unit="A" real="0A16">TEC Current</Param>
-			<Param unit="V" real="0A18">TEC Voltage</Param>
-			<Param unit="(deg)" isTemperature="1" real="0AE4">External NTC Temperature</Param>
+			<Param min="0101" max="0102" value="0100">Frequency</Param>
+			<Param min="0201" max="0202" value="0200">Duration</Param>
+			<Param min="0301" max="0302" value="0300" real="0307">LD Current</Param>
+			<Param min="0A12" max="0A11" value="0A10" real="0A15">Temperature</Param>
+			<Param real="0701">Serial Number</Param>
+			<Param real="0407">LD Voltage</Param>
+			<Param real="0A16">TEC Current</Param>
+			<Param real="0A18">TEC Voltage</Param>
+			<Param real="0AE4">External NTC Temperature</Param>
 		</ParamControls>
 		<!--  список checkbox (Галочек) Имеют code - номер команды два значения при нажатии и отщёлкивании галочки.
     Могут также программироваться по ID лично в проге, тогда остальные поля оставлять пустыми,
