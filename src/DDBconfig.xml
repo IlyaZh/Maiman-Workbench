@@ -595,6 +595,10 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 			<Command code="0AE4" isSigned="" divider="10" interval="10" unit="(deg)" isTemperature="1"/>
 			<Command code="0B0E" divider="1"/>
 			<Command code="0AF4" isSigned="" divider="10" interval="10" unit="(deg)" isTemperature="1"/>
+			<Command code="0A12" isSigned="" divider="10" interval="10" unit="(deg)" isTemperature="1"/>
+			<Command code="0A11" isSigned="" divider="10" interval="10" unit="(deg)" isTemperature="1"/>
+			<Command code="0A10" isSigned="" divider="10" interval="10" unit="(deg)" isTemperature="1"/>
+			<Command code="0A15" isSigned="" divider="10" interval="10" unit="(deg)" isTemperature="1"/>
 		</Commands>
 		<!-- доступные для регулирования пределы -->
 		<Limits>
@@ -603,8 +607,8 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 		</Limits>
 		<!--  калибровка -->
 		<CalibrationKoefs>
-			<Calibrate code="030E" min="9500" max="10500">Current calibration</Calibrate>
-			<Calibrate code="0B0E" min="3000" max="5000">External NTC B25/100 coefficient</Calibrate>
+			<Calibrate code="030E" min="95.00" max="105.00">Current calibration</Calibrate>
+			<Calibrate code="0B0E" min="30.00" max="50.00">External NTC B25/100 coefficient</Calibrate>
 		</CalibrationKoefs>
 		<!-- список выводимых параметров.
     регистр необходимо соблюдать
@@ -618,6 +622,7 @@ Current Setpoint Absolute Accuracy: less then 1%</Description>
 			<Param min="0101" max="0102" value="0100">Frequency</Param>
 			<Param min="0201" max="0202" value="0200">Duration</Param>
 			<Param min="0301" max="0302" value="0300" real="0307">Current</Param>
+			<Param min="0A12" max="0A11" value="0A10" real="0A15">Temperature</Param>
 			<Param real="0701">Serial Number</Param>
 			<Param real="0407">Voltage</Param>
 			<Param real="0AF4">Driver Temperature</Param>

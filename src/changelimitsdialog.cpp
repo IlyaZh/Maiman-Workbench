@@ -15,7 +15,7 @@ ChangeLimitsDialog::ChangeLimitsDialog(QWidget *parent) :
     });
     connect(ui->valueSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
           [=](double d){
-        this->ui->valueSlider->setValue(static_cast<quint16>(qRound(d*limit->getDivider())));
+        this->ui->valueSlider->setValue(qRound(d*limit->getDivider()));
     });
 }
 
@@ -29,7 +29,7 @@ void ChangeLimitsDialog::setData(DeviceLimit *devLimit) {
     limit = devLimit;
 
     ui->valueSpinBox->setDecimals(qRound(log10(limit->getDivider())));
-    ui->valueSpinBox->setSingleStep(1/limit->getDivider());
+    ui->valueSpinBox->setSingleStep(1.0/limit->getDivider());
 
     ui->titleLabel->setText(limit->getTitle() + QString(", ") + limit->getUnit());
 
@@ -84,8 +84,13 @@ void ChangeLimitsDialog::setMin(int val) {
 }*/
 
 void ChangeLimitsDialog::saveResult() {
-    int value = ui->valueSlider->value();
-    QString strToSend = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(limit->getLimitCode()).arg(value, 4, 16, QChar('0')).toUpper();
+    int value;
+    if(limit->isTemperature() && limit->getTemperatureUnit() == "F")
+        value = qRound(Command::convertFarToCel(ui->valueSpinBox->value())*limit->getDivider());
+    else
+        value = ui->valueSlider->value();
+
+    QString strToSend = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(limit->getLimitCode()).arg(static_cast<quint16>(value), 4, 16, QChar('0')).toUpper();
     emit sendData(strToSend);
     limit->requestCommand();
     this->hide();

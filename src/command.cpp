@@ -30,6 +30,10 @@ void Command::setTemperatureUnit(QString unit) {
     emit valueChanged();
 }
 
+QString Command::getTemperatureUnit() {
+    return temperatureUnit;
+}
+
 QString Command::getCode() {
     return Code;
 }
@@ -43,10 +47,14 @@ double Command::getValue() {
 }
 
 int Command::getIValue() {
-    return iValue;
+    if(isTemperature() && temperatureUnit == "F") {
+        return qRound(convertCelToFar(value)*getDivider());
+    } else {
+        return iValue;
+    }
 }
 
-quint16 Command::getRawValue() {
+int Command::getRawValue() {
     return static_cast<quint16>(rawValue.toUInt());
 }
 

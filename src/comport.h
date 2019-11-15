@@ -41,7 +41,7 @@ private:
     QString lastSentCommand;
     QQueue<QString> queue2send;
     uint stopCommandDelay;
-    bool checkStopWritten;
+    quint8 checkStopWritten;
     QList<QByteArray> splitCommands;
 
 signals:

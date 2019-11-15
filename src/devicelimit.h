@@ -11,6 +11,8 @@ public:
     explicit DeviceLimit(QString title, Command* code, double minValue, Command* maxCode);
     explicit DeviceLimit(QString title, Command* code, Command* minCode, double maxValue);
     explicit DeviceLimit(QString title, Command* code, double minValue, double maxValue);
+    bool isTemperature();
+    QString getTemperatureUnit();
     QString getUnit();
     QString getLimitCode();
     quint16 getLimitRaw();
@@ -18,8 +20,8 @@ public:
     QString getTitle();
     double getMinValue();
     double getMaxValue();
-    quint16 getMinRaw();
-    quint16 getMaxRaw();
+    int getMinRaw();
+    int getMaxRaw();
     double getDivider();
     void requestCommand();
 

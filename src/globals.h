@@ -23,8 +23,8 @@ typedef struct {
     Command* cmd;
     QString title;
 //    QString code;
-    int min;
-    int max;
+    double min;
+    double max;
 //    double divider;
 } calibration_t;
 
@@ -66,6 +66,7 @@ typedef struct {
     bool hasLaser;
     bool hasTEC;
     bool laserOn;
+    bool tecOn;
     bool startTECwithLaser;
     uint stopCommandDelay;
     uint minCommDelay;

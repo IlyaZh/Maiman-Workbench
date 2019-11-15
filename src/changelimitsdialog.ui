@@ -41,6 +41,9 @@ QPushButton {
 	width: 50px
 }</string>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="titleLabel">
@@ -118,11 +121,17 @@ QPushButton {
 
 </string>
        </property>
+       <property name="minimum">
+        <number>-100</number>
+       </property>
+       <property name="maximum">
+        <number>0</number>
+       </property>
        <property name="singleStep">
         <number>0</number>
        </property>
        <property name="value">
-        <number>60</number>
+        <number>-50</number>
        </property>
        <property name="tracking">
         <bool>true</bool>

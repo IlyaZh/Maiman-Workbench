@@ -17,7 +17,7 @@ bool AppSettings::getHideControlsFlag() { return settings->value("userSettings/H
 uint AppSettings::getComCommandsDelay() { return settings->value("userSettings/comPort/commandsDelay", COM_COMMAND_SEND_DELAY).toUInt(); }
 QPoint AppSettings::getWindowPosition() { return settings->value("window/position", WINDOW_DEFAULT_POSITION).toPoint(); }
 int AppSettings::getComStopBits() { return settings->value("userSettings/comPort/stopBits", 1).toInt(); }
-bool AppSettings::getKeepCheckboxesFlag() { return settings->value("userSettings/keepCheckboxes", false).toBool(); }
+bool AppSettings::getKeepCheckboxesFlag() { return settings->value("userSettings/keepCheckboxes", true).toBool(); }
 
 // slots
 

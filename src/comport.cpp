@@ -11,7 +11,7 @@ ComPort::ComPort(AppSettings *appSettings, QObject *parent) : QObject(parent), s
 //    isTimeout = false;
 //    bufferSize = 0;
     portIsBusy = false;
-    checkStopWritten = false;
+    checkStopWritten = 0;
     stopCommandDelay = STOP_COMMAND_DELAY_DEFAULT;
 
     // Таймер таймаута (отсчёт идёт с момента фактической пересылки всей посылки в порт и до прихода ответа от устройства)
@@ -48,7 +48,7 @@ void ComPort::stopAndDisconnect() {
     clearQueue();
     putIntoQueue(TEC_STOP_COMMAND);
     putIntoQueue(DEVICE_STOP_COMMAND);
-    checkStopWritten = true;
+    checkStopWritten = 2;
 }
 
 void ComPort::setPortState(bool state) {
@@ -151,8 +151,8 @@ void ComPort::writeToPort() {
             errorTimeout();
         }
 
-        errorTimer->setInterval(COM_PORT_TIMEOUT);
-        errorTimer->start();
+//        errorTimer->setInterval(COM_PORT_TIMEOUT);
+//        errorTimer->start();
     }
 }
 
@@ -263,10 +263,12 @@ bool ComPort::startToSendNextCommand() {
 void ComPort::waitForNextCommandSlot() {
     portIsBusy = false;
 
-    if(checkStopWritten && lastSentCommand == DEVICE_STOP_COMMAND+QString(COM_END_OF_LINE)) {
-        checkStopWritten = false;
-        setPortState(false);
-        return;
+    if(checkStopWritten > 0 && (lastSentCommand == DEVICE_STOP_COMMAND+QString(COM_END_OF_LINE) || lastSentCommand == TEC_STOP_COMMAND+QString(COM_END_OF_LINE))) {
+        checkStopWritten--;
+        if(checkStopWritten == 0) {
+            setPortState(false);
+            return;
+        }
     }
 
     if(startToSendNextCommand() == false) { // false - команд в очереди нет - даём сигнал об окончании передачи

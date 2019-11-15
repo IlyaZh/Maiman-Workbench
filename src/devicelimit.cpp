@@ -53,6 +53,16 @@ DeviceLimit::DeviceLimit(QString title, Command* code, double minValue, double m
         qDebug() << "DeviceLimit" << "limitCode pointer is NULL";
 }
 
+bool DeviceLimit::isTemperature() {
+    return limitCode->isTemperature();
+}
+
+QString DeviceLimit::getTemperatureUnit() {
+    if(isTemperature())
+        return limitCode->getTemperatureUnit();
+    else
+        return "";
+}
 
 QString DeviceLimit::getUnit() {
     return limitCode->getUnit();
@@ -63,11 +73,13 @@ QString DeviceLimit::getLimitCode() {
 }
 
 quint16 DeviceLimit::getLimitRaw() {
-    return limitCode->getRawValue();
+    return qRound(limitCode->getValue()*limitCode->getDivider());
 }
 
 double DeviceLimit::getLimitValue() {
-    return limitCode->getValue();
+    double res = limitCode->getValue();
+    if(abs(res) < 0.0001) res = 0;
+    return res;
 }
 
 QString DeviceLimit::getTitle() {
@@ -75,31 +87,37 @@ QString DeviceLimit::getTitle() {
 }
 
 double DeviceLimit::getMinValue() {
-    if(minCode != nullptr) {
-        min = minCode->getValue();
+    double res = min;
+    if(minCode == nullptr && limitCode->isTemperature() && limitCode->getTemperatureUnit() == "F") {
+        res = Command::convertCelToFar(min);
+    } else {
+        if(minCode != nullptr) {
+            res = min = minCode->getValue();
+        }
     }
-    return min;
+    if(abs(res) < 0.0001) res = 0;
+    return res;
 }
 
 double DeviceLimit::getMaxValue() {
-    if(maxCode != nullptr) {
-        max = maxCode->getValue();
+    double res = max;
+    if(maxCode == nullptr && limitCode->isTemperature() && limitCode->getTemperatureUnit() == "F") {
+        res = Command::convertCelToFar(max);
+    } else {
+        if(maxCode != nullptr) {
+            res = max = maxCode->getValue();
+        }
     }
-    return max;
+    if(abs(res) < 0.0001) res = 0;
+    return res;
 }
 
-quint16 DeviceLimit::getMinRaw() {
-    if(minCode != nullptr) {
-        min = minCode->getRawValue();
-    }
-    return min;
+int DeviceLimit::getMinRaw() {
+    return qRound(getMinValue()*limitCode->getDivider());
 }
 
-quint16 DeviceLimit::getMaxRaw() {
-    if(maxCode != nullptr) {
-        max = maxCode->getRawValue();
-    }
-    return max;
+int DeviceLimit::getMaxRaw() {
+    return qRound(getMaxValue()*limitCode->getDivider());
 }
 
 double DeviceLimit::getDivider() {

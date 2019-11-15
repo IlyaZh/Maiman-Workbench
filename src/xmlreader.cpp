@@ -13,6 +13,7 @@ void xmlReader::setDeviceOptions(device_t &device, quint16 dev_id) {
     device.hasLaser = false;
     device.hasTEC = false;
     device.laserOn = false;
+    device.tecOn = false;
     device.startTECwithLaser = false;
     deviceId = dev_id;
     device.stopCommandDelay = STOP_COMMAND_DELAY_DEFAULT;
@@ -388,13 +389,13 @@ void xmlReader::parseCalibration() {
         calibration_t calibrate;
         calibrate.cmd = nullptr;
 //        calibrate.title = "No name";
-        calibrate.min = 9500;
-        calibrate.max = 10500;
+        calibrate.min = 95.00;
+        calibrate.max = 105.00;
 
         if(attrib.hasAttribute("code") && attrib.hasAttribute("min") && attrib.hasAttribute("max")) {
             calibrate.cmd = device->commands.value(attrib.value("code").toString(), nullptr);
-            calibrate.min = attrib.value("min").toInt();
-            calibrate.max = attrib.value("max").toInt();
+            calibrate.min = attrib.value("min").toDouble();
+            calibrate.max = attrib.value("max").toDouble();
         }
 
         calibrate.title = xml.readElementText();

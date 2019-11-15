@@ -13,6 +13,10 @@ bool SignedCommand::isSignedValue() {
 //    return value;
 //}
 
+int SignedCommand::getRawValue() {
+    return static_cast<qint16>(rawValue.toInt());
+}
+
 void SignedCommand::setRawValue(quint16 inValue) {
     if(rawValue.toUInt() != inValue) {
         rawValue.setValue(inValue);

@@ -204,12 +204,13 @@ void MainWindow::setupWindow() {
     if(debugMode == false) showConsoleSlot(false);
 
     devConfig.laserOn = false;
+    devConfig.tecOn = false;
 }
 
 bool MainWindow::showWarningMessageAndStopLaser() {
     bool result = false;
 
-    if(devConfig.laserOn) {
+    if(devConfig.laserOn || devConfig.tecOn) {
         QMessageBox *alertBox = new QMessageBox(this);
         alertBox->setIcon(QMessageBox::Warning);
         alertBox->setText("The device is still running!");
@@ -870,6 +871,22 @@ void MainWindow::setRegulatorsEnable(bool state) {
     if(state) {
         requestAllCommands = true;
     }
+
+    if(devConfig.hasTEC) {
+        ui->tecButton->setVisible(state);
+    }
+
+    if(devConfig.hasLaser) {
+        ui->laserButton->setVisible(state);
+    }
+
+    foreach(QAction* item, ui->menuLimits->actions()) {
+        item->setEnabled(state);
+    }
+
+    foreach(QAction* item, ui->menuCalibrate->actions()) {
+        item->setEnabled(state);
+    }
 }
 
 void MainWindow::getPortNewState(bool state) {
@@ -889,6 +906,7 @@ void MainWindow::getPortNewState(bool state) {
             setLink(false);
             isDeviceLoaded = false;
             devConfig.laserOn = false;
+            devConfig.tecOn = false;
             if(checkStopAndDisconnect) {
                 QApplication::exit();
             }
@@ -1057,8 +1075,10 @@ void MainWindow::readComData_Slot(QByteArray str) {
                             if(devConfig.hasTEC) {
                                 if(currentCommand->getRawValue() & START_STOP_MASK) {
                                     ui->tecButton->setChecked(true);
+                                    devConfig.tecOn = true;
                                 } else {
                                     ui->tecButton->setChecked(false);
+                                    devConfig.tecOn = false;
                                 }
                             }
                         }
