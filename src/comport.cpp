@@ -188,7 +188,6 @@ void ComPort::needToRead() {
 //       bufferSize = 0;
        return;
    }
-
    if(buffer.contains(COM_END_OF_LINE) && (buffer.at(0) == COM_ANSWER_PREFIX || buffer.at(0) == COM_ERROR_PREFIX)) {
        buffer.resize(buffer.indexOf(COM_END_OF_LINE)+1);
        emit receivedDataSignal(buffer);

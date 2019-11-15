@@ -9,9 +9,9 @@ bool SignedCommand::isSignedValue() {
     return true;
 }
 
-double SignedCommand::getConvertedValue() {
-    return value;
-}
+//double SignedCommand::getValue() {
+//    return value;
+//}
 
 void SignedCommand::setRawValue(quint16 inValue) {
     if(rawValue.toUInt() != inValue) {

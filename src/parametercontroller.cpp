@@ -202,6 +202,7 @@ void ParameterController::hideRealValue(bool state) {
                                                  background: rgb(254, 26, 6); \
                                              }");
     }
+    setUnit();
 }
 
 void ParameterController::setUnit() {
@@ -286,7 +287,7 @@ void ParameterController::setRealValue() {
         ui_realValueUnitCompactLabel->setText("real=" + strValueUnit);
     }
     valueLabel->setText(strValue);
-
+    setUnit();
 }
 
 void ParameterController::setSentValue() {
@@ -322,6 +323,7 @@ void ParameterController::on_valueSlider_valueChanged(int value) {
         if(valueComm->isTemperature())
             unitLabel->setText(valueComm->getUnit());
     }
+    setUnit();
 }
 
 void ParameterController::on_valueSlider_sliderPressed() {
@@ -351,6 +353,8 @@ void ParameterController::on_valueSlider_sliderMoved(int value) {
         ui_currValueUnitLabel->setText(strValueUnit);
     else
         ui_setValueLabel->setText("set=" + strValueUnit);
+
+    setUnit();
 }
 
 void ParameterController::on_valueSlider_sliderReleased() {

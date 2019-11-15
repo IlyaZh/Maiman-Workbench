@@ -610,13 +610,6 @@ void MainWindow::saveSettingsSlot() {
 }
 
 void MainWindow::setupMenuView() {
-//    QSignalMapper* signalMapper = new QSignalMapper(this);
-//    signalMapper->setMapping(ui->actionTemperature_in_C, "C");
-//    signalMapper->setMapping(ui->actionTemperature_in_F, "F");
-//    connect(ui->actionTemperature_in_C, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
-//    connect(ui->actionTemperature_in_F, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
-//    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(triggTemperatureSymbolSlot(QString)));
-
     connect(ui->actionTemperature_in_C, &QAction::triggered, [this]{
         this->triggTemperatureSymbolSlot("C");
     });

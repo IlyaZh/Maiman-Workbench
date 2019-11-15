@@ -46,10 +46,6 @@ int Command::getIValue() {
     return iValue;
 }
 
-double Command::getConvertedValue() {
-    return value;
-}
-
 quint16 Command::getRawValue() {
     return static_cast<quint16>(rawValue.toUInt());
 }
