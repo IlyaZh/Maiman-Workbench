@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.0.4] - 2019-11-15
+### Fixed
+- Signed commands issue. Sign wasn't shown
+- Fix change temoearute symbol bug. Units doesn't change when user change Celsius\Farenheit units, only values recalculates before. 
+
 ## [1.0.3] - 2019-10-29
 ### Added
 - Showing suestion message about laser state if user tries to close an app or disconnect when the laser on
