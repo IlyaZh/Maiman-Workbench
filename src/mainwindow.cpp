@@ -24,6 +24,7 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent *event) {
     if(showWarningMessageAndStopLaser()) {
         checkStopAndDisconnect = true;
+        autoSendNextCommand = false;
         serialPort->stopAndDisconnect();
         event->ignore();
         // do stopping of laser
@@ -907,6 +908,7 @@ void MainWindow::getPortNewState(bool state) {
             isDeviceLoaded = false;
             devConfig.laserOn = false;
             devConfig.tecOn = false;
+            qDebug() << checkStopAndDisconnect;
             if(checkStopAndDisconnect) {
                 QApplication::exit();
             }

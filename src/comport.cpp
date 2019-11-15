@@ -46,8 +46,9 @@ bool ComPort::isOpen() {
 
 void ComPort::stopAndDisconnect() {
     clearQueue();
-    putIntoQueue(TEC_STOP_COMMAND);
+
     putIntoQueue(DEVICE_STOP_COMMAND);
+    putIntoQueue(TEC_STOP_COMMAND);
     checkStopWritten = 2;
 }
 
