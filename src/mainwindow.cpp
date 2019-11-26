@@ -24,7 +24,7 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent *event) {
     if(showWarningMessageAndStopLaser()) {
         checkStopAndDisconnect = true;
-        autoSendNextCommand = false;
+//        autoSendNextCommand = false;
         serialPort->stopAndDisconnect();
         event->ignore();
         // do stopping of laser
@@ -1184,7 +1184,7 @@ void MainWindow::setComTwoStopBits() {
 }
 
 void MainWindow::prepareToSendNextCommand() {
-    if(autoSendNextCommand && portIsOpen && isDeviceLoaded) {
+    if(autoSendNextCommand && portIsOpen && isDeviceLoaded && !checkStopAndDisconnect) {
         sendNextComCommand();
     }
 }
