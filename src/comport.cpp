@@ -44,13 +44,13 @@ bool ComPort::isOpen() {
     return serialPort->isOpen();
 }
 
-void ComPort::stopAndDisconnect() {
-    clearQueue();
+//void ComPort::stopAndDisconnect() {
+//    clearQueue();
 
-    putIntoQueue(DEVICE_STOP_COMMAND);
-    putIntoQueue(TEC_STOP_COMMAND);
-    checkStopWritten = 2;
-}
+//    putIntoQueue(DEVICE_STOP_COMMAND);
+//    putIntoQueue(TEC_STOP_COMMAND);
+//    checkStopWritten = 2;
+//}
 
 void ComPort::setPortState(bool state) {
     serialPort->setPortName(settings->getComPort());

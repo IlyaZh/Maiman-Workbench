@@ -23,9 +23,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     if(showWarningMessageAndStopLaser()) {
-        checkStopAndDisconnect = true;
+//        checkStopAndDisconnect = true;
 //        autoSendNextCommand = false;
-        serialPort->stopAndDisconnect();
+//        serialPort->stopAndDisconnect();
         event->ignore();
         // do stopping of laser
     } else {
@@ -166,7 +166,7 @@ void MainWindow::setupWindow() {
     autoSendNextCommand = true;
     requestAllCommands = true;
     bNeedSetCheckboxes = false;
-    checkStopAndDisconnect = false;
+//    checkStopAndDisconnect = false;
 
     loadCommonConfig(availableDevices);
 
@@ -217,7 +217,7 @@ bool MainWindow::showWarningMessageAndStopLaser() {
         alertBox->setText("The device is still running!");
         alertBox->setInformativeText("Do you want to exit the app without stop the laser?");
         alertBox->addButton("OK", QMessageBox::AcceptRole);
-        QPushButton *stopButton = alertBox->addButton("STOP", QMessageBox::RejectRole);
+        QPushButton *stopButton = alertBox->addButton("Cancel", QMessageBox::RejectRole);
         alertBox->setDefaultButton(stopButton);
 
         switch(alertBox->exec()) {
@@ -908,10 +908,10 @@ void MainWindow::getPortNewState(bool state) {
             isDeviceLoaded = false;
             devConfig.laserOn = false;
             devConfig.tecOn = false;
-            qDebug() << checkStopAndDisconnect;
-            if(checkStopAndDisconnect) {
-                QApplication::exit();
-            }
+//            qDebug() << checkStopAndDisconnect;
+//            if(checkStopAndDisconnect) {
+//                QApplication::exit();
+//            }
         }
         ui->consoleStartStopButton->setEnabled(state);
         ui->consoleStartStopButton->setChecked(!autoSendNextCommand);
@@ -945,7 +945,7 @@ void MainWindow::comPortConnectButton_slot()
 {
     if(portIsOpen) {
         if(showWarningMessageAndStopLaser()) {
-            serialPort->stopAndDisconnect();
+//            serialPort->stopAndDisconnect();
         } else {
             serialPort->setPortState(!portIsOpen);
         }
@@ -1184,7 +1184,7 @@ void MainWindow::setComTwoStopBits() {
 }
 
 void MainWindow::prepareToSendNextCommand() {
-    if(autoSendNextCommand && portIsOpen && isDeviceLoaded && !checkStopAndDisconnect) {
+    if(autoSendNextCommand && portIsOpen && isDeviceLoaded) {
         sendNextComCommand();
     }
 }

@@ -162,7 +162,7 @@ private:
     quint16 devID;
 //    closeWindow_t waitingForStop;
     bool bNeedSetCheckboxes;
-    bool checkStopAndDisconnect;
+//    bool checkStopAndDisconnect;
 
 signals:
 //    void writeToLogSignal(QString);

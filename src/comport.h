@@ -23,7 +23,7 @@ public:
     ~ComPort();
     void close();
     bool isOpen();
-    void stopAndDisconnect();
+//    void stopAndDisconnect();
 
 
 private:
