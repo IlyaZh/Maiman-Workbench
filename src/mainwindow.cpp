@@ -952,7 +952,7 @@ void MainWindow::comPortConnectButton_slot()
     } else {
         serialPort->setPortState(!portIsOpen);
     }
-
+    ui->comPortConnectButton->setChecked(!portIsOpen);
 }
 
 void MainWindow::comPortConsoleSend_Slot() {
