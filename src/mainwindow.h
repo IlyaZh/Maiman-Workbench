@@ -109,7 +109,7 @@ private slots:
     void setComOneStopBit();
     void setComTwoStopBits();
     void saveCheckboxes();
-    void loadCheckboxes();
+    QList<QPair<QString, QString>> getNewCheckboxesValues();
 
 private:
     Ui::MainWindow *ui;
@@ -162,6 +162,7 @@ private:
     quint16 devID;
 //    closeWindow_t waitingForStop;
     bool bNeedSetCheckboxes;
+    bool bStatusHasLoaded;
 //    bool checkStopAndDisconnect;
 
 signals:

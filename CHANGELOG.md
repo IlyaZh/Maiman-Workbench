@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.0.5] - 2019-11-28
+### Changed 
+- Remove sending stop commands for laser and tec when user try to close app or disconnect
+
 ## [1.0.4] - 2019-11-15
 ### Fixed
 - Signed commands issue. Sign wasn't shown

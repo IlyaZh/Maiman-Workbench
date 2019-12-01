@@ -25,6 +25,28 @@ public:
     bool isOpen();
 //    void stopAndDisconnect();
 
+    static const enum DeviceComCommands {
+        START_COM = 0x0008,
+        STOP_COM = 0x0010,
+        INT_MODE_COM = 0x0020,
+        EXT_MODE_COM = 0x0040,
+        INT_SYNC_MODE_COM = 0x0200,
+        EXT_SYNC_MODE_COM = 0x0400,
+        BLOCK_ENABLE_COM = 0x1000,
+        BLOCK_DISABLE_COM = 0x2000,
+        TEMP_BLOCK_DISABLE_COM = 0x4000,
+        TEMP_BLOCK_ENABLE_COM = 0x8000
+    } DeviceComCommands;
+
+    static const enum DeviceComMasks {
+        DEVICE_MASK = 0x01,
+        START_MASK = 1 << 1,
+        INT_MODE_MASK = 1 << 2,
+        INT_SYNC_MASK = 1 << 4,
+        IGNORE_THERMAL_BLOCK_MASK = 1 << 6,
+        IGNORE_BLOCKS_MASK = 1 << 7
+    } DeviceComMasks;
+
 
 private:
     AppSettings *settings;

@@ -166,6 +166,7 @@ void MainWindow::setupWindow() {
     autoSendNextCommand = true;
     requestAllCommands = true;
     bNeedSetCheckboxes = false;
+    bStatusHasLoaded = false;
 //    checkStopAndDisconnect = false;
 
     loadCommonConfig(availableDevices);
@@ -750,8 +751,11 @@ bool MainWindow::isCheckboxesFileExist() {
     return state;
 }
 
-void MainWindow::loadCheckboxes() {
-    if(devConfig.binOptions.isEmpty()) return;
+QList<QPair<QString, QString>> MainWindow::getNewCheckboxesValues() {
+    QList<QPair<QString, QString>> result;
+    result.clear();
+    if(devConfig.binOptions.isEmpty()) return result;
+
 
     QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
         if(file->open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -759,9 +763,9 @@ void MainWindow::loadCheckboxes() {
             while(!in.atEnd()) {
                 QStringList values = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseSensitive);
                 if(values.length() == 2) {
-                    QString msgForSend = COM_WRITE_PREFIX + values.at(0) + QString(" ") + values.at(1);
-    //                qDebug() << msgForSend;
-                    sendDataToPort(msgForSend);
+                        QString msgForSend = COM_WRITE_PREFIX + values.at(0) + QString(" ") + values.at(1);
+                        QPair<QString, QString> pair = qMakePair(values.at(0), values.at(1));
+                        result.append(pair);
                 } else {
                     writeToConsoleError("Binary options config load error.");
                 }
@@ -773,6 +777,7 @@ void MainWindow::loadCheckboxes() {
     }
 
     file->deleteLater();
+    return result;
 }
 
 void MainWindow::saveCheckboxes() {
@@ -1059,6 +1064,26 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     }
 
                     if(commandStr == DEVICE_STATUS_COMMAND) {
+                        if(ui->actionKeep_checkboxes->isChecked()) {
+                                    if(bNeedSetCheckboxes) {
+                                        if(isCheckboxesFileExist()) {
+                                            QList<QPair<QString, QString>> loadedValues;
+                                            loadedValues = getNewCheckboxesValues();
+                                            for(QPair<QString, QString>item : loadedValues) {
+                                                for(binOption_t option : devConfig.binOptions) {
+                                                    if(option.code == item.first) {
+                                                        if((option.checkBox->isChecked() && item.second != option.onCommand)
+                                                                || (!option.checkBox->isChecked() && item.second != option.offCommand)) {
+                                                            sendDataToPort(COM_WRITE_PREFIX + item.first + " " + item.second);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        bNeedSetCheckboxes = false;
+                                    }
+                                }
+
                         if(devConfig.hasLaser) {
                             if(currentCommand->getRawValue() & START_STOP_MASK) {
                                 ui->laserButton->setChecked(true);
@@ -1397,15 +1422,15 @@ void MainWindow::sendNextComCommand() {
 
     while(cycleOn) {
 
-        if(ui->actionKeep_checkboxes->isChecked()) {
-            if(bNeedSetCheckboxes) {
+        /*if(ui->actionKeep_checkboxes->isChecked()) {
+            if(bNeedSetCheckboxes && bStatusHasLoaded) {
                 if(isCheckboxesFileExist()) {
-                    loadCheckboxes();
+                    getNewCheckboxesValues();
                 }
                 bNeedSetCheckboxes = false;
                 continue;
             }
-        }
+        }*/
 
         if(currCommandItt == nullptr) {
             currCommandItt = devConfig.commands.constBegin();
