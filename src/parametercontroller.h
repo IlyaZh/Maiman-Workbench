@@ -26,7 +26,7 @@ class ParameterController : public QWidget
 
 public:
     static int Count;
-    explicit ParameterController(QString title, Command *minComm, Command *maxComm, Command *valueComm, Command *realComm = nullptr, QWidget *parent = nullptr);
+    explicit ParameterController(QString title, Command *minComm, Command *maxComm, Command *valueComm, Command *realComm, QWidget *parent = nullptr);
     ~ParameterController();
     bool getPinState();
     bool getEnableState();
@@ -35,12 +35,14 @@ public:
     QWidget* loadTextWidget();
     int getCommValue();
     bool isOnlyMeasured();
+    bool hasRealCommand();
 
 public slots:
     void hideRealValue(bool state = false);
     void setEnableState(bool state);
 
 private:
+    void setUnit();
     void setTitle(QString str);
     void setPinState(bool val);
     void prepareBigWidget();

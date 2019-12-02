@@ -1,22 +1,20 @@
 #include "command.h"
 #include "appsettings.h"
 
-int Command::Count = 0;
+extern AppSettings settings;
 
 Command::Command(QString code, QString unit, double divider, quint8 interval, bool isTemperatureFlag, QObject *parent) : QObject(parent)
 {
     this->Code = code;
-    this->Interval = (interval < MAX_COM_INTERVAL_COUNTER) ? interval : MAX_COM_INTERVAL_COUNTER;
+    this->interval = (interval < MAX_COM_INTERVAL_COUNTER) ? interval : MAX_COM_INTERVAL_COUNTER;
+    if(this->interval < 1) this->interval = 1;
     this->Divider = divider;
-    this->IsTemperatureFlag = isTemperatureFlag;
-    this->Unit = unit;
-    RawValue.setValue(-1);
+    this->isTemperatureFlag = isTemperatureFlag;
+    this->unit = unit;
+    rawValue.setValue(-1);
+    tick = 0;
 
-    Count++;
-}
-
-Command::~Command() {
-    Count--;
+    setTemperatureUnit(settings.getTemperatureSymbol());
 }
 
 double Command::convertCelToFar(double val) {
@@ -28,8 +26,12 @@ double Command::convertFarToCel(double val) {
 }
 
 void Command::setTemperatureUnit(QString unit) {
-    TemperatureUnit = unit;
-//    emit valueChanged();
+    temperatureUnit = unit;
+    emit valueChanged();
+}
+
+QString Command::getTemperatureUnit() {
+    return temperatureUnit;
 }
 
 QString Command::getCode() {
@@ -37,48 +39,69 @@ QString Command::getCode() {
 }
 
 double Command::getValue() {
-    if(isTemperature() && TemperatureUnit == "F") {
-        return convertCelToFar(Value);
+    if(isTemperature() && temperatureUnit == "F") {
+        return convertCelToFar(value);
     } else {
-        return Value;
+        return value;
     }
 }
 
-quint16 Command::getRawValue() {
-    return static_cast<quint16>(RawValue.toUInt());
+int Command::getIValue() {
+    if(isTemperature() && temperatureUnit == "F") {
+        return qRound(convertCelToFar(value)*getDivider());
+    } else {
+        return iValue;
+    }
+}
+
+int Command::getRawValue() {
+    return static_cast<quint16>(rawValue.toUInt());
 }
 
 double Command::getDivider() {
     return Divider;
 }
 
-bool Command::isSignedValue() {
-    return false;
-}
-
 bool Command::isTemperature() {
-    return IsTemperatureFlag;
+    return isTemperatureFlag;
 }
 
 QString Command::getUnit() {
     if(isTemperature()) {
-        return Unit+TemperatureUnit;
+        return unit+temperatureUnit;
     } else {
-        return Unit;
+        return unit;
     }
+}
+
+bool Command::isSignedValue() {
+    return false;
 }
 
 // SLOTS are declared below
 
-void Command::setRawValue(quint16 _value) {
-    if(RawValue.toUInt() != _value) {
-        RawValue.setValue(_value);
-        this->Value = RawValue.toDouble() / Divider;
+void Command::setRawValue(quint16 iValue) {
+//    if(rawValue.toUInt() != iValue) {
+        rawValue.setValue(iValue);
+        this->iValue = static_cast<quint16>(rawValue.toUInt());
+        this->value = rawValue.toDouble() / Divider;
 
-//        emit valueChanged();
-    }
+        emit valueChanged();
+//    }
 }
 
-quint8 Command::getInterval() {
-    return Interval;
+bool Command::needToRequest() {
+    bool result = false;
+    if((tick % interval) == 0) {
+        result = true;
+    }
+
+    tick++;
+    if(tick > MAX_COM_INTERVAL_COUNTER) tick = 0;
+
+    return result;
+}
+
+void Command::resetInterval() {
+    tick = interval;
 }

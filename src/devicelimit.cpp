@@ -1,87 +1,129 @@
 #include "devicelimit.h"
+#include <QDebug>
 
-int DeviceLimit::Count = 0;
-
-DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, Command* maxComm, QObject *parent) : QObject(parent)
-{
+DeviceLimit::DeviceLimit(QString title, Command* code, Command* minCode, Command* maxCode) {
     this->title = title;
-    this->valueComm = valueComm;
-    this->minComm = minComm;
-    this->maxComm = maxComm;
-    min = minComm->getValue();
-    max = maxComm->getValue();
-    Count++;
+    limitCode = code;
+    this->minCode = minCode;
+    this->maxCode = maxCode;
+
+    if(limitCode == nullptr)
+        qDebug() << "DeviceLimit" << "limitCode pointer is NULL";
+    if(minCode == nullptr)
+         qDebug() << "DeviceLimit" << "minCode pointer is NULL";
+    if(maxCode == nullptr)
+         qDebug() << "DeviceLimit" << "maxCode pointer is NULL";
 }
 
-DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, Command* maxComm, QObject *parent) : QObject(parent)
-{
+DeviceLimit::DeviceLimit(QString title, Command* code, double minValue, Command* maxCode) {
     this->title = title;
-    this->valueComm = valueComm;
-    this->minComm = nullptr;
-    this->maxComm = maxComm;
+    limitCode = code;
+    this->minCode = nullptr;
+    this->maxCode = maxCode;
     min = minValue;
-    max = maxComm->getValue();
-    Count++;
+
+    if(limitCode == nullptr)
+        qDebug() << "DeviceLimit" << "limitCode pointer is NULL";
+    if(maxCode == nullptr)
+        qDebug() << "DeviceLimit" << "maxCode pointer is NULL";
 }
 
-DeviceLimit::DeviceLimit(QString title, Command* valueComm, Command* minComm, quint16 maxValue, QObject *parent) : QObject(parent)
-{
+DeviceLimit::DeviceLimit(QString title, Command* code, Command* minCode, double maxValue) {
     this->title = title;
-    this->valueComm = valueComm;
-    this->minComm = minComm;
-    this->maxComm = nullptr;
-    min = minComm->getValue();
+    limitCode = code;
+    this->minCode = minCode;
+    this->maxCode = nullptr;
     max = maxValue;
-    Count++;
+
+    if(limitCode == nullptr)
+        qDebug() << "DeviceLimit" << "limitCode pointer is NULL";
+    if(minCode == nullptr)
+        qDebug() << "DeviceLimit" << "minCode pointer is NULL";
 }
 
-DeviceLimit::DeviceLimit(QString title, Command* valueComm, quint16 minValue, quint16 maxValue, QObject *parent) : QObject(parent)
-{
+DeviceLimit::DeviceLimit(QString title, Command* code, double minValue, double maxValue) {
     this->title = title;
-    this->valueComm = valueComm;
-    this->minComm = nullptr;
-    this->maxComm = nullptr;
+    limitCode = code;
+    minCode = nullptr;
+    maxCode = nullptr;
     min = minValue;
     max = maxValue;
-    Count++;
+
+    if(limitCode == nullptr)
+        qDebug() << "DeviceLimit" << "limitCode pointer is NULL";
 }
 
-DeviceLimit::~DeviceLimit() {
-    Count--;
+bool DeviceLimit::isTemperature() {
+    return limitCode->isTemperature();
 }
 
-double DeviceLimit::getDivider() {
-    return valueComm->getDivider();
-}
-
-QString DeviceLimit::getTitle() {
-    return title;
+QString DeviceLimit::getTemperatureUnit() {
+    if(isTemperature())
+        return limitCode->getTemperatureUnit();
+    else
+        return "";
 }
 
 QString DeviceLimit::getUnit() {
-    return valueComm->getUnit();
+    return limitCode->getUnit();
 }
 
-double DeviceLimit::getMin() {
-    if(minComm == nullptr) {
-        return min;
+QString DeviceLimit::getLimitCode() {
+    return limitCode->getCode();
+}
+
+quint16 DeviceLimit::getLimitRaw() {
+    return qRound(limitCode->getValue()*limitCode->getDivider());
+}
+
+double DeviceLimit::getLimitValue() {
+    double res = limitCode->getValue();
+    if(abs(res) < 0.0001) res = 0;
+    return res;
+}
+
+QString DeviceLimit::getTitle() {
+    return  title;
+}
+
+double DeviceLimit::getMinValue() {
+    double res = min;
+    if(minCode == nullptr && limitCode->isTemperature() && limitCode->getTemperatureUnit() == "F") {
+        res = Command::convertCelToFar(min);
     } else {
-        return minComm->getValue();
+        if(minCode != nullptr) {
+            res = min = minCode->getValue();
+        }
     }
+    if(abs(res) < 0.0001) res = 0;
+    return res;
 }
 
-double DeviceLimit::getMax() {
-    if(maxComm == nullptr) {
-        return max;
+double DeviceLimit::getMaxValue() {
+    double res = max;
+    if(maxCode == nullptr && limitCode->isTemperature() && limitCode->getTemperatureUnit() == "F") {
+        res = Command::convertCelToFar(max);
     } else {
-        return maxComm->getValue();
+        if(maxCode != nullptr) {
+            res = max = maxCode->getValue();
+        }
     }
+    if(abs(res) < 0.0001) res = 0;
+    return res;
 }
 
-double DeviceLimit::getValue() {
-    return valueComm->getValue();
+int DeviceLimit::getMinRaw() {
+    return qRound(getMinValue()*limitCode->getDivider());
 }
 
-QString DeviceLimit::getCode() {
-    return  valueComm->getCode();
+int DeviceLimit::getMaxRaw() {
+    return qRound(getMaxValue()*limitCode->getDivider());
+}
+
+double DeviceLimit::getDivider() {
+    return limitCode->getDivider();
+}
+
+void DeviceLimit::requestCommand() {
+    limitCode->resetInterval();
 }

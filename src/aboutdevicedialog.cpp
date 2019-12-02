@@ -1,15 +1,16 @@
 #include "aboutdevicedialog.h"
 #include "ui_aboutdevicedialog.h"
 
-AboutDeviceDialog::AboutDeviceDialog(AppSettings *settings, QWidget *parent) :
+AboutDeviceDialog::AboutDeviceDialog(AppSettings* appSettings, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::AboutDeviceDialog)
+    ui(new Ui::AboutDeviceDialog),
+    settings(appSettings)
 {
     ui->setupUi(this);
     setWindowIcon(QIcon(":/images/logo-minimal.png"));
     connect(ui->cancelButton, SIGNAL(clicked(bool)), this, SLOT(hide()));
     connect(ui->okButton, SIGNAL(clicked(bool)), this, SLOT(saveDataAndClose()));
-    this->settings = settings;
+
 }
 
 AboutDeviceDialog::~AboutDeviceDialog()

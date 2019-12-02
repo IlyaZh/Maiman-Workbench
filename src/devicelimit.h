@@ -2,32 +2,34 @@
 #define DEVICELIMIT_H
 
 #include <QString>
-#include <QObject>
 #include "command.h"
 
-class DeviceLimit : public QObject
+class DeviceLimit
 {
-    Q_OBJECT
 public:
-    static int Count;
-    explicit DeviceLimit(QString title, Command* valueComm, Command* minComm, Command* maxComm, QObject* parent = nullptr);
-    explicit DeviceLimit(QString title, Command* valueComm, quint16 minValue, Command* maxComm, QObject* parent = nullptr);
-    explicit DeviceLimit(QString title, Command* valueComm, Command* minComm, quint16 maxValue, QObject* parent = nullptr);
-    explicit DeviceLimit(QString title, Command* valueComm, quint16 minValue, quint16 maxValue, QObject* parent = nullptr);
-    ~DeviceLimit();
-    double getDivider();
-    QString getTitle();
+    explicit DeviceLimit(QString title, Command* code, Command* minCode, Command* maxCode);
+    explicit DeviceLimit(QString title, Command* code, double minValue, Command* maxCode);
+    explicit DeviceLimit(QString title, Command* code, Command* minCode, double maxValue);
+    explicit DeviceLimit(QString title, Command* code, double minValue, double maxValue);
+    bool isTemperature();
+    QString getTemperatureUnit();
     QString getUnit();
-    double getMin();
-    double getMax();
-    double getValue();
-    QString getCode();
+    QString getLimitCode();
+    quint16 getLimitRaw();
+    double getLimitValue();
+    QString getTitle();
+    double getMinValue();
+    double getMaxValue();
+    int getMinRaw();
+    int getMaxRaw();
+    double getDivider();
+    void requestCommand();
 
 private:
     double min, max;
-    Command* minComm;
-    Command* maxComm;
-    Command* valueComm;
+    Command* minCode;
+    Command* maxCode;
+    Command* limitCode;
     QString title;
 };
 

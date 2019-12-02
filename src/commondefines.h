@@ -8,6 +8,7 @@
 #include <QPointer>
 #include <QFont>
 #include <QPoint>
+//#include "appsettings.h"
 
 #ifndef COMMONDEFINES_H
 #define COMMONDEFINES_H
@@ -19,6 +20,7 @@ const QString APP_NAME = "BenchSoft";
 // Человекопонятное название (заголовок_ ПО
 const QString APP_NAME_TITLE = "Maiman BenchSoft";
 const QPoint WINDOW_DEFAULT_POSITION = QPoint(-1, -1);
+//const QSize WINDOW_DEFAULT_SIZE = QSize(-1,-1);
 
 const QString DEVICE_STATUS_COMMAND = "0700";
 const QString TEC_STATUS_COMMAND = "0A1A";
@@ -27,7 +29,7 @@ const QString DURATION_COMMAND = "0200";
 
 const quint8 MAJOR_VERSION = 1;
 const quint8 MINOR_VERSION = 0;
-const quint8 PATCH_VERSION = 3;
+const quint8 PATCH_VERSION = 4;
 
 extern bool debugMode;
 
@@ -73,6 +75,7 @@ const int READ_COM_COMMAND_LENGTH = 11;
 const QString DEFAULT_TEMPERATURE_SYMBOL = "C";
 
 const quint16 IDENTIFY_DEVICE_COMMAND = 0x0702;
+//enum {IDENTIFY_DEVICE_COMMAND = 0x0702};
 const quint16 COMMON_OLD_DEVICES_VALUE = 0x0115;
 const unsigned int COM_COMMAND_SEND_DELAY = 150; // ms
 const uint COM_COMMAND_MIN_SEND_DELAY = 50;

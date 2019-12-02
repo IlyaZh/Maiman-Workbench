@@ -20,10 +20,12 @@ typedef struct {
 } doubleMaskCommand_t;
 
 typedef struct {
+    Command* cmd;
     QString title;
-    Command* code;
-    int min;
-    int max;
+//    QString code;
+    double min;
+    double max;
+//    double divider;
 } calibration_t;
 
 typedef struct {
@@ -55,7 +57,7 @@ typedef struct {
     QString link;
     quint16 deviceID;
     QMap<QString, Command*> commands;
-    QMap<QString, DeviceLimit*> limits;
+    QList<DeviceLimit*> limits;
     QList<calibration_t> calCoefs;
     QList<ParameterController*> paramWidgets;
     QList<binOption_t> binOptions;
@@ -64,6 +66,7 @@ typedef struct {
     bool hasLaser;
     bool hasTEC;
     bool laserOn;
+    bool tecOn;
     bool startTECwithLaser;
     uint stopCommandDelay;
     uint minCommDelay;

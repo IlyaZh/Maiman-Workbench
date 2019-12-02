@@ -1,11 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(AppSettings *appSettings, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    settings(appSettings)
 {
     ui->setupUi(this);
+
+    if(appSettings == nullptr) {
+        qDebug() << "ComPort" << "appSettings pointer is NULL";
+    }
 
     setupWindow();
     setConnections();
@@ -18,8 +23,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     if(showWarningMessageAndStopLaser()) {
-        checkStopAndDisconnect = true;
-        serialPort->stopAndDisconnect();
+//        checkStopAndDisconnect = true;
+//        autoSendNextCommand = false;
+//        serialPort->stopAndDisconnect();
         event->ignore();
         // do stopping of laser
     } else {
@@ -39,15 +45,14 @@ void MainWindow::setConnections() {
     connect(ui->actionLoad_settings, SIGNAL(triggered(bool)), this, SLOT(loadSettingsSlot()));
     // Сохранение параметров для меня file->save settings
     connect(ui->actionSave_settings, SIGNAL(triggered(bool)), this, SLOT(saveSettingsSlot()));
-    // Галочка KeepCheckboxes для (не) сохранения состояния источника
+    // Выход из программы
+    connect(ui->actionExit, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
     connect(ui->actionKeep_checkboxes, &QAction::triggered, [this](bool flag){
         if(flag) {
             this->saveCheckboxes();
         }
         settings->setKeepCheckboxesFlag(flag);
     });
-    // Выход из программы
-    connect(ui->actionExit, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
 
     // Выбор количества стоп-бит
     connect(ui->actionOne_stop_bit, SIGNAL(toggled(bool)), this, SLOT(setComOneStopBit()));
@@ -129,11 +134,10 @@ void MainWindow::setConnections() {
     connect(xml, SIGNAL(endOfLoadingConfig(bool)), this, SLOT(loadConfigFinished(bool)));
     // Если загрузка произошла с ошибкой, пишем в консоль и в лог ошибку
     connect(xml, SIGNAL(errorHandler(QString)), this, SLOT(writeToConsoleError(QString)));
+    connect(xml, &xmlReader::logger, logger, &consoleLogger::writeToLog);
 }
 
 void MainWindow::setupWindow() {
-    settings = new AppSettings(this);
-
     devID = 0;
     loadFont();
     setWindowTitle(appTitle);
@@ -147,7 +151,7 @@ void MainWindow::setupWindow() {
 
     // Определение вспомогательных классов
     logger = new consoleLogger();
-    serialPort = new ComPort(settings, this);
+    serialPort = new ComPort(settings);
     changeLimitsDialog = new ChangeLimitsDialog(this);
     calibrateDialog = new CalibrateDialog(this);
     xml = new xmlReader(this);
@@ -162,7 +166,8 @@ void MainWindow::setupWindow() {
     autoSendNextCommand = true;
     requestAllCommands = true;
     bNeedSetCheckboxes = false;
-    checkStopAndDisconnect = false;
+    bStatusHasLoaded = false;
+//    checkStopAndDisconnect = false;
 
     loadCommonConfig(availableDevices);
 
@@ -174,7 +179,7 @@ void MainWindow::setupWindow() {
     ui->actionSave_settings->setEnabled(false);
     ui->actionLoad_settings->setEnabled(false);
     ui->actionKeep_checkboxes->setEnabled(false);
-    ui->controlsVisibleButton->setChecked(false);
+    ui->controlsVisibleButton->setChecked(false); //settings.getHideControlsFlag());
     ui->controlsVisibleButton->setText("Hide controls");
 
     setupMenuView();
@@ -183,6 +188,7 @@ void MainWindow::setupWindow() {
     ui->actionExit->setShortcut(QKeySequence("ALT+F4"));
     ui->actionKeep_checkboxes->setChecked(settings->getKeepCheckboxesFlag());
 
+//    ui->devImageLabel->setVisible(false);
     ui->devNameLabel->setVisible(false);
     ui->devAboutButton->setVisible(false);
     ui->devSelectButton->setVisible(false);
@@ -200,18 +206,19 @@ void MainWindow::setupWindow() {
     if(debugMode == false) showConsoleSlot(false);
 
     devConfig.laserOn = false;
+    devConfig.tecOn = false;
 }
 
 bool MainWindow::showWarningMessageAndStopLaser() {
     bool result = false;
 
-    if(devConfig.laserOn) {
+    if(devConfig.laserOn || devConfig.tecOn) {
         QMessageBox *alertBox = new QMessageBox(this);
         alertBox->setIcon(QMessageBox::Warning);
         alertBox->setText("The device is still running!");
         alertBox->setInformativeText("Do you want to exit the app without stop the laser?");
         alertBox->addButton("OK", QMessageBox::AcceptRole);
-        QPushButton *stopButton = alertBox->addButton("STOP", QMessageBox::RejectRole);
+        QPushButton *stopButton = alertBox->addButton("Cancel", QMessageBox::RejectRole);
         alertBox->setDefaultButton(stopButton);
 
         switch(alertBox->exec()) {
@@ -226,10 +233,13 @@ bool MainWindow::showWarningMessageAndStopLaser() {
     return result;
 }
 
+//void closeSoftware();
+//void stopAndCloseSoftware();
 
 void MainWindow::setupMenuPort() {
     // Формирование и вывод в меню списка доступных бауд-рейтов
     ui->menuSelectBaudrate->clear();
+//    QSignalMapper* signalMapper = new QSignalMapper(this);
     foreach (quint32 BR, comBaudRates) {
         QAction *newAct = new QAction(QString::number(BR), this);
         newAct->setCheckable(true);
@@ -242,7 +252,10 @@ void MainWindow::setupMenuPort() {
         connect(newAct, &QAction::triggered, [this, BR]{
             this->changeBaudRateSlot(BR);
         });
+//        signalMapper->setMapping(newAct, BR);
+//        connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
     }
+//    connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(changeBaudRateSlot(int)));
 
     refreshMenuPort();
     refreshMenuBaud();
@@ -251,6 +264,7 @@ void MainWindow::setupMenuPort() {
 
 void MainWindow::refreshMenuPort() {
     // Формирование и вывод в меню списка доступных портов
+//    ui->menuSelectPort->clear();
     foreach(QAction* item, ui->menuSelectPort->actions()) {
         if(item->text() == tr("Refresh list")) {
             ui->menuSelectPort->removeAction(item);
@@ -262,6 +276,7 @@ void MainWindow::refreshMenuPort() {
     QStringList portList = getAvailablePorts();
     if(!portList.isEmpty()) {
         ui->menuSelectPort->clear();
+//        QSignalMapper* signalMapper = new QSignalMapper(this);
         foreach (QString port, portList) {
             QAction *newAct = new QAction(port, this);
             newAct->setCheckable(true);
@@ -275,7 +290,10 @@ void MainWindow::refreshMenuPort() {
                 settings->setComPort(port);
                 refreshMenuPort();
             });
+//            signalMapper->setMapping(newAct, str);
+//            connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
         }
+//        connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(changePortSlot(QString)));
     }
     // кнопка обновления портов
     QAction *refreshPortAct = new QAction(tr("Refresh list"), this);
@@ -325,22 +343,23 @@ void MainWindow::refreshMenuCalibrate() {
         ui->menuCalibrate->menuAction()->setVisible(false);
     } else {
         ui->menuCalibrate->menuAction()->setVisible(true);
-        if(!menuCalibrateActions.isEmpty()) {
-            ui->menuCalibrate->clear();
-            menuCalibrateActions.clear();
-        }
+    }
 
-        ui->menuCalibrate->setEnabled(true);
+    if(!menuCalibrateActions.isEmpty()) {
+        ui->menuCalibrate->clear();
+        menuCalibrateActions.clear();
+    }
 
-        foreach(calibration_t item, devConfig.calCoefs) {
-            QAction *newAction = new QAction();
-            newAction->setText(item.title);
-            ui->menuCalibrate->addAction(newAction);
-            menuCalibrateActions.append(newAction);
-            connect(newAction, &QAction::triggered, [item, this](){
-                this->openCalibrateWindow(item.title);
-            });
-        }
+    ui->menuCalibrate->setEnabled(true);
+
+    foreach(calibration_t item, devConfig.calCoefs) {
+        QAction *newAction = new QAction();
+        newAction->setText(item.title);
+        ui->menuCalibrate->addAction(newAction);
+        menuCalibrateActions.append(newAction);
+        connect(newAction, &QAction::triggered, [this, item]{
+            this->openCalibrateWindow(item.title);
+        });
     }
 }
 
@@ -358,13 +377,15 @@ void MainWindow::openCalibrateWindow(QString name) {
 void MainWindow::refreshMenuLimits() {
     if(devConfig.limits.isEmpty()) {
         ui->menuLimits->menuAction()->setVisible(false);
-        return;
     } else {
         ui->menuLimits->menuAction()->setVisible(true);
     }
 
     if(!menuLimitsActions.isEmpty()) {
         ui->menuLimits->clear();
+        foreach(QAction* item, menuLimitsActions) {
+            item->deleteLater();
+        }
         menuLimitsActions.clear();
     }
 
@@ -382,10 +403,24 @@ void MainWindow::refreshMenuLimits() {
 }
 
 void MainWindow::openLimitsWindow(QString name) {
-    DeviceLimit* limit = devConfig.limits.value(name, nullptr);
-    if(limit != nullptr) {
-        changeLimitsDialog->setData(limit);
-        changeLimitsDialog->show();
+    foreach(DeviceLimit* limit, devConfig.limits) {
+        if(limit->getTitle() == name) {
+            changeLimitsDialog->setData(limit);
+//            foreach(Command* param, devConfig.commands) {
+//                if(param->getCode().compare(limit->getUpperLimitCode()) == 0) {
+//                    changeLimitsDialog->setAbsMax(param->getConvertedValue());
+//                } else if(param->getCode().compare(limit->getBottomLimitCode()) == 0) {
+//                    changeLimitsDialog->setAbsMin(param->getConvertedValue());
+//                } else if(param->getCode().compare(limit->getMaxCode()) == 0) {
+//                    changeLimitsDialog->setMax(param->getConvertedValue());
+//                } else if(param->getCode().compare(limit->getMinCode()) == 0) {
+//                    changeLimitsDialog->setMin(param->getConvertedValue());
+//                }
+//            }
+
+            changeLimitsDialog->show();
+            break;
+        }
     }
 }
 
@@ -397,6 +432,7 @@ void MainWindow::refreshMenuFile() {
     }
     lastFileActions.clear();
 
+//    QSignalMapper* signalMapper = new QSignalMapper(this);
     ui->menuFile->addSeparator();
     foreach(QVariant listVar, settings->getRecentOpenFiles()) {
         QString fileName = listVar.toString();
@@ -410,10 +446,13 @@ void MainWindow::refreshMenuFile() {
         connect(newAct, &QAction::triggered, [this, fileName]{
             this->readSettingsFile(fileName);
         });
+//        signalMapper->setMapping(newAct, fileName);
+//        connect(newAct, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
         newAct->setEnabled(link);
         lastFileActions.prepend(newAct);
         ui->menuFile->addAction(newAct);
     }
+//    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(readSettingsFile(QString)));
 }
 
 
@@ -431,6 +470,7 @@ void MainWindow::readSettingsFile(QString fileName) {
     file->open(QIODevice::ReadOnly | QIODevice::Text);
     if(file->error()) {
         writeToConsoleError(file->errorString());
+        //emit writeToLogSignal(file->errorString());
     }
     bool autoSend = autoSendNextCommand;
     autoSendNextCommand = false;
@@ -498,6 +538,7 @@ void MainWindow::saveSettingsSlot() {
         file->open(QIODevice::WriteOnly | QIODevice::Text);
         if(file->error()) {
             writeToConsoleError(file->errorString());
+            //emit writeToLogSignal(file->errorString());
         }
 
         QTextStream dataOut(file);
@@ -598,25 +639,18 @@ void MainWindow::setupParameterHandlers() {
     serialPort->setStopCommandDelay(devConfig.stopCommandDelay);
     currCommandItt = nullptr;
 
-    foreach(Command* cmd, devConfig.commands) {
-        if(cmd->isTemperature()) {
-            cmd->setTemperatureUnit(settings->getTemperatureSymbol());
-        }
-    }
-
-
     if(!devConfig.paramWidgets.empty()) {
-        if(actualParamsGLayout != nullptr) delete actualParamsGLayout;
-        actualParamsGLayout = new QGridLayout();
+//        QHBoxLayout* hlayoutparams = new QHBoxLayout();
+//        QVBoxLayout* vlayoutparams = new QVBoxLayout();
         QGridLayout* layoutparams = new QGridLayout();
 
-        ui->controlsVisibleButton->setChecked(false);
-        //settings->getHideControlsFlag());
+        ui->controlsVisibleButton->setChecked(false); //settings.getHideControlsFlag());
         ui->controlsVisibleButton->setText("Hide controls");
         aboutDeviceDialog->setInfo(devConfig);
 
         refreshMenuLimits();
         refreshMenuCalibrate();
+//        ui->bitMaskBox->setLayout(bitsLayout->getLayout());
 
         bitsLayout->addFromList(devConfig.leds);
 
@@ -629,9 +663,10 @@ void MainWindow::setupParameterHandlers() {
             actualParamsGLayout->addWidget(parameterController->loadTextWidget(), row, 0);
             row++;
 
-            if(parameterController->isOnlyMeasured()) { // Вывод значений в окно параметров
-               parameterController->loadTextWidget()->setVisible(true);
-            } else { // Вывод "крутилок-таскалок" для параметров
+            if(!parameterController->isOnlyMeasured()) { // Вывод "крутилок-таскалок" для параметров
+                // Сокрытие\показ дополнительных полей если параметр доступен только для записи или для чтения\записи
+                parameterController->hideRealValue(!parameterController->hasRealCommand());
+
                 if(settings->getCompactModeFlag()) {
                     parameterController->loadCompactWidget()->setVisible(true);
                     parameterController->loadWidget()->setVisible(false);
@@ -644,6 +679,11 @@ void MainWindow::setupParameterHandlers() {
                 layoutparams->addWidget(parameterController->loadCompactWidget(), rowcol+1, 0);
                 parameterController->loadTextWidget()->setVisible(false);
                 rowcol++;
+            } else { // Вывод значений в окно параметров
+//                actualParamsGLayout->removeWidget((*itemPtr)->loadTextWidget());
+//                actualParamsGLayout->addWidget((*itemPtr)->loadTextWidget(), row, 0);
+//                row++;
+                parameterController->loadTextWidget()->setVisible(true);
             }
         }
 
@@ -651,10 +691,10 @@ void MainWindow::setupParameterHandlers() {
         if(ui->parametersGroupBox->layout()) delete ui->parametersGroupBox->layout();
         ui->parametersGroupBox->setLayout(layoutparams);
         // Вывод значений в окне параметров
-//        if(ui->actualParameters->layout()) delete ui->actualParameters->layout();
         ui->actualParameters->setLayout(actualParamsGLayout);
 
         // Формирование и вывод на экран панели режимов
+//        QSignalMapper* cbSignalMapper = new QSignalMapper(this);
         if(!devConfig.binOptions.empty()) {
             QVBoxLayout *vlayout = new QVBoxLayout();
             foreach(binOption_t binOption, devConfig.binOptions) {
@@ -671,7 +711,10 @@ void MainWindow::setupParameterHandlers() {
                     this->sendDataToPort(sQuery);
                     saveCheckboxes();
                 });
+//                connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
+//                cbSignalMapper->setMapping(checkBox, binOption.label);
             }
+//            connect(cbSignalMapper, SIGNAL(mapped(QString)), this, SLOT(spcialParameterSlot(QString)));
             ui->specialParamBox->setLayout(vlayout);
         }
     }
@@ -695,41 +738,48 @@ bool MainWindow::isCheckboxesFileExist() {
     QDir *dir = new QDir(saveParDir);
     if(!dir->exists()) {
         state = false;
+        writeToConsole(QString("Dir (%1) is not exists").arg(saveParDir));
     }
-    QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
+    QString filename = QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg");
+    QFile *file = new QFile(filename);
     if(file->exists()) {
         state = true;
+    } else {
+        writeToConsole(QString("File (%1) is not exists").arg(filename));
     }
     file->deleteLater();
     return state;
 }
 
-// TODO: LOOK THIS SHIT
-void MainWindow::loadCheckboxes() {
-    if(devConfig.binOptions.isEmpty()) return;
+QList<QPair<QString, QString>> MainWindow::getNewCheckboxesValues() {
+    QList<QPair<QString, QString>> result;
+    result.clear();
+    if(devConfig.binOptions.isEmpty()) return result;
+
 
     QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
-    if(file->open(QIODevice::ReadOnly | QIODevice::Text | QIODevice::ExistingOnly)) {
-        QTextStream in(file);
-        while(!in.atEnd()) {
-            QStringList values = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseSensitive);
-            if(values.length() == 2) {
-                QString msgForSend = COM_WRITE_PREFIX + values.at(0) + QString(" ") + values.at(1);
-                sendDataToPort(msgForSend);
-            } else {
-                writeToConsoleError("Binary options config load error.");
+        if(file->open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(file);
+            while(!in.atEnd()) {
+                QStringList values = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseSensitive);
+                if(values.length() == 2) {
+                        QString msgForSend = COM_WRITE_PREFIX + values.at(0) + QString(" ") + values.at(1);
+                        QPair<QString, QString> pair = qMakePair(values.at(0), values.at(1));
+                        result.append(pair);
+                } else {
+                    writeToConsoleError("Binary options config load error.");
+                }
             }
+            file->close();
         }
-        file->close();
-    }
     if(file->error()) {
         writeToConsoleError(file->errorString());
     }
 
     file->deleteLater();
+    return result;
 }
 
-// TODO: LOOK THIS SHIT
 void MainWindow::saveCheckboxes() {
     if(devConfig.binOptions.isEmpty()) return;
 
@@ -759,6 +809,8 @@ void MainWindow::saveCheckboxes() {
         dataOut << currentLine.toUpper() << endl;
     }
 
+
+
     file->close();
 
     file->deleteLater();
@@ -766,8 +818,14 @@ void MainWindow::saveCheckboxes() {
 
 void MainWindow::clearAllRegulators() {
     foreach(ParameterController* item, devConfig.paramWidgets) {
-        delete item;
+        item->deleteLater();
     }
+//    for(QList<ParameterController*>::ConstIterator i = devConfig.paramWidgets.constBegin(); i != devConfig.paramWidgets.constEnd(); i++) {
+//        delete (*i)->loadWidget();
+//        delete (*i)->loadCompactWidget();
+//        delete (*i)->loadTextWidget();
+//        delete (*i);
+//    }
     devConfig.paramWidgets.clear();
 
     bitsLayout->clear();
@@ -775,32 +833,32 @@ void MainWindow::clearAllRegulators() {
     foreach(Command* cmd, devConfig.commands) {
         delete cmd;
     }
-    devConfig.commands.clear();
+
 
     foreach(binOption_t item, devConfig.binOptions) {
          delete item.checkBox;
     }
-    devConfig.binOptions.clear();
 
-    foreach(DeviceLimit* item, devConfig.limits) {
-        item->deleteLater();
-    }
+
     devConfig.limits.clear();
-
-
-
     devConfig.calCoefs.clear();
+    devConfig.commands.clear();
     devConfig.description = "";
     devConfig.devName = "";
     devConfig.hasLaser = false;
     devConfig.hasTEC = false;
     devConfig.image = "";
     devConfig.link = "";
+    devConfig.paramWidgets.clear();
+    devConfig.binOptions.clear();
     devConfig.stateButtons.clear();
     devConfig.leds.clear();
+
     if(ui->parametersGroupBox->layout()) delete ui->parametersGroupBox->layout();
+//    if(ui->bitMaskBox->layout()) delete ui->bitMaskBox->layout();
     bitsLayout->clear();
     if(ui->specialParamBox->layout()) delete ui->specialParamBox->layout();
+//    if(ui->actualParameters->layout()) delete actualParamsGLayout;
 
     this->updateWindow();
 }
@@ -815,9 +873,25 @@ void MainWindow::setRegulatorsEnable(bool state) {
         devConfig.binOptions.at(i).checkBox->setEnabled(state);
     }
 
-//    comSetDataTransfer(state);
+    comSetDataTransfer(state);
     if(state) {
         requestAllCommands = true;
+    }
+
+    if(devConfig.hasTEC) {
+        ui->tecButton->setVisible(state);
+    }
+
+    if(devConfig.hasLaser) {
+        ui->laserButton->setVisible(state);
+    }
+
+    foreach(QAction* item, ui->menuLimits->actions()) {
+        item->setEnabled(state);
+    }
+
+    foreach(QAction* item, ui->menuCalibrate->actions()) {
+        item->setEnabled(state);
     }
 }
 
@@ -838,9 +912,11 @@ void MainWindow::getPortNewState(bool state) {
             setLink(false);
             isDeviceLoaded = false;
             devConfig.laserOn = false;
-            if(checkStopAndDisconnect) {
-                QApplication::exit();
-            }
+            devConfig.tecOn = false;
+//            qDebug() << checkStopAndDisconnect;
+//            if(checkStopAndDisconnect) {
+//                QApplication::exit();
+//            }
         }
         ui->consoleStartStopButton->setEnabled(state);
         ui->consoleStartStopButton->setChecked(!autoSendNextCommand);
@@ -874,14 +950,14 @@ void MainWindow::comPortConnectButton_slot()
 {
     if(portIsOpen) {
         if(showWarningMessageAndStopLaser()) {
-            serialPort->stopAndDisconnect();
+//            serialPort->stopAndDisconnect();
         } else {
             serialPort->setPortState(!portIsOpen);
         }
     } else {
         serialPort->setPortState(!portIsOpen);
     }
-
+    ui->comPortConnectButton->setChecked(!portIsOpen);
 }
 
 void MainWindow::comPortConsoleSend_Slot() {
@@ -912,7 +988,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
             if(command == IDENTIFY_DEVICE_COMMAND) {
                 if(value == COMMON_OLD_DEVICES_VALUE) {
                     if(devID == 0) {
-    //                    devID = settings->getLastSelectedDeviceId();
+    //                    devID = settings.getLastSelectedDeviceId();
                         bool isCommonDevice = false;
                         foreach(availableDev_t devStruct, availableDevices) {
                             if(devStruct.id == devID) {
@@ -951,13 +1027,13 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     Command* currentCommand = devConfig.commands.value(commandStr);
                     currentCommand->setRawValue(value);
                     // Обработка крутилок и информеров основных параметров
-                    foreach(ParameterController* parameterController, devConfig.paramWidgets) {
+                    /*foreach(ParameterController* parameterController, devConfig.paramWidgets) {
                         double newValue;
-                        newValue  = currentCommand->getValue();
+                        newValue  = currentCommand->getConvertedValue();
 
 
                         if(parameterController->isTemperature() && settings->getTemperatureSymbol() == "F") {
-                            newValue = convertCelToFar(newValue);
+//                            newValue = convertCelToFar(newValue);
                         }
 
                         if(parameterController->getMaxComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
@@ -969,7 +1045,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
                         } else if(parameterController->getValueComm().compare(commandStr, Qt::CaseInsensitive) == 0) {
                             parameterController->setSentValue(newValue);
                         }
-                    }
+                    }*/
 
                     // Обработка LEDS
                     setLedState(commandStr, value);
@@ -988,6 +1064,26 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     }
 
                     if(commandStr == DEVICE_STATUS_COMMAND) {
+                        if(ui->actionKeep_checkboxes->isChecked()) {
+                                    if(bNeedSetCheckboxes) {
+                                        if(isCheckboxesFileExist()) {
+                                            QList<QPair<QString, QString>> loadedValues;
+                                            loadedValues = getNewCheckboxesValues();
+                                            for(QPair<QString, QString>item : loadedValues) {
+                                                for(binOption_t option : devConfig.binOptions) {
+                                                    if(option.code == item.first) {
+                                                        if((option.checkBox->isChecked() && item.second != option.onCommand)
+                                                                || (!option.checkBox->isChecked() && item.second != option.offCommand)) {
+                                                            sendDataToPort(COM_WRITE_PREFIX + item.first + " " + item.second);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        bNeedSetCheckboxes = false;
+                                    }
+                                }
+
                         if(devConfig.hasLaser) {
                             if(currentCommand->getRawValue() & START_STOP_MASK) {
                                 ui->laserButton->setChecked(true);
@@ -995,6 +1091,10 @@ void MainWindow::readComData_Slot(QByteArray str) {
                             } else {
                                 ui->laserButton->setChecked(false);
                                 devConfig.laserOn = false;
+    //                            if(waitingForStop == closeWindow_t::CONDITION_CLOSE) {
+    //                                waitingForStop = closeWindow_t::APPROVE_CLOSE;
+    //                                this->close();
+    //                            }
                             }
                         }
                     } else
@@ -1002,8 +1102,10 @@ void MainWindow::readComData_Slot(QByteArray str) {
                             if(devConfig.hasTEC) {
                                 if(currentCommand->getRawValue() & START_STOP_MASK) {
                                     ui->tecButton->setChecked(true);
+                                    devConfig.tecOn = true;
                                 } else {
                                     ui->tecButton->setChecked(false);
+                                    devConfig.tecOn = false;
                                 }
                             }
                         }
@@ -1091,7 +1193,7 @@ void MainWindow::selectedDeviceSlot(QString userSelectedDevice) {
             devID = devStruct.id;
             settings->setLastSelectedDeviceId(devID);
             loadDeviceConfig(devID);
-//            serialPort->clearQueue();
+            serialPort->clearQueue();
             ui->devSelectButton->setVisible(true);
             break;
         }
@@ -1127,15 +1229,17 @@ void MainWindow::loadConfigFinished(bool isDeviceFound) {
     if(isDeviceFound) {
         isDeviceLoaded = isDeviceFound;
         devID = devConfig.deviceID;
+
         setupParameterHandlers();
         writeToConsole(tr("CONFIG: Config is loaded successful!"));
 
+        foreach(Command* cmd, devConfig.commands) {
+            cmd->resetInterval();
+        }
+
         setRegulatorsEnable(true);
         bNeedSetCheckboxes = true;
-        autoSendNextCommand = true;
-        ui->consoleNextCommandButton->setEnabled(false);
-        ui->consoleStartStopButton->setText("Stop autosend");
-        prepareToSendNextCommand();
+//        prepareToSendNextCommand();
     } else {
         emit writeToConsoleError(tr("CONFIG: The device hasn't found!"));
     }
@@ -1159,12 +1263,13 @@ void MainWindow::loadCommonConfig(QList<availableDev_t> &deviceList) {
 }
 
 void MainWindow::comPortTimeout() {
-    emit writeToConsoleError(tr("The device didn't response. Com-port timeout: ") + QString::number(COM_PORT_TIMEOUT) + tr("ms"));
     oldDevID = devID;
     devID = 0;
     setLink(false);
     setRegulatorsEnable(false);
     startDeviceIdent();
+
+    emit writeToConsoleError(tr("The device didn't response. Com-port timeout: ") + QString::number(COM_PORT_TIMEOUT) + tr("ms"));
 }
 
 void MainWindow::comPortError(QString str) {
@@ -1195,7 +1300,6 @@ void MainWindow::triggTemperatureSymbolSlot(QString str) {
             cmd->setTemperatureUnit(str);
         }
     }
-
 
     refreshMenuView();
 }
@@ -1281,11 +1385,11 @@ void MainWindow::hideControlsButtonSlot(bool state) {
             }
 
             if (state) { // скрыть крутилки
-                if (!(*p)->isOnlyMeasured()) {
+                if ((*p)->hasRealCommand()) {
                     (*p)->loadTextWidget()->setVisible(true);
                 }
             } else { // показать крутилки
-                if (!(*p)->isOnlyMeasured()) {
+                if ((*p)->hasRealCommand()) {
                     (*p)->loadTextWidget()->setVisible(false);
                 }
             }
@@ -1297,32 +1401,36 @@ void MainWindow::hideControlsButtonSlot(bool state) {
 
 void MainWindow::setLink(bool state) {
     link = state;
+//    if(ui->statusBar->currentMessage().size() > 0) ui->statusBar->showMessage("");
+//    refreshMenuFile();
 
     int linkId = bitsLayout->findElement("Link");
     if(state) {
         bitsLayout->setElementColor(linkId, Qt::green);
      } else {
         bitsLayout->setElementColor(linkId, LEDS_DEFAULT_COLOR);
+//        ui->devSelectButton->setVisible(false);
+//        ui->devAboutButton->setVisible(false);
     }
 }
 
 void MainWindow::sendNextComCommand() {
-    if(devConfig.commands.isEmpty() || !isDeviceLoaded || devID == 0) return;
+    if(devConfig.commands.isEmpty() || !isDeviceLoaded) return;
 
     bool needToSend = true;
     bool cycleOn = true;
 
     while(cycleOn) {
 
-        if(ui->actionKeep_checkboxes->isChecked()) {
-            if(bNeedSetCheckboxes) {
+        /*if(ui->actionKeep_checkboxes->isChecked()) {
+            if(bNeedSetCheckboxes && bStatusHasLoaded) {
                 if(isCheckboxesFileExist()) {
-                    loadCheckboxes();
+                    getNewCheckboxesValues();
                 }
                 bNeedSetCheckboxes = false;
                 continue;
             }
-        }
+        }*/
 
         if(currCommandItt == nullptr) {
             currCommandItt = devConfig.commands.constBegin();
@@ -1330,17 +1438,18 @@ void MainWindow::sendNextComCommand() {
 
         if(currCommandItt == devConfig.commands.constEnd()) {
             currCommandItt = devConfig.commands.constBegin();
-            comPortIntervalCounter++;
-            if(comPortIntervalCounter > MAX_COM_INTERVAL_COUNTER) comPortIntervalCounter = 1;
+//            comPortIntervalCounter++;
+//            if(comPortIntervalCounter > MAX_COM_INTERVAL_COUNTER) comPortIntervalCounter = 1;
             requestAllCommands = false;
         }
 
-        if((*currCommandItt)->getInterval() == 0) {
-            needToSend = false;
-        } else {
-            needToSend = ((comPortIntervalCounter % (*currCommandItt)->getInterval()) == 0);
-        }
+//        if((*currCommandItt)->getInterval() == 0) {
+//            needToSend = false;
+//        } else {
+//            needToSend = ((comPortIntervalCounter % (*currCommandItt)->getInterval()) == 0);
+//        }
 
+        needToSend = (*currCommandItt)->needToRequest();
         if(needToSend || requestAllCommands) {
             cycleOn = false;
         } else {
@@ -1483,13 +1592,16 @@ void MainWindow::loadFont() {
 
 void MainWindow::saveWindowSettings() {
     settings->setWindowPosition(pos());
+//    settings.setWindowSize(size());
 }
 
 void MainWindow::loadWindowSettings() {
     QPoint pos = settings->getWindowPosition();
+//    QSize size = settings.getWindowSize();
 
     if(pos != WINDOW_DEFAULT_POSITION) { //&& size != AppSettings::WINDOW_DEFAULT_SIZE) {
         move(pos);
+//        resize(size);
     }
 }
 

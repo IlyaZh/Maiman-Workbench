@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.0.5] - 2019-11-28
+### Changed 
+- Remove sending stop commands for laser and tec when user try to close app or disconnect
+
+## [1.0.4] - 2019-11-15
+### Fixed
+- Signed commands issue. Sign wasn't shown
+- Fix change temoearute symbol bug. Units doesn't change when user change Celsius\Farenheit units, only values recalculates before. 
+- Menus and buttons are blocked too when connection is lost
+- "keep checkboxes" option is enabled by default
+- Calibration limits minValue and maxValue are double (instead of int)  now
+- Software didn't check tec status when user tried to close a software. It is checked now.
+
 ## [1.0.3] - 2019-10-29
 ### Added
 - Showing suestion message about laser state if user tries to close an app or disconnect when the laser on

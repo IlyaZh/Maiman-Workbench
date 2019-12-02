@@ -4,8 +4,8 @@
 #include <QDialog>
 #include <QImageReader>
 #include "commondefines.h"
-#include "globals.h"
 #include "appsettings.h"
+#include "globals.h"
 
 namespace Ui {
 class AboutDeviceDialog;

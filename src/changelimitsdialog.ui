@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>337</width>
-    <height>137</height>
+    <width>421</width>
+    <height>148</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -41,6 +41,9 @@ QPushButton {
 	width: 50px
 }</string>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="titleLabel">
@@ -70,7 +73,7 @@ QPushButton {
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QSlider" name="slider">
+      <widget class="QSlider" name="valueSlider">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -118,11 +121,17 @@ QPushButton {
 
 </string>
        </property>
+       <property name="minimum">
+        <number>-100</number>
+       </property>
+       <property name="maximum">
+        <number>0</number>
+       </property>
        <property name="singleStep">
         <number>0</number>
        </property>
        <property name="value">
-        <number>60</number>
+        <number>-50</number>
        </property>
        <property name="tracking">
         <bool>true</bool>
