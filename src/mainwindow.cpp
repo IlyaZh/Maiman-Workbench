@@ -772,8 +772,8 @@ QList<QPair<QString, QString>> MainWindow::getNewCheckboxesValues() {
                             if(cmd != nullptr) {
                                 quint16 currentState = static_cast<quint16>(cmd->getRawValue());
                                 quint16 maskState = currentState ^ targetState;
-                                if (targetState != currentState) {
-                                    if(maskState & item.mask) {
+                                if (maskState != 0) {
+                                    if(targetState & item.mask) {
                                         QPair<QString, QString> pair;
                                         if(targetState & item.mask) {
                                             pair = qMakePair(item.code, item.onCommand);

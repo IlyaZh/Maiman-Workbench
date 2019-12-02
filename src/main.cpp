@@ -15,11 +15,16 @@ QString updateUrl;
 AppSettings settings;
 bool debugMode = false;
 
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     QApplication::setApplicationVersion(QString::number(MAJOR_VERSION) + "." + QString::number(MINOR_VERSION) + "." + QString::number(PATCH_VERSION));
     QApplication::setFont(APPLICATION_DEFAULT_FONT);
+
+#ifdef QT_DEBUG
+    debugMode = true;
+#endif
 
     QCommandLineParser cliParser;
     QCommandLineOption debugOption(QStringList() << "d" << "debug");
