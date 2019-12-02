@@ -167,6 +167,7 @@ void MainWindow::setupWindow() {
     requestAllCommands = true;
     bNeedSetCheckboxes = false;
     bStatusHasLoaded = false;
+    bNeedSaveCheckboxes = false;
 //    checkStopAndDisconnect = false;
 
     loadCommonConfig(availableDevices);
@@ -709,7 +710,7 @@ void MainWindow::setupParameterHandlers() {
                     }
                     QString sQuery = QString("%1%2 %3").arg(COM_WRITE_PREFIX).arg(binOption.code).arg(commandStr);
                     this->sendDataToPort(sQuery);
-                    saveCheckboxes();
+                    bNeedSaveCheckboxes = true;
                 });
 //                connect(checkBox, SIGNAL(clicked(bool)), cbSignalMapper, SLOT(map()));
 //                cbSignalMapper->setMapping(checkBox, binOption.label);
@@ -763,9 +764,28 @@ QList<QPair<QString, QString>> MainWindow::getNewCheckboxesValues() {
             while(!in.atEnd()) {
                 QStringList values = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseSensitive);
                 if(values.length() == 2) {
-                        QString msgForSend = COM_WRITE_PREFIX + values.at(0) + QString(" ") + values.at(1);
-                        QPair<QString, QString> pair = qMakePair(values.at(0), values.at(1));
-                        result.append(pair);
+                    QString code = values.at(0);
+                    quint16 targetState = static_cast<quint16>(values.at(1).toUInt());
+                    for(binOption_t item : devConfig.binOptions) {
+                        if(item.code == code) {
+                            Command* cmd = devConfig.commands.value(item.code, nullptr);
+                            if(cmd != nullptr) {
+                                quint16 currentState = static_cast<quint16>(cmd->getRawValue());
+                                quint16 maskState = currentState ^ targetState;
+                                if (targetState != currentState) {
+                                    if(maskState & item.mask) {
+                                        QPair<QString, QString> pair;
+                                        if(targetState & item.mask) {
+                                            pair = qMakePair(item.code, item.onCommand);
+                                        } else {
+                                            pair = qMakePair(item.code, item.offCommand);
+                                        }
+                                        result.append(pair);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 } else {
                     writeToConsoleError("Binary options config load error.");
                 }
@@ -796,17 +816,19 @@ void MainWindow::saveCheckboxes() {
 
     QTextStream dataOut(file);
     QString currentLine;
+    QList<QString> codes;
 
-    foreach(binOption_t binOption, devConfig.binOptions) {
+    for(binOption_t binOption : devConfig.binOptions) {
         currentLine.clear();
         QString value = "";
-        if(binOption.checkBox->isChecked()) {
-            value = binOption.onCommand;
-        } else {
-            value = binOption.offCommand;
+        if(!codes.contains(binOption.code)) {
+            Command *cmd = devConfig.commands.value(binOption.code, nullptr);
+            if(cmd != nullptr) {
+                currentLine = QString("%1:%2").arg(binOption.code).arg(cmd->getRawValue());
+                dataOut << currentLine.toUpper() << endl;
+            }
+            codes.append(binOption.code);
         }
-        currentLine = QString("%1:%2").arg(binOption.code).arg(value);
-        dataOut << currentLine.toUpper() << endl;
     }
 
 
@@ -917,6 +939,7 @@ void MainWindow::getPortNewState(bool state) {
 //            if(checkStopAndDisconnect) {
 //                QApplication::exit();
 //            }
+            bNeedSaveCheckboxes = false;
         }
         ui->consoleStartStopButton->setEnabled(state);
         ui->consoleStartStopButton->setChecked(!autoSendNextCommand);
@@ -1064,20 +1087,19 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     }
 
                     if(commandStr == DEVICE_STATUS_COMMAND) {
+                        if(bNeedSaveCheckboxes) {
+                            bNeedSaveCheckboxes = false;
+                            saveCheckboxes();
+                        }
+
+
                         if(ui->actionKeep_checkboxes->isChecked()) {
                                     if(bNeedSetCheckboxes) {
                                         if(isCheckboxesFileExist()) {
                                             QList<QPair<QString, QString>> loadedValues;
                                             loadedValues = getNewCheckboxesValues();
                                             for(QPair<QString, QString>item : loadedValues) {
-                                                for(binOption_t option : devConfig.binOptions) {
-                                                    if(option.code == item.first) {
-                                                        if((option.checkBox->isChecked() && item.second != option.onCommand)
-                                                                || (!option.checkBox->isChecked() && item.second != option.offCommand)) {
-                                                            sendDataToPort(COM_WRITE_PREFIX + item.first + " " + item.second);
-                                                        }
-                                                    }
-                                                }
+                                                sendDataToPort(COM_WRITE_PREFIX + item.first + " " + item.second);
                                             }
                                         }
                                         bNeedSetCheckboxes = false;

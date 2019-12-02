@@ -163,6 +163,7 @@ private:
 //    closeWindow_t waitingForStop;
     bool bNeedSetCheckboxes;
     bool bStatusHasLoaded;
+    bool bNeedSaveCheckboxes;
 //    bool checkStopAndDisconnect;
 
 signals:
