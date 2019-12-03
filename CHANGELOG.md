@@ -3,9 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [1.0.5] - 2019-11-28
+## [1.0.5] - 2019-12-03
 ### Changed 
 - Remove sending stop commands for laser and tec when user try to close app or disconnect
+- Bug fix with settings default state of device. 
 
 ## [1.0.4] - 2019-11-15
 ### Fixed

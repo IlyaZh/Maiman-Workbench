@@ -756,24 +756,16 @@ void MainWindow::checkStateAndDoIt(Command* cmd) {
     if(loadedValues.contains(cmd->getCode())) {
         quint16 targetState = loadedValues.value(cmd->getCode());
 
-
         for(binOption_t item : devConfig.binOptions) {
             if(item.code == cmd->getCode()) {
-                writeToConsole("Select cb: " + item.code + " " + QString::number(item.mask) + " " + item.onCommand + " " + item.offCommand);
                     quint16 currentState = static_cast<quint16>(cmd->getRawValue());
                     quint16 maskState = currentState ^ targetState;
-                    writeToConsole("CurrentState " + QString::number(currentState));
-                    writeToConsole("TargetState " + QString::number(targetState));
-                    writeToConsole("MaskState " + QString::number(maskState));
                     if (maskState & item.mask) {
-                        writeToConsole("item mask selected");
                         QPair<QString, QString> pair;
                         if(targetState & item.mask) {
-                            writeToConsole("on");
                             pair = qMakePair(item.code, item.onCommand);
                         } else {
                             pair = qMakePair(item.code, item.offCommand);
-                            writeToConsole("off");
                         }
                         sendDataToPort(COM_WRITE_PREFIX + pair.first + " " + pair.second);
                     }
@@ -792,14 +784,12 @@ void MainWindow::getNewCheckboxesValues() {
     QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
         if(file->open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(file);
-            writeToConsole("Data");
             while(!in.atEnd()) {
                 QStringList rLine = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseInsensitive);
                 if(rLine.size() >= 2) {
                     QString code = rLine.at(0);
                     quint16 state = static_cast<quint16>(rLine.at(1).toUInt());
                     loadedValues.insert(code, state);
-                    writeToConsole(code + " " + QString::number(state));
                 }
             }
             file->close();

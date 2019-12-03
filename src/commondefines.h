@@ -29,7 +29,7 @@ const QString DURATION_COMMAND = "0200";
 
 const quint8 MAJOR_VERSION = 1;
 const quint8 MINOR_VERSION = 0;
-const quint8 PATCH_VERSION = 4;
+const quint8 PATCH_VERSION = 5;
 
 extern bool debugMode;
 
