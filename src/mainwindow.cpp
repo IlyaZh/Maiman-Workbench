@@ -752,42 +752,54 @@ bool MainWindow::isCheckboxesFileExist() {
     return state;
 }
 
-QList<QPair<QString, QString>> MainWindow::getNewCheckboxesValues() {
-    QList<QPair<QString, QString>> result;
-    result.clear();
-    if(devConfig.binOptions.isEmpty()) return result;
+void MainWindow::checkStateAndDoIt(Command* cmd) {
+    if(loadedValues.contains(cmd->getCode())) {
+        quint16 targetState = loadedValues.value(cmd->getCode());
+
+
+        for(binOption_t item : devConfig.binOptions) {
+            if(item.code == cmd->getCode()) {
+                writeToConsole("Select cb: " + item.code + " " + QString::number(item.mask) + " " + item.onCommand + " " + item.offCommand);
+                    quint16 currentState = static_cast<quint16>(cmd->getRawValue());
+                    quint16 maskState = currentState ^ targetState;
+                    writeToConsole("CurrentState " + QString::number(currentState));
+                    writeToConsole("TargetState " + QString::number(targetState));
+                    writeToConsole("MaskState " + QString::number(maskState));
+                    if (maskState & item.mask) {
+                        writeToConsole("item mask selected");
+                        QPair<QString, QString> pair;
+                        if(targetState & item.mask) {
+                            writeToConsole("on");
+                            pair = qMakePair(item.code, item.onCommand);
+                        } else {
+                            pair = qMakePair(item.code, item.offCommand);
+                            writeToConsole("off");
+                        }
+                        sendDataToPort(COM_WRITE_PREFIX + pair.first + " " + pair.second);
+                    }
+            }
+            writeToConsole("");
+        }
+        loadedValues.remove(cmd->getCode());
+    }
+}
+
+void MainWindow::getNewCheckboxesValues() {
+    loadedValues.clear();
+    if(devConfig.binOptions.isEmpty()) return;
 
 
     QFile *file = new QFile(QString("%1/%2%3%4").arg(saveParDir).arg(saveParFilenamePrefix).arg(QString::number(devID, 16)).arg(".cfg"));
         if(file->open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(file);
+            writeToConsole("Data");
             while(!in.atEnd()) {
-                QStringList values = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseSensitive);
-                if(values.length() == 2) {
-                    QString code = values.at(0);
-                    quint16 targetState = static_cast<quint16>(values.at(1).toUInt());
-                    for(binOption_t item : devConfig.binOptions) {
-                        if(item.code == code) {
-                            Command* cmd = devConfig.commands.value(item.code, nullptr);
-                            if(cmd != nullptr) {
-                                quint16 currentState = static_cast<quint16>(cmd->getRawValue());
-                                quint16 maskState = currentState ^ targetState;
-                                if (maskState != 0) {
-                                    if(targetState & item.mask) {
-                                        QPair<QString, QString> pair;
-                                        if(targetState & item.mask) {
-                                            pair = qMakePair(item.code, item.onCommand);
-                                        } else {
-                                            pair = qMakePair(item.code, item.offCommand);
-                                        }
-                                        result.append(pair);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    writeToConsoleError("Binary options config load error.");
+                QStringList rLine = in.readLine().split(":", QString::SkipEmptyParts, Qt::CaseInsensitive);
+                if(rLine.size() >= 2) {
+                    QString code = rLine.at(0);
+                    quint16 state = static_cast<quint16>(rLine.at(1).toUInt());
+                    loadedValues.insert(code, state);
+                    writeToConsole(code + " " + QString::number(state));
                 }
             }
             file->close();
@@ -797,7 +809,6 @@ QList<QPair<QString, QString>> MainWindow::getNewCheckboxesValues() {
     }
 
     file->deleteLater();
-    return result;
 }
 
 void MainWindow::saveCheckboxes() {
@@ -849,6 +860,7 @@ void MainWindow::clearAllRegulators() {
 //        delete (*i);
 //    }
     devConfig.paramWidgets.clear();
+    loadedValues.clear();
 
     bitsLayout->clear();
 
@@ -1049,6 +1061,16 @@ void MainWindow::readComData_Slot(QByteArray str) {
                 if (devConfig.commands.contains(commandStr)) {
                     Command* currentCommand = devConfig.commands.value(commandStr);
                     currentCommand->setRawValue(value);
+
+
+                    if(ui->actionKeep_checkboxes->isChecked()) {
+                                if(bNeedSetCheckboxes) {
+                                    checkStateAndDoIt(currentCommand);
+                                    if(loadedValues.isEmpty()) bNeedSetCheckboxes = false;
+                                }
+                            }
+
+
                     // Обработка крутилок и информеров основных параметров
                     /*foreach(ParameterController* parameterController, devConfig.paramWidgets) {
                         double newValue;
@@ -1074,7 +1096,7 @@ void MainWindow::readComData_Slot(QByteArray str) {
                     setLedState(commandStr, value);
 
                     // Обработка галочек
-                    foreach(binOption_t binaryOption, devConfig.binOptions) {
+                    for(binOption_t binaryOption : devConfig.binOptions) {
                         if(binaryOption.mask == 0) continue;
 
                         if(commandStr == binaryOption.code) {
@@ -1091,20 +1113,6 @@ void MainWindow::readComData_Slot(QByteArray str) {
                             bNeedSaveCheckboxes = false;
                             saveCheckboxes();
                         }
-
-
-                        if(ui->actionKeep_checkboxes->isChecked()) {
-                                    if(bNeedSetCheckboxes) {
-                                        if(isCheckboxesFileExist()) {
-                                            QList<QPair<QString, QString>> loadedValues;
-                                            loadedValues = getNewCheckboxesValues();
-                                            for(QPair<QString, QString>item : loadedValues) {
-                                                sendDataToPort(COM_WRITE_PREFIX + item.first + " " + item.second);
-                                            }
-                                        }
-                                        bNeedSetCheckboxes = false;
-                                    }
-                                }
 
                         if(devConfig.hasLaser) {
                             if(currentCommand->getRawValue() & START_STOP_MASK) {
@@ -1261,6 +1269,9 @@ void MainWindow::loadConfigFinished(bool isDeviceFound) {
 
         setRegulatorsEnable(true);
         bNeedSetCheckboxes = true;
+        if(isCheckboxesFileExist()) {
+            getNewCheckboxesValues();
+        }
 //        prepareToSendNextCommand();
     } else {
         emit writeToConsoleError(tr("CONFIG: The device hasn't found!"));
