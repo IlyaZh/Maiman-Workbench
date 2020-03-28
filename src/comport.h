@@ -73,7 +73,7 @@ signals:
     void portTimeroutOccure();
     void dataIsSentSignal();
     void writeToConsoleSignal(QString, Qt::GlobalColor);
-    void portErrorTimeoutOccure();
+//    void portErrorTimeoutOccure();
 
 public slots:
     void needToRead();

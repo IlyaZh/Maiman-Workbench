@@ -1,6 +1,6 @@
 #include "bitslayout.h"
 
-BitsLayout::BitsLayout(QWidget *parent) : QWidget(parent)
+BitsLayout::BitsLayout(QWidget *parent) : QWidget(parent), layout(nullptr)
 {
     setup();
 }
@@ -10,7 +10,7 @@ BitsLayout::~BitsLayout() {
 }
 
 void BitsLayout::setup() {
-    if(!layout) {
+    if(layout == nullptr) {
         layout = new QGridLayout();
         layout->setSpacing(0);
         cols = 0;

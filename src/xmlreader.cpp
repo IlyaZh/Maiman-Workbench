@@ -3,9 +3,9 @@
 #include "signedcommand.h"
 #include "devicelimit.h"
 
-xmlReader::xmlReader(QObject *parent) : QObject(parent)
+xmlReader::xmlReader(QObject *parent) : QObject(parent), file(nullptr)
 {
-    file = nullptr;
+
 }
 
 void xmlReader::setDeviceOptions(device_t &device, quint16 dev_id) {
@@ -29,8 +29,8 @@ void xmlReader::setBaudsList(QList<uint> &baudList) {
     bauds = &baudList;
 }
 
-void xmlReader::setConfigFile(QString file) {
-    filePath = file;
+void xmlReader::setConfigFile(QString fileName) {
+    filePath = fileName;
 }
 
 bool xmlReader::readFile() {

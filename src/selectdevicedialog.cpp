@@ -25,7 +25,7 @@ void SelectDeviceDialog::setList(QStringList list, int selectedIndex) {
 
 void SelectDeviceDialog::acceptedSlot() {
     devName = ui->comboBox->currentText();
-    selectedDevice(devName);
+    emit selectedDevice(devName);
 }
 
 void SelectDeviceDialog::setText(QString text) {

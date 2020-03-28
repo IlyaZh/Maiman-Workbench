@@ -31,15 +31,16 @@ public slots:
     void setElementColor(int ID, QColor color);
     void resetColors();
     void clear();
-    void setup();
 
 
 private:
-    QPointer<QGridLayout> layout;
+    QGridLayout* layout;
     QList<QLabel*> bitsLabels;
     QList<QColor> currColor;
     void addLink();
     int cols;
+
+    void setup();
 };
 
 #endif // BITSLAYOUT_H

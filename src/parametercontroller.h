@@ -48,6 +48,7 @@ private:
     void prepareBigWidget();
     void prepareCompactViewWidget();
     void prepareTextWidget();
+    void setEditLineRedColor();
 
     QUiLoader loader;
     QPointer<QWidget> bigWidget;
@@ -107,18 +108,17 @@ private slots:
     void on_minusButton_released();
     void on_plusButton_released();
     void on_pinButton_released();
-    void sendValueSlot();
     void on_currValueCompactLine_returnPressed();
     void on_currValueCompactLine_textEdited();
     void on_minusCompactButton_released();
     void on_plusCompactButton_released();
     void sendValueCompactSlot();
-    void setEditLineRedColor();
     void setEditLineDefaultState();
     void setMax();
     void setMin();
-    void setRealValue();
     void setSentValue();
+    void setRealValue();
+    void sendValueSlot();
 
 signals:
     void changeValue(QString);
