@@ -1036,6 +1036,11 @@ QMenu::item:disabled {
    <property name="text">
     <string>One stop bit</string>
    </property>
+   <property name="font">
+    <font>
+     <family>Share Tech Mono</family>
+    </font>
+   </property>
    <property name="shortcutContext">
     <enum>Qt::WidgetWithChildrenShortcut</enum>
    </property>
@@ -1046,6 +1051,11 @@ QMenu::item:disabled {
    </property>
    <property name="text">
     <string>Two stop bits</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Share Tech Mono</family>
+    </font>
    </property>
   </action>
   <action name="actionKeep_checkboxes">

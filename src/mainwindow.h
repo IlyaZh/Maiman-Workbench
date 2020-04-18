@@ -109,6 +109,7 @@ private slots:
     void setComOneStopBit();
     void setComTwoStopBits();
     void saveCheckboxes();
+    void getDefaultCheckboxesValues();
     void getNewCheckboxesValues();
 
 private:

@@ -6,7 +6,7 @@ BitsLayout::BitsLayout(QWidget *parent) : QWidget(parent), layout(nullptr)
 }
 
 BitsLayout::~BitsLayout() {
-    delete layout;
+//    if(layout != nullptr) delete layout;
 }
 
 void BitsLayout::setup() {
