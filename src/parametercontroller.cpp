@@ -237,7 +237,7 @@ void ParameterController::setMax() {
     ui_maxLabel->setText("max=" + strValueUnit);
     ui_maxCompactLabel->setText("max=" + strValueUnit);
     ui_valueSlider->setMaximum(maxComm->getIValue());
-    ui_measuredValueBar->setMaximum(maxComm->getIValue());
+    ui_measuredValueBar->setMaximum(static_cast<int>(maxComm->getValue()*valueComm->getDivider()));
     ui_maxUnitProgressLabel->setText(strValueUnit);
 }
 
@@ -250,7 +250,7 @@ void ParameterController::setMin() {
     ui_minLabel->setText("min=" + strValueUnit);
     ui_minCompactLabel->setText("min=" + strValueUnit);
     ui_valueSlider->setMinimum(minComm->getIValue());
-    ui_measuredValueBar->setMinimum(minComm->getIValue());
+    ui_measuredValueBar->setMinimum(static_cast<int>(minComm->getValue()*valueComm->getDivider()));
     ui_minUnitProgressLabel->setText(strValueUnit);
 }
 
@@ -272,7 +272,15 @@ void ParameterController::setRealValue() {
     QString strValue = wlocale.toString(realComm->getValue(), DOUBLE_FORMAT, precisionOfRealValue);
     QString strValueUnit = strValue + realComm->getUnit();
 
-    ui_measuredValueBar->setValue(static_cast<int>(realComm->getIValue()));
+    int realValue = 0;
+    if(valueComm != nullptr) {
+        realValue = realComm->getValue()*valueComm->getDivider();
+    } else {
+        realValue = realComm->getIValue();
+    }
+
+    ui_measuredValueBar->setValue(realValue);
+
     ui_measuredValueBar->setStyleSheet(" QProgressBar { \
                                      border: 1px solid rgb(25,25,25); \
                                      background: rgb(25,25,25); \
