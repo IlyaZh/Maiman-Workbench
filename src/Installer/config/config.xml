@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Maiman BenchSoft</Name>
+    <Version>1.0.6</Version>
+    <Title>1.0.6 Installer</Title>
+    <Publisher>Maiman Electronics</Publisher>
+	<ProductUrl>https://maimanelectronics.com</ProductUrl>
+        <InstallerWindowIcon>logo.png</InstallerWindowIcon>
+        <InstallerApplicationIcon>icon</InstallerApplicationIcon>
+	<!--<Logo>logo.png</Logo>-->
+        <RunProgram>@TargetDir@/Maiman BenchSoft.exe</RunProgram>
+    <StartMenuDir>Maiman Electronics</StartMenuDir>
+    <TargetDir>@RootDir@Program Files\Maiman BenchSoft</TargetDir>
+        <AllowSpaceInPath>true</AllowSpaceInPath>
+    <RemoteRepositories>
+<!--        <Repository>
+            <Url>http://maiman.online/MultiSoftUpdate/</Url>
+        </Repository>-->
+    </RemoteRepositories>
+</Installer>

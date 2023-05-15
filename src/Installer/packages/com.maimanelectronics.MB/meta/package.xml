@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Maiman BenchSoft</DisplayName>
+    <Description>BenchSoft for Maiman Electronics devices</Description>
+    <Version>1.0.0</Version>
+	<Licenses>
+        <License name="License Agreement" file="license.txt" />
+    </Licenses>
+	<UpdateText></UpdateText>
+    <ReleaseDate>2023-04-10</ReleaseDate>
+        <Default>true</Default>
+    <Name>com.maimanelectronics.MB</Name>
+    <ForcedInstallation>true</ForcedInstallation>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>
